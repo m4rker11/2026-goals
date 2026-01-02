@@ -1,0 +1,5 @@
+title: Mark's 2026 Goals
+description: Tracking progress on personal goals
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+  - jekyll-remote-theme
