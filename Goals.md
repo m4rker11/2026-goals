@@ -76,9 +76,8 @@ I need to take a hard look at Monarch Money to identify the moments that lead me
 This ties into calendar changes but also thinking about what APE means for me.
 
 **The dynamic:**
-- As a startup employee, I work 40+ hours/week
-- Anuska, as a "professional dillidallier at a stupid bank," works <40 hours, maybe <30
-- This hour difference is when time mismanagement happens between us
+- Our work schedules don't always align
+- This mismatch is when time coordination challenges happen between us
 
 **What might help:**
 - Be more diligent about morning work start time
