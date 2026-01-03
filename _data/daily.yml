@@ -1,0 +1,17 @@
+# Daily Goal Tracking
+# Append new entries at the bottom with today's date
+#
+# Fields:
+#   date: YYYY-MM-DD
+#   calendar: true/false (did morning calendar check?)
+#   fitness: number (minutes of exercise)
+#   hindi: number (chapters/lessons completed)
+#   mood: 1-5 (optional, energy/motivation level)
+#   notes: string (optional, brief reflection)
+
+- date: 2026-01-02
+  calendar: false
+  fitness: 0
+  hindi: 0
+  mood: 4
+  notes: "Setup day - created goals tracking site"
