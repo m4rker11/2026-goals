@@ -60,6 +60,17 @@ Just show up and dance.
 - It's fun
 ```
 
+### Session 4: Blink with Kai
+**When:** Weekend
+**Duration:** 45 min
+**Location:** Blink Fitness
+
+```
+Continue the buddy routine
+- Accountability is working
+- Mix of both your exercises
+```
+
 ### PT Stretches
 **When:** 2 times during the week
 **Duration:** 15 min each
@@ -73,12 +84,12 @@ Just show up and dance.
 | Thu (Jan 30) | Upper | 35 min |
 | Fri (Jan 31) | Rest | - |
 | Sat (Feb 1) | Bollywood class | 60 min |
-| Sun (Feb 2) | PT stretches | 15 min |
+| Sun (Feb 2) | Blink with Kai | 45 min |
 | Mon (Feb 3) | Lower | 30 min |
 | Tue (Feb 4) | PT stretches | 15 min |
-| Wed (Feb 5) | Rest | - |
+| Wed (Feb 5) | PT stretches | 15 min |
 
-**Total:** 155 min
+**Total:** 200 min
 
 ---
 
@@ -88,9 +99,10 @@ Just show up and dance.
 |---------|---------|-------|-------|
 | Upper (35 min) | Thu Jan 30 | [ ] | Pushups: ___ Pullups: ___ |
 | Bollywood (60 min) | Sat Feb 1 | [ ] | First class! |
+| Blink with Kai (45 min) | Sun Feb 2 | [ ] | |
 | Lower (30 min) | Mon Feb 3 | [ ] | |
-| PT Stretches #1 | Sun Feb 2 | [ ] | |
-| PT Stretches #2 | Tue Feb 4 | [ ] | |
+| PT Stretches #1 | Tue Feb 4 | [ ] | |
+| PT Stretches #2 | Wed Feb 5 | [ ] | |
 
 ---
 

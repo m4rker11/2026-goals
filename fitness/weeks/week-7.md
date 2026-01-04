@@ -71,6 +71,15 @@ Zone 2 - rowing, bike, or walk
 ### Session 4: Bollywood Dance
 **Duration:** 60 min
 
+### Session 5: Blink with Kai
+**When:** Weekend
+**Duration:** 45 min
+**Location:** Blink Fitness
+
+```
+Keep the buddy momentum going
+```
+
 ### PT Stretches
 **When:** 2 times during the week
 **Duration:** 15 min each
@@ -83,13 +92,13 @@ Zone 2 - rowing, bike, or walk
 |-----|----------|----------|
 | Thu (Feb 13) | Upper Push | 40 min |
 | Fri (Feb 14) | Rest | - |
-| Sat (Feb 15) | Bollywood | 60 min |
-| Sun (Feb 16) | Lower | 35 min |
-| Mon (Feb 17) | PT stretches | 15 min |
+| Sat (Feb 15) | Blink with Kai | 45 min |
+| Sun (Feb 16) | Bollywood | 60 min |
+| Mon (Feb 17) | Lower | 35 min |
 | Tue (Feb 18) | Mid + Cardio | 30 min |
-| Wed (Feb 19) | PT stretches | 15 min |
+| Wed (Feb 19) | PT stretches | 30 min |
 
-**Total:** 195 min
+**Total:** 240 min
 
 ---
 
@@ -98,11 +107,11 @@ Zone 2 - rowing, bike, or walk
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
 | Upper Push (40 min) | Thu Feb 13 | [ ] | Pushups: ___ |
-| Bollywood (60 min) | Sat Feb 15 | [ ] | |
-| Lower (35 min) | Sun Feb 16 | [ ] | Did it? |
+| Blink with Kai (45 min) | Sat Feb 15 | [ ] | |
+| Bollywood (60 min) | Sun Feb 16 | [ ] | |
+| Lower (35 min) | Mon Feb 17 | [ ] | Did it? |
 | Mid + Cardio (30 min) | Tue Feb 18 | [ ] | Plank: ___ sec |
-| PT Stretches #1 | Mon Feb 17 | [ ] | |
-| PT Stretches #2 | Wed Feb 19 | [ ] | |
+| PT Stretches | Wed Feb 19 | [ ] | 30 min |
 
 ---
 

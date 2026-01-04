@@ -9,7 +9,7 @@ title: Hindi Chapters
 
 1. [Foundations of Case](01-foundations-of-case/synopsis)
 2. [Compound Postpositions](02-compound-postpositions/synopsis)
-3. [Pronouns, Reflexives, Honorifics](03-pronouns-reflexives-honorifics/synopsis)
+3. [Pronouns, Reflexives, Honorifics & Dative Experiencer](03-pronouns-reflexives-honorifics/synopsis)
 4. [Adjectives, Comparisons, Sa Particle](04-adjectives-comparisons-sa-particle/synopsis)
 5. [Particle Ecosystem](05-particle-ecosystem/synopsis)
 
@@ -33,7 +33,7 @@ title: Hindi Chapters
 
 ## Part 4: Advanced Grammar (Chapters 18-25)
 
-18. [Subjunctive Mood](18-subjunctive-mood/synopsis)
+18. [Commands, Requests & Subjunctive](18-subjunctive-mood/synopsis)
 19. [Indirect Speech](19-indirect-speech/synopsis)
 20. [Conditionals](20-conditionals/synopsis)
 21. [Advanced Conjunctions](21-advanced-conjunctions/synopsis)

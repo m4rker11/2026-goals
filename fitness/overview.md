@@ -26,6 +26,7 @@
 | Resource | Status | Notes |
 |----------|--------|-------|
 | Friend's building gym | Available | Full equipment |
+| Blink Fitness | Available | Weekend sessions with Kai (starting Jan 25) |
 | Home free weights | Available | Dumbbells |
 | YMCA | Pay per visit | Swimming |
 | Orange Theory | 8 classes left | Expire early 2027 |
@@ -41,11 +42,11 @@
 | 1 | Seattle | 65 min | Establish baseline |
 | 2 | Seattle | 90 min | Add movement variety |
 | 3 | NYC | 130 min | First swim, back to gym |
-| 4 | NYC | 145 min | First 3-session week |
-| 5 | NYC | 155 min | Bollywood starts |
-| 6 | NYC | 180 min | Full routine forming |
-| 7 | NYC | 185 min | Session length growing |
-| 8 | NYC | 210 min | **200+ achieved** |
+| 4 | NYC | 165 min | First 3-session week + Blink with Kai |
+| 5 | NYC | 200 min | Bollywood starts + Blink with Kai |
+| 6 | NYC | 225 min | Full routine forming |
+| 7 | NYC | 230 min | Session length growing |
+| 8 | NYC | 255 min | **200+ sustained** |
 
 ---
 

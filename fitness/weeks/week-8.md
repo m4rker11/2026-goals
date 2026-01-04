@@ -78,6 +78,15 @@ Option B: Swim at YMCA
 - Good recovery option
 ```
 
+### Session 6: Blink with Kai
+**When:** Weekend
+**Duration:** 45 min
+**Location:** Blink Fitness
+
+```
+Final week - celebrate with your gym buddy
+```
+
 ### PT Stretches
 **When:** 2 times
 **Duration:** 15 min each
@@ -90,13 +99,13 @@ Option B: Swim at YMCA
 |-----|----------|----------|
 | Thu (Feb 20) | Upper Push | 40 min |
 | Fri (Feb 21) | Swim or OT | 45 min |
-| Sat (Feb 22) | Bollywood | 60 min |
-| Sun (Feb 23) | Upper Pull | 40 min |
-| Mon (Feb 24) | PT stretches | 15 min |
+| Sat (Feb 22) | Blink with Kai | 45 min |
+| Sun (Feb 23) | Bollywood | 60 min |
+| Mon (Feb 24) | Upper Pull | 40 min |
 | Tue (Feb 25) | Lower or Cardio | 30 min |
-| Wed (Feb 26) | PT stretches | 15 min |
+| Wed (Feb 26) | PT stretches | 30 min |
 
-**Total:** 245 min (buffer for misses)
+**Total:** 290 min (buffer for misses)
 
 ---
 
@@ -106,11 +115,11 @@ Option B: Swim at YMCA
 |---------|---------|-------|-------|
 | Upper Push (40 min) | Thu Feb 20 | [ ] | Pushups: ___ |
 | Swim/OT (45 min) | Fri Feb 21 | [ ] | Which one? |
-| Bollywood (60 min) | Sat Feb 22 | [ ] | |
-| Upper Pull (40 min) | Sun Feb 23 | [ ] | Pullups: ___ |
+| Blink with Kai (45 min) | Sat Feb 22 | [ ] | |
+| Bollywood (60 min) | Sun Feb 23 | [ ] | |
+| Upper Pull (40 min) | Mon Feb 24 | [ ] | Pullups: ___ |
 | Lower/Cardio (30 min) | Tue Feb 25 | [ ] | |
-| PT Stretches #1 | Mon Feb 24 | [ ] | |
-| PT Stretches #2 | Wed Feb 26 | [ ] | |
+| PT Stretches | Wed Feb 26 | [ ] | 30 min |
 
 ---
 

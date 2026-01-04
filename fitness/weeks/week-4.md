@@ -12,6 +12,8 @@ Two gym sessions felt okay. Now we add a third.
 
 This is where the routine starts to form. **Three is a pattern.**
 
+**New this week:** Gym buddy sessions with Kai at Blink on weekends. Accountability makes it easier.
+
 ---
 
 ## The Sessions
@@ -64,6 +66,18 @@ Cardio (15 min):
 - Zone 2 pace
 ```
 
+### Session 4: Blink with Kai
+**When:** Weekend
+**Duration:** 45 min
+**Location:** Blink Fitness
+
+```
+Whatever Kai wants to do + your exercises
+- Having a buddy makes showing up easier
+- Mix of both your routines
+- Social motivation counts
+```
+
 ### PT Stretches
 **When:** 2 times during the week
 **Duration:** 15 min each
@@ -76,13 +90,13 @@ Cardio (15 min):
 |-----|----------|----------|
 | Thu (Jan 23) | Upper - Push | 30 min |
 | Fri (Jan 24) | Rest | - |
-| Sat (Jan 25) | Upper - Pull | 30 min |
-| Sun (Jan 26) | PT stretches | 15 min |
+| Sat (Jan 25) | Blink with Kai | 45 min |
+| Sun (Jan 26) | Upper - Pull | 30 min |
 | Mon (Jan 27) | Mid + Cardio | 30 min |
 | Tue (Jan 28) | PT stretches | 15 min |
-| Wed (Jan 29) | Rest | - |
+| Wed (Jan 29) | PT stretches | 15 min |
 
-**Total:** 120 min gym + 30 min PT = **150 min**
+**Total:** 135 min gym + 30 min PT = **165 min**
 
 ---
 
@@ -91,10 +105,11 @@ Cardio (15 min):
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
 | Upper Push (30 min) | Thu Jan 23 | [ ] | Pushups: ___ |
-| Upper Pull (30 min) | Sat Jan 25 | [ ] | Pullups: ___ |
+| Blink with Kai (45 min) | Sat Jan 25 | [ ] | First buddy session! |
+| Upper Pull (30 min) | Sun Jan 26 | [ ] | Pullups: ___ |
 | Mid + Cardio (30 min) | Mon Jan 27 | [ ] | |
-| PT Stretches #1 | Sun Jan 26 | [ ] | |
-| PT Stretches #2 | Tue Jan 28 | [ ] | |
+| PT Stretches #1 | Tue Jan 28 | [ ] | |
+| PT Stretches #2 | Wed Jan 29 | [ ] | |
 
 ---
 

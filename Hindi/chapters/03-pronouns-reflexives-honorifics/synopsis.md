@@ -97,3 +97,111 @@ Spoken Hindi often merges singular/plural pronunciation.
 > **Example:** "Ye log" (These people) vs "Vo log" (Those people)
 
 *Difference:* Adding "log" (people) is a common B2 strategy to clarify plurality when pronouns sound similar.
+
+---
+
+## 3D. The Dative Experiencer Construction
+
+> **Why this matters:** Hindi expresses many experiences (liking, knowing, feeling) with the experiencer in the dative case, not as the subject. This is one of Hindi's most distinctive patterns.
+
+### 3D-i. The Core Pattern
+
+The experiencer takes **ko/mujhe/use** (dative), and the verb agrees with the stimulus, not the experiencer.
+
+| English | Hindi | Literal |
+|---------|-------|---------|
+| I like tea | Mujhe chai pasand hai | To-me tea liked is |
+| She knows | Use pataa hai | To-her known is |
+| We are hungry | Hame bhook lagi hai | To-us hunger attached is |
+
+**Key Difference:** English "I like X" → Hindi "To-me X is liked". The verb agrees with X.
+
+---
+
+### 3D-ii. Liking (Pasand & Accha Lagna)
+
+Two constructions for expressing preference:
+
+> **Pasand hona (static liking):**
+> - "Mujhe ye film pasand hai" (I like this film)
+> - "Use Hindi pasand nahi" (He doesn't like Hindi)
+
+> **Accha lagna (pleasing/appealing):**
+> - "Mujhe ye gaana accha lagta hai" (I find this song nice)
+> - "Tumhe kaisa laga?" (How did you find it? / Did you like it?)
+
+**Key Difference:** *Pasand hai* = established preference. *Accha lagta hai* = appeals to me / I find it nice.
+
+---
+
+### 3D-iii. Knowing (Pataa, Maaloom, Jaanna, Aana)
+
+Four distinct "know" constructions:
+
+| Construction | Meaning | Example |
+|--------------|---------|---------|
+| **Pataa hona** | Know a fact | "Mujhe pataa hai" (I know) |
+| **Maaloom hona** | Be aware | "Mujhe maaloom hai" (I'm aware) |
+| **Jaanna** | Know (person/thing) | "Main use jaanta hoon" (I know him) |
+| **Aana** | Know how to (skill) | "Mujhe Hindi aati hai" (I know Hindi) |
+
+> **Examples:**
+> - "Kya tumhe pataa hai?" (Do you know? - about a fact)
+> - "Main nahi jaanta" (I don't know - person/thing)
+> - "Mujhe gaadi chalani aati hai" (I know how to drive)
+
+**Key Difference:** *Jaanna* takes a normal subject (Main). The others take dative (Mujhe).
+
+---
+
+### 3D-iv. Physical Sensations (Lagna)
+
+The verb **lagna** (to attach/strike) expresses bodily sensations.
+
+| Sensation | Construction | Example |
+|-----------|--------------|---------|
+| Hunger | Bhook lagna | "Mujhe bhook lagi hai" (I'm hungry) |
+| Thirst | Pyaas lagna | "Use pyaas lagi hai" (He's thirsty) |
+| Cold | Thand lagna | "Mujhe thand lag rahi hai" (I'm feeling cold) |
+| Heat | Garmi lagna | "Bacchon ko garmi lag rahi hai" (The kids are feeling hot) |
+| Fear | Dar lagna | "Mujhe dar lagta hai" (I feel scared) |
+| Sleepiness | Neend aana | "Mujhe neend aa rahi hai" (I'm feeling sleepy) |
+
+**Key Difference:** English "I am hungry" (adjective) → Hindi "To-me hunger has-attached" (verb).
+
+---
+
+### 3D-v. Emotions & States
+
+Other common dative experiencer expressions:
+
+| Emotion/State | Construction | Example |
+|---------------|--------------|---------|
+| Anger | Gussa aana | "Mujhe gussa aa raha hai" (I'm getting angry) |
+| Happiness | Khushi hona | "Mujhe bahut khushi hui" (I was very happy) |
+| Surprise | Hairani hona | "Mujhe hairani hui" (I was surprised) |
+| Boredom | Bore hona | "Mujhe bore ho raha hai" (I'm getting bored) |
+| Worry | Chinta hona | "Mujhe chinta hai" (I'm worried) |
+| Shame | Sharm aana | "Mujhe sharm aati hai" (I feel ashamed) |
+
+---
+
+### 3D-vi. Summary: Dative Pronoun Forms
+
+Quick reference for experiencer pronouns:
+
+| Nominative | Dative (ko form) | Contracted |
+|------------|------------------|------------|
+| Main | Mujh ko | Mujhe |
+| Tu | Tujh ko | Tujhe |
+| Vo (sg) | Us ko | Use |
+| Vo (pl) | Un ko | Unhe |
+| Hum | Ham ko | Hame |
+| Tum | Tum ko | Tumhe |
+| Aap | Aap ko | Aapko |
+| Kaun | Kis ko | Kise |
+| Koi | Kisi ko | - |
+
+> **Example transformation:**
+> - "Main jaanta hoon" (I know - normal subject)
+> - "Mujhe pataa hai" (I know - dative experiencer)

@@ -1,0 +1,17 @@
+unit: week-1
+tasks:
+  - id: mohit-anki
+    name: "Mohit: Extract practice sentences to Anki"
+    done: false
+  - id: nahid-prep
+    name: "Nahid: Send chapter/topic to practice"
+    done: false
+  - id: anki-1
+    name: "Anki review session 1"
+    done: false
+  - id: anki-2
+    name: "Anki review session 2"
+    done: false
+  - id: anki-3
+    name: "Anki review session 3"
+    done: false

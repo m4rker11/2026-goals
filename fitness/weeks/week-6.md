@@ -65,6 +65,15 @@ This builds your VO2 max base
 ### Session 4: Bollywood Dance
 **Duration:** 60 min
 
+### Session 5: Blink with Kai
+**When:** Weekend
+**Duration:** 45 min
+**Location:** Blink Fitness
+
+```
+Buddy sessions are now routine
+```
+
 ### PT Stretches
 **When:** 2 times during the week
 **Duration:** 15 min each
@@ -77,13 +86,13 @@ This builds your VO2 max base
 |-----|----------|----------|
 | Thu (Feb 6) | Upper Push | 35 min |
 | Fri (Feb 7) | Rest | - |
-| Sat (Feb 8) | Bollywood | 60 min |
-| Sun (Feb 9) | Upper Pull | 35 min |
-| Mon (Feb 10) | PT stretches | 15 min |
+| Sat (Feb 8) | Blink with Kai | 45 min |
+| Sun (Feb 9) | Bollywood | 60 min |
+| Mon (Feb 10) | Upper Pull | 35 min |
 | Tue (Feb 11) | Cardio | 25 min |
-| Wed (Feb 12) | PT stretches | 15 min |
+| Wed (Feb 12) | PT stretches | 30 min |
 
-**Total:** 185 min
+**Total:** 230 min
 
 ---
 
@@ -92,11 +101,11 @@ This builds your VO2 max base
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
 | Upper Push (35 min) | Thu Feb 6 | [ ] | Pushups: ___ |
-| Bollywood (60 min) | Sat Feb 8 | [ ] | |
-| Upper Pull (35 min) | Sun Feb 9 | [ ] | Pullups: ___ |
+| Blink with Kai (45 min) | Sat Feb 8 | [ ] | |
+| Bollywood (60 min) | Sun Feb 9 | [ ] | |
+| Upper Pull (35 min) | Mon Feb 10 | [ ] | Pullups: ___ |
 | Cardio (25 min) | Tue Feb 11 | [ ] | Type: ___ |
-| PT Stretches #1 | Mon Feb 10 | [ ] | |
-| PT Stretches #2 | Wed Feb 12 | [ ] | |
+| PT Stretches | Wed Feb 12 | [ ] | 30 min |
 
 ---
 
