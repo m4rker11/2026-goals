@@ -150,3 +150,7 @@ By end of Week 3, you should be doing:
 - [ ] Evening: Review tomorrow (Week 3)
 
 If any of these slipped, note it and keep practicing. The stack builds.
+
+---
+
+[← Back to Calendar Overview](../) | [← Previous Week](week-2-tasks) | [Next Week →](week-4-tasks)

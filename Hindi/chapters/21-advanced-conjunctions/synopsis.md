@@ -80,3 +80,7 @@
 
 > **Example:** "Chahe tum aao ya na aao, main jaonga."
 > *(Whether you come or not, I will go.)*
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../20-conditionals/) | [Next Chapter →](../22-participles/)

@@ -174,3 +174,7 @@ Week 6: Full routine (3 gym + Bollywood)
    ↓
 Week 7-8: Push toward 200+
 ```
+
+---
+
+[← Back to Fitness Overview](../) | [← Previous Week](week-4) | [Next Week →](week-6)

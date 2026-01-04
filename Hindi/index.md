@@ -18,7 +18,7 @@ title: Hindi to B2
 | **Mohit** | Grammar, practice sentences | Extract sentences to Anki |
 | **Nahid** | Conversation practice | Send chapter/topic beforehand |
 
-[Weekly Tasks](weeks/) | [Tutor Notes](from-tutor)
+[Weekly Tasks](weeks/)
 
 ---
 

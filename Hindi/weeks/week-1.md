@@ -32,4 +32,4 @@ title: Hindi Week 1
 
 ---
 
-[Back to Hindi]({{ site.baseurl }}/Hindi/) | [Week 2](week-2)
+[← Back to Weekly Tasks](./) | [Next Week →](week-2)

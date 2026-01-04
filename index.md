@@ -13,13 +13,13 @@ title: Home
 
 | Goal | Status | Progress |
 |------|--------|----------|
-| Hindi to B2 | In Progress | <progress value="10" max="100"></progress> 10% |
-| Calendar Mastery | Week 1 | <progress value="5" max="100"></progress> 5% |
-| 200 min Zone 2 Weekly | Starting | <progress value="0" max="100"></progress> 0% |
-| Spend Less | Planning | <progress value="5" max="100"></progress> 5% |
+| [Hindi to B2](Hindi/) | In Progress | <progress value="10" max="100"></progress> 10% |
+| [Calendar Mastery](calendaring/) | Week 1 | <progress value="5" max="100"></progress> 5% |
+| [200 min Zone 2 Weekly](fitness/) | Starting | <progress value="0" max="100"></progress> 0% |
+| [Spend Less](spend-less/) | Planning | <progress value="5" max="100"></progress> 5% |
 | [Work Boundaries](work-boundaries/) | Planning | <progress value="5" max="100"></progress> 5% |
-| Options Trading | Not Started | <progress value="0" max="100"></progress> 0% |
-| Sell Things | Not Started | <progress value="0" max="100"></progress> 0% |
+| [Options Trading](trading/) | Not Started | <progress value="0" max="100"></progress> 0% |
+| [Sell Things](sell/) | Not Started | <progress value="0" max="100"></progress> 0% |
 | [Call Brother Biweekly](brother/) | Starts Jan 23 | <progress value="0" max="100"></progress> 0% |
 
 [View detailed goals](Goals)

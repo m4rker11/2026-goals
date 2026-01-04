@@ -171,3 +171,7 @@ Week 4: Hit stop time + breaks
 ```
 
 Next week, you'll tell Anuska these times every morning. This week, just get clear with yourself.
+
+---
+
+[← Back to Work Boundaries](../) | [Next Week →](week-2-tasks)

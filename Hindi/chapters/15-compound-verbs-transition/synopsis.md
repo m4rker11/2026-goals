@@ -100,3 +100,7 @@ Indicates an action done hastily that the subject regrets.
 > "Main use kho baitha" (I lost him - *and regret it*)
 
 The *baithna* compound implies carelessness and subsequent regret.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../14-compound-verbs-benefaction/) | [Next Chapter →](../16-modals-capability/)

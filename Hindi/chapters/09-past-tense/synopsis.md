@@ -69,3 +69,7 @@
 > **Example:** "Main pehle mota hota tha" (I used to be fat).
 
 **Key difference:** Using *Hota tha* for past states that are no longer true.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../08-interrogative-plurality-reduplication/) | [Next Chapter →](../10-future-tense/)

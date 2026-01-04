@@ -241,3 +241,7 @@ Now that work boundaries are working:
 - **Spend Less:** Same impulse control muscle
 
 You've built a keystone habit. Protect it.
+
+---
+
+[← Back to Work Boundaries](../) | [← Previous Week](week-3-tasks)

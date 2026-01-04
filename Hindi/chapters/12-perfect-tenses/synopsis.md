@@ -98,3 +98,7 @@ A more formal way to express completion.
 > "Vo ja chuke honge" (They must have left)
 
 **Key Difference:** This is a formal/literary way to say "They must have already gone."
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../11-ne-construction/) | [Next Chapter →](../13-compulsion-matrix/)

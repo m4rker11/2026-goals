@@ -100,3 +100,7 @@ Expresses future necessity.
 
 > **Example:**
 > "Mujhe wahan hona hoga" (I will have to be there)
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../12-perfect-tenses/) | [Next Chapter →](../14-compound-verbs-benefaction/)

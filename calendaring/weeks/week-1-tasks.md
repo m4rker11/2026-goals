@@ -138,3 +138,7 @@ Week 6: Full weekly planning
 ```
 
 You can't do Week 6 without Week 1. Trust the progression.
+
+---
+
+[← Back to Calendar Overview](../) | [← Previous Week](week-0-setup) | [Next Week →](week-2-tasks)

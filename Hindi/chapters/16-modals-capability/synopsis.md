@@ -101,3 +101,7 @@ In rare cases, this passive construction can express positive capability.
 | **Sakna** | Can / Able to | Neutral ability, permission, possibility |
 | **Paana** | Manage to | Implies effort, usually negative |
 | **Mujhse... jata** | Cannot (passive) | Physical/emotional blocking |
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../15-compound-verbs-transition/) | [Next Chapter →](../17-modals-start-stop/)

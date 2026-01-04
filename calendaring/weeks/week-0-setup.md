@@ -189,3 +189,7 @@ You've gone from "calendar exists" to "calendar is everywhere and reminds you au
 Week 1 focuses on ONE behavior: **Morning calendar check**.
 
 All this infrastructure makes that check effortless - you'll see the calendar whether you try to or not.
+
+---
+
+[← Back to Calendar Overview](../) | [Next Week →](week-1-tasks)

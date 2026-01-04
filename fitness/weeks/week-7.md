@@ -186,3 +186,7 @@ Week 8: 200+ achieved
 ```
 
 One more week.
+
+---
+
+[← Back to Fitness Overview](../) | [← Previous Week](week-6) | [Next Week →](week-8)

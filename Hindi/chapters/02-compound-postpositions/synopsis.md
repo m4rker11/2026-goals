@@ -87,3 +87,7 @@ The **"Ka/Ke/Ki"** agrees with the *possessed object*, not the owner.
 ### 2C-iii. "Ke paas" (Ownership vs Proximity)
 
 > **Example:** "Mere paas paise hain" (I have money) vs "Mere paas aao" (Come near me)
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../01-foundations-of-case/) | [Next Chapter →](../03-pronouns-reflexives-honorifics/)

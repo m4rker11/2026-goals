@@ -145,3 +145,7 @@ It's possible to mix **past unreal conditions** with **present results**.
 
 **As Long As:**
 > Jab tak [positive], [positive]
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../19-indirect-speech/) | [Next Chapter →](../21-advanced-conjunctions/)

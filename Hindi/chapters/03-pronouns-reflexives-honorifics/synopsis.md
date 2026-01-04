@@ -205,3 +205,7 @@ Quick reference for experiencer pronouns:
 > **Example transformation:**
 > - "Main jaanta hoon" (I know - normal subject)
 > - "Mujhe pataa hai" (I know - dative experiencer)
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../02-compound-postpositions/) | [Next Chapter →](../04-adjectives-comparisons-sa-particle/)

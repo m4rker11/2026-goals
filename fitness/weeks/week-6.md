@@ -183,3 +183,7 @@ Week 7: Building duration
    ↓
 Week 8: 200+ achieved
 ```
+
+---
+
+[← Back to Fitness Overview](../) | [← Previous Week](week-5) | [Next Week →](week-7)

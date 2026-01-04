@@ -167,3 +167,7 @@ Week 8: 200+ minutes
 ```
 
 Next week: Real gym access returns. Swimming on the menu.
+
+---
+
+[← Back to Fitness Overview](../) | [← Previous Week](week-1) | [Next Week →](week-3)

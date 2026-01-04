@@ -30,4 +30,4 @@ Every week:
 
 ---
 
-[Back to Hindi]({{ site.baseurl }}/Hindi/)
+[← Back to Hindi Overview](../)

@@ -61,3 +61,7 @@
 ### 8C-ii. Antonym Pairs: "Din-Raat" (Day and Night / Continuously)
 
 > **Example:** "Vo din-raat padhta hai."
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../07-present-tense/) | [Next Chapter →](../09-past-tense/)

@@ -182,3 +182,7 @@ This week directly supports:
 - **Anuska coordination:** Dinner duty is clear
 
 The calendar is becoming the **keystone habit**.
+
+---
+
+[← Back to Calendar Overview](../) | [← Previous Week](week-3-tasks) | [Next Week →](week-5-tasks)

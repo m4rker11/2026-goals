@@ -154,3 +154,7 @@ By end of Week 5, you should be doing:
 - [ ] Evening: Review tomorrow
 
 You're now operating at a high level. Week 6 adds the final piece: weekly planning.
+
+---
+
+[← Back to Calendar Overview](../) | [← Previous Week](week-4-tasks) | [Next Week →](week-6-tasks)

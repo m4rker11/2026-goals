@@ -185,3 +185,7 @@ Week 4: Hit stop time + breaks
 ```
 
 Next week: actually hitting start time. But communication makes that easier because now someone else knows the target.
+
+---
+
+[← Back to Work Boundaries](../) | [← Previous Week](week-1-tasks) | [Next Week →](week-3-tasks)

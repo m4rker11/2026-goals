@@ -138,3 +138,7 @@ Week 3: Evening review
 ```
 
 Morning check should feel automatic now. If not, that's okay - keep practicing both.
+
+---
+
+[← Back to Calendar Overview](../) | [← Previous Week](week-1-tasks) | [Next Week →](week-3-tasks)

@@ -227,3 +227,7 @@ If you made it here and the habits are forming, you've transformed your relation
 This isn't about being rigid. It's about being intentional.
 
 You've got this.
+
+---
+
+[← Back to Calendar Overview](../) | [← Previous Week](week-5-tasks)

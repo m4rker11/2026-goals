@@ -179,3 +179,7 @@ Week 6: Full routine locked
    ↓
 Week 8: 200+ minutes
 ```
+
+---
+
+[← Back to Fitness Overview](../) | [← Previous Week](week-3) | [Next Week →](week-5)

@@ -100,3 +100,7 @@ Compound verbs have limitations in negative sentences.
 > - "Main nahin ja gaya" (Incorrect)
 
 **Key Difference:** You generally don't use these compound vectors in negative sentences.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../13-compulsion-matrix/) | [Next Chapter →](../15-compound-verbs-transition/)

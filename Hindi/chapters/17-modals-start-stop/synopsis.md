@@ -113,3 +113,7 @@ When used with past tense, *chukna* often conveys the meaning of **"already."**
 - **Lagna** removes "Ne" requirement
 - **Dena** maintains "Ne" requirement
 - **Chukna** is intransitive, so "Ne" is not applicable
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../16-modals-capability/) | [Next Chapter →](../18-subjunctive-mood/)

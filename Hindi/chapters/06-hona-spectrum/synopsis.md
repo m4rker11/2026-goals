@@ -77,3 +77,7 @@
 > **Example:** "Shayad vo naraz ho" (Maybe he is angry).
 
 **Key difference:** Shows uncertainty, uses subjunctive root.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../05-particle-ecosystem/) | [Next Chapter →](../07-present-tense/)

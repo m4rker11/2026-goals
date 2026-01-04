@@ -123,3 +123,7 @@ Requests can be reported using the **infinitive construction**.
 2. **Always use "ki"** as the connector (rarely dropped)
 3. **Pronouns change** but time words stay the same
 4. **Commands** use subjunctive or infinitive constructions
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../18-subjunctive-mood/) | [Next Chapter →](../20-conditionals/)

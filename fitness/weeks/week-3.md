@@ -175,3 +175,7 @@ Week 4: First 3-session gym week
 ...
 Week 8: 200+ minutes
 ```
+
+---
+
+[← Back to Fitness Overview](../) | [← Previous Week](week-2) | [Next Week →](week-4)

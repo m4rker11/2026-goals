@@ -86,3 +86,7 @@
 | Jitna | Utna | As much... So much |
 | Jaisa | Vaisa | As... So |
 | Jaise hi | Vaise hi | As soon as... |
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../22-participles/) | [Next Chapter →](../24-causatives-and-agency/)

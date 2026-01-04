@@ -87,7 +87,6 @@ Every week, mandatory:
 
 | Resource | Notes |
 |----------|-------|
-| [Tutor Notes](from-tutor) | Raw notes from Mohit sessions |
 | [Chapters](chapters/) | 25 grammar synopses |
 | Anki | Practice sentence cards |
 

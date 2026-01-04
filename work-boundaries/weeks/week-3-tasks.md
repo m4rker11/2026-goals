@@ -176,3 +176,7 @@ Week 4: Hit stop time + breaks
 ```
 
 Next week: the hard one. Stopping. But you've built the foundation - defined times, Anuska knows them, and you've practiced hitting a target. Now we apply that to the moment of hyperfocus.
+
+---
+
+[← Back to Work Boundaries](../) | [← Previous Week](week-2-tasks) | [Next Week →](week-4-tasks)

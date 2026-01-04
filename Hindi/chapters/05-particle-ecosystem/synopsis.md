@@ -83,3 +83,7 @@
 ### 5C-iii. "Tak" (Time limit)
 
 > **Example:** "Kal tak" (By tomorrow/Until tomorrow)
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../04-adjectives-comparisons-sa-particle/) | [Next Chapter →](../06-hona-spectrum/)

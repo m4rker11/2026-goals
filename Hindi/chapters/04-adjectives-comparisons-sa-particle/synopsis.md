@@ -95,3 +95,7 @@ Softening adjectives.
 > **Example:** "Koi sa bhi" (Any one / Whichever)
 
 *Difference:* Adds indefinite quality to the selection.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../03-pronouns-reflexives-honorifics/) | [Next Chapter →](../05-particle-ecosystem/)

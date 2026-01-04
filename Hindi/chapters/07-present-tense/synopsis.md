@@ -73,3 +73,7 @@
 > **Example:** "Maine bag pakda hua hai" (I am holding a bag).
 
 **Key difference:** *Pakad raha hoon* would mean "I am in the process of grabbing it".
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../06-hona-spectrum/) | [Next Chapter →](../08-interrogative-plurality-reduplication/)

@@ -77,3 +77,7 @@
 > *(Written paper)*
 
 **Key Difference:** This describes a completed action's result, not an ongoing action.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../21-advanced-conjunctions/) | [Next Chapter →](../23-relative-correlative-clauses/)

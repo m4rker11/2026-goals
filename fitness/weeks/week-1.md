@@ -153,3 +153,7 @@ Week 8: 200+ minutes
 ```
 
 Don't worry about perfect. Just don't go to zero.
+
+---
+
+[← Back to Fitness Overview](../) | [Next Week →](week-2)

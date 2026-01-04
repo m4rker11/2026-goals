@@ -71,3 +71,7 @@
 > **Example:** "Main bus abhi kar raha hoon" (I'm just doing it now).
 
 **Key difference:** Using continuous for immediate intent.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../09-past-tense/) | [Next Chapter →](../11-ne-construction/)

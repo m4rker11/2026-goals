@@ -243,3 +243,7 @@ The subjunctive appears in **purpose clauses** introduced by *taaki* (so that).
 - **Taaki** (so that)
 - **Chahe** (whether)
 - Questions asking for permission
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../17-modals-start-stop/) | [Next Chapter →](../19-indirect-speech/)

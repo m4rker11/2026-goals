@@ -103,3 +103,7 @@ The auxiliary verb in compound constructions determines whether **Ne** is needed
 > "Maine kha liya" (I ate - *Ne required*)
 
 **Key Difference:** The auxiliary vector determines the Ne requirement. *Chukna* is intransitive; *Lena* is transitive.
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../10-future-tense/) | [Next Chapter →](../12-perfect-tenses/)

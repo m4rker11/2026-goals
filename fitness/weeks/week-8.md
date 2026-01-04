@@ -227,3 +227,7 @@ You built a routine that includes:
 - Maintenance (PT stretches)
 
 **That's the goal. You did it.**
+
+---
+
+[← Back to Fitness Overview](../) | [← Previous Week](week-7)

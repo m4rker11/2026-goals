@@ -77,11 +77,11 @@ Using the calendar to schedule workouts builds both habits simultaneously.
 
 ## Weekly Files
 
-- [Week 1: Seattle Baseline](weeks/week-1.md)
-- [Week 2: Seattle Movement](weeks/week-2.md)
-- [Week 3: Return + Swim](weeks/week-3.md)
-- [Week 4: Three Sessions](weeks/week-4.md)
-- [Week 5: Bollywood Begins](weeks/week-5.md)
-- [Week 6: Full Routine](weeks/week-6.md)
-- [Week 7: Building Duration](weeks/week-7.md)
-- [Week 8: 200+ Target](weeks/week-8.md)
+- [Week 1: Seattle Baseline](weeks/week-1)
+- [Week 2: Seattle Movement](weeks/week-2)
+- [Week 3: Return + Swim](weeks/week-3)
+- [Week 4: Three Sessions](weeks/week-4)
+- [Week 5: Bollywood Begins](weeks/week-5)
+- [Week 6: Full Routine](weeks/week-6)
+- [Week 7: Building Duration](weeks/week-7)
+- [Week 8: 200+ Target](weeks/week-8)

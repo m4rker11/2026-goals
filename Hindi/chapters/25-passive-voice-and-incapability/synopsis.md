@@ -103,3 +103,7 @@ Other common impersonal passives:
 | Habitual Passive | Verb + *jata/jati hai* | Regular/ongoing passives |
 | Incapability | *Mujhse* + Verb + *nahin jata* | Physical/emotional inability |
 | Impersonal | Verb + *jaye/jata hai* | General statements, suggestions |
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../24-causatives-and-agency/)

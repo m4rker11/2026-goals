@@ -94,3 +94,7 @@ These are not true causatives but transitive pairs:
 | Base | - | Padhna | To read |
 | Direct Causative | -ana | Padhana | To teach (make read) |
 | Indirect Causative | -vana | Padhvana | To get read (through someone) |
+
+---
+
+[← Back to All Chapters](../) | [← Previous Chapter](../23-relative-correlative-clauses/) | [Next Chapter →](../25-passive-voice-and-incapability/)

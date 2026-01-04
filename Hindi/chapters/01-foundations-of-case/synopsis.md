@@ -97,3 +97,7 @@ Possessive pronouns behave like Adjectives.
 > **Example:** "Mere ghar mein" (In my house)
 
 *Difference:* "Mera" changes to "Mere" because "Ghar" is in the oblique case (due to 'mein').
+
+---
+
+[← Back to All Chapters](../) | [Next Chapter →](../02-compound-postpositions/)
