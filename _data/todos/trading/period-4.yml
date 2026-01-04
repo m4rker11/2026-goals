@@ -1,0 +1,17 @@
+unit: period-4
+tasks:
+  - id: scan
+    name: Monday market scan
+    done: false
+  - id: buffedape
+    name: Message BuffedApe
+    done: false
+  - id: execute
+    name: Execute trade
+    done: false
+  - id: reflect
+    name: Write reflection within 24 hours
+    done: false
+  - id: retro
+    name: Complete 2-month retrospective
+    done: false

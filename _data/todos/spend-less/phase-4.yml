@@ -1,0 +1,17 @@
+unit: phase-4
+tasks:
+  - id: weekly-review
+    name: Set up Sunday Monarch review routine
+    done: false
+  - id: week-10-save
+    name: Save $91 (Week 10)
+    done: false
+  - id: week-11-save
+    name: Save $91 (Week 11)
+    done: false
+  - id: buy-steam-frame
+    name: Buy Steam Frame!
+    done: false
+  - id: retrospective
+    name: Complete 11-week retrospective
+    done: false

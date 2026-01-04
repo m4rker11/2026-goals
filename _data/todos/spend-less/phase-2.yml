@@ -1,0 +1,20 @@
+unit: phase-2
+tasks:
+  - id: start-log
+    name: Start impulse log
+    done: false
+  - id: youtube-audit
+    name: Audit YouTube channels, unfollow triggers
+    done: false
+  - id: danger-zones
+    name: Identify top 3 danger zones
+    done: false
+  - id: week-4-save
+    name: Save $91 (Week 4)
+    done: false
+  - id: week-5-save
+    name: Save $91 (Week 5)
+    done: false
+  - id: week-6-save
+    name: Save $91 (Week 6)
+    done: false

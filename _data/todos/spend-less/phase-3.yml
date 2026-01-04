@@ -1,0 +1,17 @@
+unit: phase-3
+tasks:
+  - id: 24hr-rule
+    name: Implement 24-hour rule for purchases >$20
+    done: false
+  - id: sticky-note
+    name: Put "Steam Frame or this?" sticky on monitor
+    done: false
+  - id: week-7-save
+    name: Save $91 (Week 7)
+    done: false
+  - id: week-8-save
+    name: Save $91 (Week 8)
+    done: false
+  - id: week-9-save
+    name: Save $91 (Week 9)
+    done: false

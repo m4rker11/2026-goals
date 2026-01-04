@@ -1,0 +1,20 @@
+unit: phase-1
+tasks:
+  - id: remove-amazon
+    name: Remove saved cards from Amazon
+    done: false
+  - id: remove-browser
+    name: Clear browser autofill payment methods
+    done: false
+  - id: new-card-rule
+    name: Don't save new card anywhere
+    done: false
+  - id: week-1-save
+    name: Save $91 (Week 1)
+    done: false
+  - id: week-2-save
+    name: Save $91 (Week 2)
+    done: false
+  - id: week-3-save
+    name: Save $91 (Week 3)
+    done: false

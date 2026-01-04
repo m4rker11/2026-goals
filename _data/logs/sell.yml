@@ -1,2 +1,11 @@
 # Items to sell progress
-# path = item name from sell/ directory
+# path = item name from sell/ directory (mini-pc, anuska-pc, roombas, uconsole, old-tv, old-dryer)
+# notes = sale details (price, platform, buyer)
+#
+# Example entries:
+# - date: 2026-02-01
+#   path: mini-pc
+#   notes: listed on eBay for $120
+# - date: 2026-02-05
+#   path: mini-pc
+#   notes: sold for $100

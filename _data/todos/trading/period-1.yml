@@ -1,0 +1,14 @@
+unit: period-1
+tasks:
+  - id: scan
+    name: Scan watchlist for momentum
+    done: false
+  - id: buffedape
+    name: Message BuffedApe
+    done: false
+  - id: execute
+    name: Execute trade
+    done: false
+  - id: reflect
+    name: Write 3-sentence reflection
+    done: false

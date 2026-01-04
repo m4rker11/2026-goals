@@ -1,0 +1,32 @@
+unit: week-3
+tasks:
+  - id: define-trigger
+    name: Identify morning trigger for start time
+    done: false
+  - id: define-ritual
+    name: Define start ritual
+    done: false
+  - id: mon-start
+    name: Monday - start within 15 min of target
+    done: false
+  - id: tue-start
+    name: Tuesday - start within 15 min of target
+    done: false
+  - id: wed-start
+    name: Wednesday - start within 15 min of target
+    done: false
+  - id: thu-start
+    name: Thursday - start within 15 min of target
+    done: false
+  - id: fri-start
+    name: Friday - start within 15 min of target
+    done: false
+  - id: sat-start
+    name: Saturday - start within 15 min of target
+    done: false
+  - id: sun-start
+    name: Sunday - start within 15 min of target
+    done: false
+  - id: weekly-review
+    name: Week 3 reflection
+    done: false

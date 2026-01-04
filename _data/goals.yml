@@ -32,14 +32,39 @@ goals:
     name: Call Brother
     aliases: [brother, family call, family]
     cadence: every_2_weeks
+    content: brother/
+    progression: sequential
+    start: 2026-01-23
+    end: 2026-04-17
 
   trading:
     name: Options Trading
     aliases: [trading, options, stocks, trade]
     cadence: every_2_weeks
+    content: trading/periods/
+    progression: sequential
+    start: 2026-01-13
 
   sell:
     name: Sell Things
     aliases: [sell, selling, sold]
     content: sell/
     progression: unordered
+
+  spend-less:
+    name: Spend Less
+    aliases: [spend, spending, impulse, savings, save, steam frame]
+    unit: dollars
+    cadence: weekly
+    content: spend-less/weeks/
+    progression: sequential
+    start: 2026-01-06
+    target: 1000
+
+  work-boundaries:
+    name: Work Boundaries
+    aliases: [work, boundaries, schedule, start time, end time, breaks]
+    cadence: daily
+    content: work-boundaries/weeks/
+    progression: time-weekly
+    start: 2026-01-01

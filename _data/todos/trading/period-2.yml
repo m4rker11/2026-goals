@@ -1,0 +1,17 @@
+unit: period-2
+tasks:
+  - id: calendar
+    name: Add Monday market scan to calendar
+    done: false
+  - id: scan
+    name: Do Monday market scan
+    done: false
+  - id: buffedape
+    name: Message BuffedApe
+    done: false
+  - id: execute
+    name: Execute trade
+    done: false
+  - id: reflect
+    name: Write 3-sentence reflection
+    done: false

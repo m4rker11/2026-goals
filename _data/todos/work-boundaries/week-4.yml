@@ -1,0 +1,38 @@
+unit: week-4
+tasks:
+  - id: mon-stop
+    name: Monday - stop within 30 min of end time
+    done: false
+  - id: tue-stop
+    name: Tuesday - stop within 30 min of end time
+    done: false
+  - id: wed-stop
+    name: Wednesday - stop within 30 min of end time
+    done: false
+  - id: thu-stop
+    name: Thursday - stop within 30 min of end time
+    done: false
+  - id: fri-stop
+    name: Friday - stop within 30 min of end time
+    done: false
+  - id: sat-stop
+    name: Saturday - stop within 30 min of end time
+    done: false
+  - id: sun-stop
+    name: Sunday - stop within 30 min of end time
+    done: false
+  - id: break-1
+    name: Mid-day break 1
+    done: false
+  - id: break-2
+    name: Mid-day break 2
+    done: false
+  - id: break-3
+    name: Mid-day break 3
+    done: false
+  - id: break-4
+    name: Mid-day break 4
+    done: false
+  - id: weekly-review
+    name: Week 4 reflection
+    done: false

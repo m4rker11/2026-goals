@@ -1,0 +1,41 @@
+unit: week-1
+tasks:
+  - id: define-start
+    name: Define specific start time
+    done: false
+  - id: define-end
+    name: Define specific end time
+    done: false
+  - id: mon-say-times
+    name: Monday - say times out loud
+    done: false
+  - id: tue-say-times
+    name: Tuesday - say times out loud
+    done: false
+  - id: wed-say-times
+    name: Wednesday - say times out loud
+    done: false
+  - id: thu-say-times
+    name: Thursday - say times out loud
+    done: false
+  - id: fri-say-times
+    name: Friday - say times out loud
+    done: false
+  - id: sat-say-times
+    name: Saturday - say times out loud
+    done: false
+  - id: sun-say-times
+    name: Sunday - say times out loud
+    done: false
+  - id: evidence-1
+    name: Gather evidence 1 (rest helps work)
+    done: false
+  - id: evidence-2
+    name: Gather evidence 2 (rest helps work)
+    done: false
+  - id: evidence-3
+    name: Gather evidence 3 (rest helps work)
+    done: false
+  - id: weekly-review
+    name: Week 1 reflection
+    done: false

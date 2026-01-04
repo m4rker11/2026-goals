@@ -1,0 +1,29 @@
+unit: week-2
+tasks:
+  - id: mon-announce
+    name: Monday - morning announce to Anuska
+    done: false
+  - id: tue-announce
+    name: Tuesday - morning announce to Anuska
+    done: false
+  - id: wed-announce
+    name: Wednesday - morning announce to Anuska
+    done: false
+  - id: thu-announce
+    name: Thursday - morning announce to Anuska
+    done: false
+  - id: fri-announce
+    name: Friday - morning announce to Anuska
+    done: false
+  - id: sat-announce
+    name: Saturday - morning announce to Anuska
+    done: false
+  - id: sun-announce
+    name: Sunday - morning announce to Anuska
+    done: false
+  - id: practice-15-more
+    name: Practice "15 more" protocol at least once
+    done: false
+  - id: weekly-review
+    name: Week 2 reflection
+    done: false

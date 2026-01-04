@@ -17,10 +17,10 @@ title: Home
 | Calendar Mastery | Week 1 | <progress value="5" max="100"></progress> 5% |
 | 200 min Zone 2 Weekly | Starting | <progress value="0" max="100"></progress> 0% |
 | Spend Less | Planning | <progress value="5" max="100"></progress> 5% |
-| Work Boundaries | Planning | <progress value="5" max="100"></progress> 5% |
+| [Work Boundaries](work-boundaries/) | Planning | <progress value="5" max="100"></progress> 5% |
 | Options Trading | Not Started | <progress value="0" max="100"></progress> 0% |
 | Sell Things | Not Started | <progress value="0" max="100"></progress> 0% |
-| Call Brother Biweekly | Not Started | <progress value="0" max="100"></progress> 0% |
+| [Call Brother Biweekly](brother/) | Starts Jan 23 | <progress value="0" max="100"></progress> 0% |
 
 [View detailed goals](Goals)
 
