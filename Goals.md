@@ -1,17 +1,22 @@
+---
+layout: default
+title: 2026 Goals
+---
+
 # 2026 Goals
 
 ## Overview
 
 | Goal | Difficulty | Priority |
 |------|------------|----------|
-| Hindi to B2 | Hard | 1 |
-| Get better at calendar | Hard | 1 |
-| 200 min of zone 2/workout weekly (excluding PT) | Hard | 1 |
-| Spend less | Medium | 1 |
-| Work boundaries | Medium | 1 |
-| Option trade every 2 weeks for 3 months | Easy | 1 |
-| Sell things | Easy | 1 |
-| Call brother biweekly | Easy | 1 |
+| [Hindi to B2](Hindi/) | Hard | 1 |
+| [Get better at calendar](calendaring/) | Hard | 1 |
+| [200 min of zone 2/workout weekly](fitness/) | Hard | 1 |
+| [Spend less](spend-less/) | Medium | 1 |
+| [Work boundaries](work-boundaries/) | Medium | 1 |
+| [Option trade every 2 weeks](trading/) | Easy | 1 |
+| [Sell things](sell/) | Easy | 1 |
+| [Call brother biweekly](brother/) | Easy | 1 |
 
 ---
 
@@ -119,3 +124,7 @@ This means:
 ### Call Brother Biweekly
 
 Just set a timer and honor it.
+
+---
+
+[← Back to Dashboard]({{ site.baseurl }}/)
