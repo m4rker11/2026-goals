@@ -1,0 +1,17 @@
+unit: week-1
+tasks:
+  - id: session-1
+    name: Zone 2 session 1 (40+ min)
+    done: false
+  - id: session-2
+    name: Zone 2 session 2 (40+ min)
+    done: false
+  - id: session-3
+    name: Zone 2 session 3 (40+ min)
+    done: false
+  - id: strength
+    name: Strength training session
+    done: false
+  - id: review
+    name: End of week review
+    done: false

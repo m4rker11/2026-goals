@@ -1,0 +1,3 @@
+---
+name: Mini PC (old)
+---

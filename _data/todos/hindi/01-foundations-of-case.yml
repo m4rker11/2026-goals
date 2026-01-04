@@ -1,0 +1,14 @@
+unit: 01-foundations-of-case
+tasks:
+  - id: synopsis
+    name: Read chapter synopsis
+    done: false
+  - id: vocab
+    name: Learn vocabulary list
+    done: false
+  - id: exercises
+    name: Complete chapter exercises
+    done: false
+  - id: practice
+    name: Practice with native content
+    done: false

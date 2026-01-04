@@ -11,34 +11,46 @@ This page is for my accountability coach to track my progress.
 
 ## Latest Update
 
-**Date:** January 2, 2026
+{% assign latest = site.data.daily | last %}
 
-**What I worked on today:**
-- Set up the goals tracking site
-- Created calendaring and fitness weekly plans
-- Organized Hindi chapter synopses
+**Date:** {{ latest.date }}
 
-**Calendar habit:** Not started yet (Week 1 begins tomorrow)
+**Calendar check:** {% if latest.calendar %}Yes{% else %}No{% endif %}
 
-**Fitness:** Planning phase
+**Fitness:** {{ latest.fitness }} minutes
 
-**Mood/Energy:** Motivated, fresh start energy
+**Hindi:** {{ latest.hindi }} chapters
+
+{% if latest.mood %}**Mood:** {{ latest.mood }}/5{% endif %}
+
+{% if latest.notes %}**Notes:** {{ latest.notes }}{% endif %}
+
+---
+
+## Quick Stats
+
+{% assign total_days = site.data.daily | size %}
+{% assign calendar_days = site.data.daily | where: "calendar", true | size %}
+{% assign total_fitness = 0 %}
+{% for day in site.data.daily %}
+  {% assign total_fitness = total_fitness | plus: day.fitness %}
+{% endfor %}
+
+| Metric | Value |
+|--------|-------|
+| Days tracked | {{ total_days }} |
+| Calendar streak | {{ calendar_days }}/{{ total_days }} days |
+| Total fitness | {{ total_fitness }} minutes |
+
+[View Full History & Charts](history)
 
 ---
 
 ## How This Works
 
-1. Mark commits updates with `status-update:YYYY-MM-DD` in the message
-2. This page gets updated with the latest status
-3. Coach can bookmark this page: `m4rker11.github.io/2026-goals/updates/`
-
----
-
-## Update History
-
-| Date | Summary |
-|------|---------|
-| 2026-01-02 | Initial setup |
+1. Mark logs daily progress to `_data/daily.yml`
+2. This page auto-updates with the latest entry
+3. Coach can bookmark: `m4rker11.github.io/2026-goals/updates/`
 
 ---
 

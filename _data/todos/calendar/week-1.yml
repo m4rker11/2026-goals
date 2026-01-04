@@ -1,0 +1,26 @@
+unit: week-1
+tasks:
+  - id: mon-morning
+    name: Monday morning check
+    done: false
+  - id: tue-morning
+    name: Tuesday morning check
+    done: false
+  - id: wed-morning
+    name: Wednesday morning check
+    done: false
+  - id: thu-morning
+    name: Thursday morning check
+    done: false
+  - id: fri-morning
+    name: Friday morning check
+    done: false
+  - id: sat-morning
+    name: Saturday morning check
+    done: false
+  - id: sun-morning
+    name: Sunday morning check
+    done: false
+  - id: weekly-review
+    name: Weekly calendar review
+    done: false
