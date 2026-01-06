@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from ruamel.yaml import YAML
 
 
 def to_date_str(value) -> str:
@@ -42,6 +43,12 @@ def _discover_repo_path() -> Path:
 
 REPO_PATH = _discover_repo_path()
 
+# Round-trip YAML parser for preserving structure
+_ruamel = YAML(typ='rt')  # Explicit round-trip mode
+_ruamel.preserve_quotes = True
+_ruamel.default_flow_style = False
+_ruamel.indent(mapping=2, sequence=4, offset=2)  # Match original file style
+
 
 def get_today() -> str:
     """Get today's date as YYYY-MM-DD."""
@@ -72,6 +79,11 @@ def save_yaml(path: Path, data: Any) -> None:
         header = '\n'.join(header_lines) + '\n' if header_lines else ''
     else:
         header = ''
+
+    # Don't write empty arrays - just keep header
+    if isinstance(data, list) and len(data) == 0:
+        path.write_text(header.rstrip() + '\n')
+        return
 
     path.write_text(header + yaml.dump(data, default_flow_style=False, allow_unicode=True))
 
@@ -106,7 +118,7 @@ def discover_content(content_path: str) -> list[str]:
     return sorted(items)
 
 
-# --- Todo storage ---
+# --- Todo storage (uses ruamel.yaml for round-trip preservation) ---
 
 def get_todo_path(goal_id: str, unit: str) -> Path:
     """Get path to todo.yml for a goal unit."""
@@ -130,38 +142,58 @@ def get_unit_todo(goal_id: str, unit: str) -> dict:
     if not path.exists():
         return {"unit": unit, "tasks": []}
 
-    data = load_yaml(path)
+    with open(path) as f:
+        data = _ruamel.load(f)
+
     if isinstance(data, dict):
-        return data
+        return dict(data)  # Convert from ruamel CommentedMap
     return {"unit": unit, "tasks": []}
 
 
 def save_unit_todo(goal_id: str, unit: str, todo_data: dict) -> None:
-    """Save todo.yml for a specific unit."""
+    """Save todo.yml for a specific unit, preserving structure."""
     path = get_todo_path(goal_id, unit)
     path.parent.mkdir(parents=True, exist_ok=True)
-    save_yaml(path, todo_data)
+
+    with open(path, 'w') as f:
+        _ruamel.dump(todo_data, f)
 
 
 def update_todo_task(goal_id: str, unit: str, task_id: str,
-                     done: bool = None, notes: str = None) -> dict:
+                     done: bool = None, notes: str = None) -> dict | None:
     """
-    Update a specific task in a unit's todo.yml.
+    Update a specific task in a unit's todo.yml, preserving file structure.
 
     Returns the updated task or None if not found.
     """
-    todo = get_unit_todo(goal_id, unit)
+    path = get_todo_path(goal_id, unit)
+    if not path.exists():
+        return None
 
-    for task in todo.get("tasks", []):
+    # Load with ruamel for round-trip preservation
+    with open(path) as f:
+        data = _ruamel.load(f)
+
+    if not isinstance(data, dict) or "tasks" not in data:
+        return None
+
+    # Find and update the task
+    updated_task = None
+    for task in data["tasks"]:
         if task.get("id") == task_id:
             if done is not None:
                 task["done"] = done
             if notes is not None:
                 task["notes"] = notes
-            save_unit_todo(goal_id, unit, todo)
-            return task
+            updated_task = dict(task)
+            break
 
-    return None
+    if updated_task:
+        # Save back preserving structure
+        with open(path, 'w') as f:
+            _ruamel.dump(data, f)
+
+    return updated_task
 
 
 def get_all_pending_tasks(goal_id: str = None) -> list[dict]:
@@ -191,7 +223,7 @@ def get_all_pending_tasks(goal_id: str = None) -> list[dict]:
                     pending.append({
                         "goal_id": gid,
                         "unit": unit,
-                        "task": task
+                        "task": dict(task)
                     })
 
     return pending
