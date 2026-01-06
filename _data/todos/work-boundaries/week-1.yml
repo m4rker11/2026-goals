@@ -21,12 +21,6 @@ tasks:
   - id: fri-say-times
     name: Friday - say times out loud
     done: false
-  - id: sat-say-times
-    name: Saturday - say times out loud
-    done: false
-  - id: sun-say-times
-    name: Sunday - say times out loud
-    done: false
   - id: evidence-1
     name: Gather evidence 1 (rest helps work)
     done: false
@@ -36,6 +30,6 @@ tasks:
   - id: evidence-3
     name: Gather evidence 3 (rest helps work)
     done: false
-  - id: weekly-review
-    name: Week 1 reflection
+  - id: weekly-reflection
+    name: "Reflection: record times, summarize evidence, note patterns"
     done: false
