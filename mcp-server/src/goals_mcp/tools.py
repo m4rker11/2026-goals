@@ -11,6 +11,7 @@ from .storage import (
 )
 from .goals import get_current, compute_todos, resolve_goal_id
 from .git import commit_and_push
+from . import calendar_service
 
 
 def get_tool_definitions(urgent_summary: str = "", goals_list: str = "") -> list[Tool]:
@@ -237,7 +238,85 @@ Use when setting up tasks for a new week/chapter or resetting the list.""",
             },
             "required": ["goal", "unit", "tasks"]
         }
-    )
+        ),
+        Tool(
+            name="schedule",
+            description="""Schedule a goal for a specific time on Google Calendar.
+Creates a calendar event with [Goal] prefix. Can invite attendees.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID or alias"
+                    },
+                    "time": {
+                        "type": "string",
+                        "description": "When to schedule: 'today 4pm', 'tomorrow 9am', or ISO datetime"
+                    },
+                    "duration": {
+                        "type": "number",
+                        "description": "Duration in minutes (default: 30)"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Optional description for the event"
+                    },
+                    "invite": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Email addresses to invite"
+                    }
+                },
+                "required": ["goal", "time"]
+            }
+        ),
+        Tool(
+            name="reschedule",
+            description="Move a scheduled goal to a new time.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_id": {
+                        "type": "string",
+                        "description": "Calendar event ID (from list_scheduled)"
+                    },
+                    "new_time": {
+                        "type": "string",
+                        "description": "New time: 'today 5pm', 'tomorrow 2pm', or ISO datetime"
+                    }
+                },
+                "required": ["event_id", "new_time"]
+            }
+        ),
+        Tool(
+            name="unschedule",
+            description="Remove a scheduled goal event from calendar.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_id": {
+                        "type": "string",
+                        "description": "Calendar event ID to remove"
+                    }
+                },
+                "required": ["event_id"]
+            }
+        ),
+        Tool(
+            name="list_scheduled",
+            description="Show scheduled events from Google Calendar. Shows both goal events and regular events.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "hours": {
+                        "type": "number",
+                        "description": "Hours ahead to look (default: 24)"
+                    }
+                },
+                "required": []
+            }
+        )
     ]
 
 
@@ -255,6 +334,16 @@ def handle_check_in() -> list[TextContent]:
     time_str = now.strftime("%I:%M%p").lower().lstrip("0")
 
     lines = [f"Goals Check-in ({get_today()}, {time_str})", ""]
+
+    # Show upcoming calendar events (next 4 hours)
+    upcoming_events = calendar_service.get_upcoming_events(hours_ahead=4)
+    if upcoming_events:
+        lines.append("**Coming up:**")
+        for e in upcoming_events:
+            prefix = "[Goal] " if e["is_goal"] else ""
+            duration = f" ({e['duration_min']} min)" if e["duration_min"] != 30 else ""
+            lines.append(f"  • {e['time']} - {prefix}{e['title']}{duration}")
+        lines.append("")
 
     # Show today's daily status first
     if today_entry:
@@ -290,6 +379,14 @@ def handle_check_in() -> list[TextContent]:
         lines.append("**Progress:**")
         for t in info:
             lines.append(f"- {t['message']}")
+        lines.append("")
+
+    # Show missed scheduled events (past 24 hours)
+    missed = calendar_service.get_missed_scheduled(hours_back=24)
+    if missed:
+        lines.append("**Missed scheduled:**")
+        for m in missed:
+            lines.append(f"- {m['title']} was scheduled for {m['date']} {m['time']} - not logged")
         lines.append("")
 
     # Add pending tasks from todos
@@ -411,6 +508,13 @@ def handle_log(arguments: dict) -> list[TextContent]:
                 result_lines.append(f"Task notes: {todo_notes}")
         else:
             result_lines.append(f"Warning: Task '{todo_task}' not found in {todo_unit}")
+
+    # Sync with calendar - mark scheduled event as complete
+    event_id = calendar_service.find_goal_event_today(goal_id)
+    if event_id:
+        cal_result = calendar_service.mark_goal_complete(event_id)
+        if cal_result.get("success"):
+            result_lines.append("Calendar event marked complete ✓")
 
     return [TextContent(type="text", text="\n".join(result_lines))]
 
@@ -649,6 +753,97 @@ def handle_write_todo(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text=f"Created todo for {goal_name}/{unit} with {len(tasks)} tasks")]
 
 
+def handle_schedule(arguments: dict) -> list[TextContent]:
+    """Handle schedule tool."""
+    config = get_goals_config()
+    goals = config.get("goals", {})
+
+    goal_input = arguments.get("goal", "")
+    goal_id = resolve_goal_id(goals, goal_input)
+
+    if not goal_id:
+        available = ", ".join(goals.keys())
+        return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
+
+    time_str = arguments.get("time", "")
+    time = calendar_service.parse_time(time_str)
+    if not time:
+        return [TextContent(type="text", text=f"Could not parse time: '{time_str}'. Try 'today 4pm' or 'tomorrow 9am'")]
+
+    # Check for conflicts
+    duration = arguments.get("duration", 30)
+    conflicts = calendar_service.check_conflicts(time, duration)
+    conflict_warning = ""
+    if conflicts:
+        conflict_warning = f"\n⚠️ Conflicts with: {', '.join(c['title'] + ' at ' + c['time'] for c in conflicts)}"
+
+    goal_config = goals[goal_id]
+    goal_name = goal_config.get("name", goal_id)
+    color_id = goal_config.get("color")
+
+    result = calendar_service.schedule_goal(
+        goal_id=goal_id,
+        goal_name=goal_name,
+        time=time,
+        duration_min=duration,
+        notes=arguments.get("notes", ""),
+        invite_emails=arguments.get("invite", []),
+        color_id=color_id,
+    )
+
+    message = result["message"] + conflict_warning
+    if result.get("event_id"):
+        message += f"\nEvent ID: {result['event_id']}"
+
+    return [TextContent(type="text", text=message)]
+
+
+def handle_reschedule(arguments: dict) -> list[TextContent]:
+    """Handle reschedule tool."""
+    event_id = arguments.get("event_id", "")
+    if not event_id:
+        return [TextContent(type="text", text="event_id is required")]
+
+    time_str = arguments.get("new_time", "")
+    time = calendar_service.parse_time(time_str)
+    if not time:
+        return [TextContent(type="text", text=f"Could not parse time: '{time_str}'")]
+
+    result = calendar_service.reschedule_goal(event_id, time)
+    return [TextContent(type="text", text=result["message"])]
+
+
+def handle_unschedule(arguments: dict) -> list[TextContent]:
+    """Handle unschedule tool."""
+    event_id = arguments.get("event_id", "")
+    if not event_id:
+        return [TextContent(type="text", text="event_id is required")]
+
+    result = calendar_service.unschedule_goal(event_id)
+    return [TextContent(type="text", text=result["message"])]
+
+
+def handle_list_scheduled(arguments: dict) -> list[TextContent]:
+    """Handle list_scheduled tool."""
+    hours = arguments.get("hours", 24)
+    events = calendar_service.get_upcoming_events(hours_ahead=hours)
+
+    if not events:
+        if not calendar_service.is_authenticated():
+            return [TextContent(type="text", text="Not authenticated. Run: goals-mcp auth")]
+        return [TextContent(type="text", text=f"No events in the next {hours} hours.")]
+
+    lines = [f"📅 Upcoming ({hours}h):", ""]
+    for e in events:
+        prefix = "[Goal] " if e["is_goal"] else ""
+        duration = f" ({e['duration_min']} min)" if e["duration_min"] != 30 else ""
+        lines.append(f"  • {e['time']} - {prefix}{e['title']}{duration}")
+        if e.get("event_id"):
+            lines.append(f"    ID: {e['event_id']}")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
@@ -667,5 +862,13 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_read_todo(arguments)
     elif name == "write_todo":
         return handle_write_todo(arguments)
+    elif name == "schedule":
+        return handle_schedule(arguments)
+    elif name == "reschedule":
+        return handle_reschedule(arguments)
+    elif name == "unschedule":
+        return handle_unschedule(arguments)
+    elif name == "list_scheduled":
+        return handle_list_scheduled(arguments)
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]

@@ -177,7 +177,10 @@ def create_sse_app():
 
 def main():
     """Entry point."""
-    if "--stdio" in sys.argv:
+    if "auth" in sys.argv:
+        from .auth import run_auth
+        run_auth()
+    elif "--stdio" in sys.argv:
         asyncio.run(run_stdio())
     else:
         import uvicorn

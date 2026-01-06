@@ -45,3 +45,8 @@ Thumbs.db
 
 # MCP server specific
 mcp-server/.venv/
+
+# Google Calendar OAuth (tokens stored in ~/.goals-mcp/)
+credentials.json
+*.pickle
+google-token.*

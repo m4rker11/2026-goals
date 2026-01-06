@@ -10,6 +10,7 @@ goals:
     aliases: [hindi, language, chapter, chapters]
     content: Hindi/chapters/
     progression: sequential
+    color: 6  # Orange
     urgency:
       stale_days: 3
       overdue_days: 5
@@ -22,6 +23,7 @@ goals:
     content: fitness/weeks/
     progression: time-weekly
     start: 2026-01-05
+    color: 10  # Green
     urgency:
       type: target
       target: 200
@@ -34,6 +36,7 @@ goals:
     content: calendaring/weeks/
     progression: time-weekly
     start: 2026-01-05
+    color: 7  # Cyan
     urgency:
       due_by: "09:00"
       nag_from: "07:00"
@@ -46,6 +49,7 @@ goals:
     progression: sequential
     start: 2026-01-26
     end: 2026-04-17
+    color: 3  # Purple
 
   trading:
     name: Options Trading
@@ -54,12 +58,14 @@ goals:
     content: trading/periods/
     progression: sequential
     start: 2026-01-12
+    color: 5  # Yellow
 
   sell:
     name: Sell Things
     aliases: [sell, selling, sold]
     content: sell/
     progression: unordered
+    color: 8  # Gray
     urgency:
       type: none
 
@@ -72,6 +78,7 @@ goals:
     progression: sequential
     start: 2026-01-05
     target: 1000
+    color: 11  # Red
     urgency:
       type: target
       target: 1000
@@ -85,3 +92,4 @@ goals:
     content: work-boundaries/weeks/
     progression: time-weekly
     start: 2026-01-05
+    color: 9  # Blue
