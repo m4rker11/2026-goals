@@ -77,13 +77,13 @@ Option B: Brisk walk
 
 | Day | Activity | Duration |
 |-----|----------|----------|
-| Thu (Jan 9) | Upper session | 25 min |
-| Fri (Jan 10) | Rest | - |
-| Sat (Jan 11) | Lower session | 20 min |
-| Sun (Jan 12) | Jog/Walk | 20 min |
-| Mon (Jan 13) | PT stretches | 15 min |
-| Tue (Jan 14) | PT stretches | 15 min |
-| Wed (Jan 15) | Rest (travel prep) | - |
+| Mon (Jan 12) | Upper session | 25 min |
+| Tue (Jan 13) | Rest | - |
+| Wed (Jan 14) | Lower session | 20 min |
+| Thu (Jan 15) | Jog/Walk | 20 min |
+| Fri (Jan 16) | PT stretches | 15 min |
+| Sat (Jan 17) | PT stretches + travel prep | 15 min |
+| Sun (Jan 18) | Travel back to NYC | - |
 
 **Total:** 95 min
 
@@ -93,11 +93,11 @@ Option B: Brisk walk
 
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
-| Upper (25 min) | Thu Jan 9 | [ ] | Pushup max: ___ |
-| Lower (20 min) | Sat Jan 11 | [ ] | |
-| Cardio (20 min) | Sun Jan 12 | [ ] | Jog / Walk |
-| PT Stretches #1 | Mon Jan 13 | [ ] | |
-| PT Stretches #2 | Tue Jan 14 | [ ] | |
+| Upper (25 min) | Mon Jan 12 | [ ] | Pushup max: ___ |
+| Lower (20 min) | Wed Jan 14 | [ ] | |
+| Cardio (20 min) | Thu Jan 15 | [ ] | Jog / Walk |
+| PT Stretches #1 | Fri Jan 16 | [ ] | |
+| PT Stretches #2 | Sat Jan 17 | [ ] | |
 
 ---
 

@@ -1,6 +1,6 @@
 # Phase 1: Friction Reset (Week 1-3)
 
-**Dates:** Jan 6 - Jan 26
+**Dates:** Jan 5 - Jan 25
 **Focus:** Make impulse buying annoying
 
 ---

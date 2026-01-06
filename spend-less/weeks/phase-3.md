@@ -1,6 +1,6 @@
 # Phase 3: The Pause Rule (Week 7-9)
 
-**Dates:** Feb 17 - Mar 9
+**Dates:** Feb 16 - Mar 8
 **Focus:** Build the pause habit
 
 ---

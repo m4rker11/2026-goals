@@ -56,7 +56,7 @@ title: Hindi Overview
 
 ## Tutor's Upcoming Topics
 
-From Mohit's notes (Jan 3, 2026):
+From Mohit's notes (Jan 5, 2026):
 
 - [ ] Postpositions/oblique cases
 - [ ] Request/Command/Suggestion/Permission

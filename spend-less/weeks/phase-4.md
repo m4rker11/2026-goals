@@ -1,6 +1,6 @@
 # Phase 4: Sustain + Review (Week 10-11)
 
-**Dates:** Mar 10 - Mar 23
+**Dates:** Mar 9 - Mar 22
 **Focus:** Lock in the habit, prep for Steam Frame
 
 ---

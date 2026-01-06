@@ -1,6 +1,6 @@
-# Period 2: Jan 27 - Feb 7
+# Period 2: Jan 26 - Feb 8
 
-**Trade deadline:** February 7, 2026
+**Trade deadline:** February 8, 2026
 **Phase focus:** Add Routine (weekly check-in)
 
 ---

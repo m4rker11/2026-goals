@@ -1,6 +1,6 @@
-# Period 4: Feb 24 - Mar 7
+# Period 4: Feb 23 - Mar 8
 
-**Trade deadline:** March 7, 2026
+**Trade deadline:** March 8, 2026
 **Phase focus:** Full System
 
 ---

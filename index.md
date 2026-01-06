@@ -5,7 +5,7 @@ title: Home
 
 # 2026 Goals Dashboard
 
-<p><em>Last updated: January 2, 2026</em></p>
+<p><em>Last updated: January 5, 2026</em></p>
 
 ---
 
@@ -20,7 +20,7 @@ title: Home
 | [Work Boundaries](work-boundaries/) | Planning | <progress value="5" max="100"></progress> 5% |
 | [Options Trading](trading/) | Not Started | <progress value="0" max="100"></progress> 0% |
 | [Sell Things](sell/) | Not Started | <progress value="0" max="100"></progress> 0% |
-| [Call Brother Biweekly](brother/) | Starts Jan 23 | <progress value="0" max="100"></progress> 0% |
+| [Call Brother Biweekly](brother/) | Starts Jan 26 | <progress value="0" max="100"></progress> 0% |
 
 [View detailed goals](Goals)
 

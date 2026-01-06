@@ -77,13 +77,13 @@ Goal: Complete the session without quitting early
 
 | Day | Activity | Duration |
 |-----|----------|----------|
-| Thu (Jan 16) | Travel back | - |
-| Fri (Jan 17) | Rest / settle in | - |
-| Sat (Jan 18) | Upper (gym) | 30 min |
-| Sun (Jan 19) | PT stretches | 15 min |
-| Mon (Jan 20) | Lower (gym) | 25 min |
-| Tue (Jan 21) | Swim (YMCA) | 45 min |
-| Wed (Jan 22) | PT stretches | 15 min |
+| Mon (Jan 19) | Rest / settle in | - |
+| Tue (Jan 20) | Upper (gym) | 30 min |
+| Wed (Jan 21) | PT stretches | 15 min |
+| Thu (Jan 22) | Lower (gym) | 25 min |
+| Fri (Jan 23) | Swim (YMCA) | 45 min |
+| Sat (Jan 24) | PT stretches | 15 min |
+| Sun (Jan 25) | Rest | - |
 
 **Total:** 130 min
 
@@ -93,11 +93,11 @@ Goal: Complete the session without quitting early
 
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
-| Upper (30 min) | Sat Jan 18 | [ ] | Pushups: ___ Pullups: ___ |
-| Lower (25 min) | Mon Jan 20 | [ ] | |
-| Swim (45 min) | Tue Jan 21 | [ ] | First swim! |
-| PT Stretches #1 | Sun Jan 19 | [ ] | |
-| PT Stretches #2 | Wed Jan 22 | [ ] | |
+| Upper (30 min) | Tue Jan 20 | [ ] | Pushups: ___ Pullups: ___ |
+| Lower (25 min) | Thu Jan 22 | [ ] | |
+| Swim (45 min) | Fri Jan 23 | [ ] | First swim! |
+| PT Stretches #1 | Wed Jan 21 | [ ] | |
+| PT Stretches #2 | Sat Jan 24 | [ ] | |
 
 ---
 

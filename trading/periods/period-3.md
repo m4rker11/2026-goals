@@ -1,6 +1,6 @@
-# Period 3: Feb 10-21
+# Period 3: Feb 9-22
 
-**Trade deadline:** February 21, 2026
+**Trade deadline:** February 22, 2026
 **Phase focus:** Add Reflection
 
 ---

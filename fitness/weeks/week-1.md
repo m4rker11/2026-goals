@@ -58,13 +58,13 @@ Your regular PT routine. These count toward minutes.
 
 | Day | Activity | Duration |
 |-----|----------|----------|
-| Thu (Jan 2) | PT stretches | 15 min |
-| Fri (Jan 3) | Rest / travel prep | - |
-| Sat (Jan 4) | Rest / travel prep | - |
-| Sun (Jan 5) | Travel to Seattle | - |
-| Mon (Jan 6) | Upper session | 20 min |
-| Tue (Jan 7) | PT stretches | 15 min |
-| Wed (Jan 8) | Mid session | 15 min |
+| Mon (Jan 5) | Travel to Seattle | - |
+| Tue (Jan 6) | PT stretches | 15 min |
+| Wed (Jan 7) | Upper session | 20 min |
+| Thu (Jan 8) | PT stretches | 15 min |
+| Fri (Jan 9) | Rest | - |
+| Sat (Jan 10) | Mid session | 15 min |
+| Sun (Jan 11) | Rest | - |
 
 **Total:** 65 min
 
@@ -74,10 +74,10 @@ Your regular PT routine. These count toward minutes.
 
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
-| Upper (20 min) | Mon Jan 6 | [ ] | Pushup max: ___ |
-| Mid (15 min) | Wed Jan 8 | [ ] | |
-| PT Stretches #1 | Thu Jan 2 | [ ] | |
-| PT Stretches #2 | Tue Jan 7 | [ ] | |
+| Upper (20 min) | Wed Jan 7 | [ ] | Pushup max: ___ |
+| Mid (15 min) | Sat Jan 10 | [ ] | |
+| PT Stretches #1 | Tue Jan 6 | [ ] | |
+| PT Stretches #2 | Thu Jan 8 | [ ] | |
 
 ---
 

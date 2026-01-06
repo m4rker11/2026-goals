@@ -1,6 +1,6 @@
 # Phase 2: Know Your Triggers (Week 4-6)
 
-**Dates:** Jan 27 - Feb 16
+**Dates:** Jan 26 - Feb 15
 **Focus:** Understand when/where/why impulse hits
 
 ---

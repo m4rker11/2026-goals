@@ -81,13 +81,13 @@ Continue the buddy routine
 
 | Day | Activity | Duration |
 |-----|----------|----------|
-| Thu (Jan 30) | Upper | 35 min |
-| Fri (Jan 31) | Rest | - |
-| Sat (Feb 1) | Bollywood class | 60 min |
-| Sun (Feb 2) | Blink with Kai | 45 min |
-| Mon (Feb 3) | Lower | 30 min |
-| Tue (Feb 4) | PT stretches | 15 min |
-| Wed (Feb 5) | PT stretches | 15 min |
+| Mon (Feb 2) | Upper | 35 min |
+| Tue (Feb 3) | Rest | - |
+| Wed (Feb 4) | Lower | 30 min |
+| Thu (Feb 5) | PT stretches | 15 min |
+| Fri (Feb 6) | Rest | - |
+| Sat (Feb 7) | Bollywood class | 60 min |
+| Sun (Feb 8) | Blink with Kai | 45 min |
 
 **Total:** 200 min
 
@@ -97,12 +97,11 @@ Continue the buddy routine
 
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
-| Upper (35 min) | Thu Jan 30 | [ ] | Pushups: ___ Pullups: ___ |
-| Bollywood (60 min) | Sat Feb 1 | [ ] | First class! |
-| Blink with Kai (45 min) | Sun Feb 2 | [ ] | |
-| Lower (30 min) | Mon Feb 3 | [ ] | |
-| PT Stretches #1 | Tue Feb 4 | [ ] | |
-| PT Stretches #2 | Wed Feb 5 | [ ] | |
+| Upper (35 min) | Mon Feb 2 | [ ] | Pushups: ___ Pullups: ___ |
+| Lower (30 min) | Wed Feb 4 | [ ] | |
+| PT Stretches | Thu Feb 5 | [ ] | |
+| Bollywood (60 min) | Sat Feb 7 | [ ] | First class! |
+| Blink with Kai (45 min) | Sun Feb 8 | [ ] | |
 
 ---
 

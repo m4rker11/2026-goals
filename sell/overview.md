@@ -10,7 +10,7 @@ Sell 6 items cluttering the apartment. All items listed by **February 1-3, 2026*
 
 | Phase | Dates | Focus |
 |-------|-------|-------|
-| **Prep** | Jan 6 - Jan 31 | Collect, clean, photograph, price research |
+| **Prep** | Jan 5 - Jan 31 | Collect, clean, photograph, price research |
 | **List** | Feb 1-3 | Post all items to eBay/FB Marketplace |
 | **Sell** | Feb 3+ | Respond to buyers, ship/handoff |
 

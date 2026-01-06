@@ -1,6 +1,6 @@
-# Period 1: Jan 13-24
+# Period 1: Jan 12-25
 
-**Trade deadline:** January 24, 2026
+**Trade deadline:** January 25, 2026
 **Phase focus:** Pick a Lane (use your default strategy)
 
 ---

@@ -18,7 +18,7 @@ When Mark says something like:
 
 ### Entry Format
 ```yaml
-- date: 2026-01-03          # Required: YYYY-MM-DD format
+- date: 2026-01-06          # Required: YYYY-MM-DD format
   calendar: true            # Required: Did morning calendar check? (true/false)
   fitness: 45               # Required: Minutes of exercise (0 if none)
   hindi: 1                  # Required: Chapters/lessons completed (0 if none)
@@ -59,7 +59,7 @@ Claude: I'll help you log today's progress. Let me ask a few questions:
 
 When committing updates, use this format:
 ```
-status-update:2026-01-03
+status-update:2026-01-06
 ```
 
 Full commit command:
@@ -69,7 +69,7 @@ git add _data/daily.yml && git commit -m "status-update:$(date +%Y-%m-%d)"
 
 Or with a note:
 ```bash
-git add . && git commit -m "status-update:2026-01-03 - great workout day"
+git add . && git commit -m "status-update:2026-01-06 - great workout day"
 ```
 
 ---

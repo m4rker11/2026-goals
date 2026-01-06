@@ -26,7 +26,7 @@
 | Resource | Status | Notes |
 |----------|--------|-------|
 | Friend's building gym | Available | Full equipment |
-| Blink Fitness | Available | Weekend sessions with Kai (starting Jan 25) |
+| Blink Fitness | Available | Weekend sessions with Kai (starting Jan 31) |
 | Home free weights | Available | Dumbbells |
 | YMCA | Pay per visit | Swimming |
 | Orange Theory | 8 classes left | Expire early 2027 |

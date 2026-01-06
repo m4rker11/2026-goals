@@ -88,13 +88,13 @@ Whatever Kai wants to do + your exercises
 
 | Day | Activity | Duration |
 |-----|----------|----------|
-| Thu (Jan 23) | Upper - Push | 30 min |
-| Fri (Jan 24) | Rest | - |
-| Sat (Jan 25) | Blink with Kai | 45 min |
-| Sun (Jan 26) | Upper - Pull | 30 min |
-| Mon (Jan 27) | Mid + Cardio | 30 min |
-| Tue (Jan 28) | PT stretches | 15 min |
-| Wed (Jan 29) | PT stretches | 15 min |
+| Mon (Jan 26) | Upper - Push | 30 min |
+| Tue (Jan 27) | Rest | - |
+| Wed (Jan 28) | Upper - Pull | 30 min |
+| Thu (Jan 29) | Mid + Cardio | 30 min |
+| Fri (Jan 30) | PT stretches | 15 min |
+| Sat (Jan 31) | Blink with Kai | 45 min |
+| Sun (Feb 1) | PT stretches | 15 min |
 
 **Total:** 135 min gym + 30 min PT = **165 min**
 
@@ -104,12 +104,12 @@ Whatever Kai wants to do + your exercises
 
 | Session | Planned | Done? | Notes |
 |---------|---------|-------|-------|
-| Upper Push (30 min) | Thu Jan 23 | [ ] | Pushups: ___ |
-| Blink with Kai (45 min) | Sat Jan 25 | [ ] | First buddy session! |
-| Upper Pull (30 min) | Sun Jan 26 | [ ] | Pullups: ___ |
-| Mid + Cardio (30 min) | Mon Jan 27 | [ ] | |
-| PT Stretches #1 | Tue Jan 28 | [ ] | |
-| PT Stretches #2 | Wed Jan 29 | [ ] | |
+| Upper Push (30 min) | Mon Jan 26 | [ ] | Pushups: ___ |
+| Upper Pull (30 min) | Wed Jan 28 | [ ] | Pullups: ___ |
+| Mid + Cardio (30 min) | Thu Jan 29 | [ ] | |
+| PT Stretches #1 | Fri Jan 30 | [ ] | |
+| Blink with Kai (45 min) | Sat Jan 31 | [ ] | First buddy session! |
+| PT Stretches #2 | Sun Feb 1 | [ ] | |
 
 ---
 

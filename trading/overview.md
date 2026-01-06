@@ -44,10 +44,10 @@ Execute one options trade every 2 weeks for 2 months. Build the habit, not the f
 
 | Period | Dates | Trade Deadline | Phase Focus |
 |--------|-------|----------------|-------------|
-| **1** | Jan 13-24 | Jan 24 | Pick a Lane (use default strategy) |
-| **2** | Jan 27 - Feb 7 | Feb 7 | Add Routine (weekly check-in) |
-| **3** | Feb 10-21 | Feb 21 | Add Reflection |
-| **4** | Feb 24 - Mar 7 | Mar 7 | Full System |
+| **1** | Jan 12-25 | Jan 25 | Pick a Lane (use default strategy) |
+| **2** | Jan 26 - Feb 8 | Feb 8 | Add Routine (weekly check-in) |
+| **3** | Feb 9-22 | Feb 22 | Add Reflection |
+| **4** | Feb 23 - Mar 8 | Mar 8 | Full System |
 
 ---
 

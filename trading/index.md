@@ -11,10 +11,10 @@ Trade every 2 weeks for 2 months (4 trades total).
 
 ## Biweekly Periods
 
-- [Period 1: Jan 13-24](periods/period-1)
-- [Period 2: Jan 27 - Feb 7](periods/period-2)
-- [Period 3: Feb 10-21](periods/period-3)
-- [Period 4: Feb 24 - Mar 7](periods/period-4)
+- [Period 1: Jan 12-25](periods/period-1)
+- [Period 2: Jan 26 - Feb 8](periods/period-2)
+- [Period 3: Feb 9-22](periods/period-3)
+- [Period 4: Feb 23 - Mar 8](periods/period-4)
 
 ## Quick Status
 
