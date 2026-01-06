@@ -149,6 +149,32 @@ def schedule_goal(
         return {"success": False, "message": f"Failed to schedule: {e}"}
 
 
+def get_event_info(event_id: str) -> dict | None:
+    """
+    Get info about a calendar event.
+
+    Returns dict with: exists, start, end, title
+    Or None if not authenticated.
+    """
+    gc = get_calendar()
+    if not gc:
+        return None
+
+    try:
+        event = gc.get_event(event_id)
+        if not event:
+            return {"exists": False}
+
+        return {
+            "exists": True,
+            "start": event.start if hasattr(event.start, 'isoformat') else None,
+            "end": event.end if hasattr(event.end, 'isoformat') else None,
+            "title": event.summary,
+        }
+    except Exception:
+        return {"exists": False}
+
+
 def reschedule_goal(event_id: str, new_time: datetime) -> dict:
     """
     Reschedule an existing goal event.

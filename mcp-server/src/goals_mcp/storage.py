@@ -160,9 +160,16 @@ def save_unit_todo(goal_id: str, unit: str, todo_data: dict) -> None:
 
 
 def update_todo_task(goal_id: str, unit: str, task_id: str,
-                     done: bool = None, notes: str = None) -> dict | None:
+                     done: bool = None, notes: str = None,
+                     scheduled_for: str = None, event_id: str = None,
+                     clear_schedule: bool = False) -> dict | None:
     """
     Update a specific task in a unit's todo.yml, preserving file structure.
+
+    Args:
+        scheduled_for: ISO datetime string for when task is scheduled
+        event_id: Google Calendar event ID
+        clear_schedule: If True, removes scheduled_for and event_id fields
 
     Returns the updated task or None if not found.
     """
@@ -181,11 +188,25 @@ def update_todo_task(goal_id: str, unit: str, task_id: str,
     updated_task = None
     for task in data["tasks"]:
         if task.get("id") == task_id:
+            # Save original values before clearing (for return value)
+            original_event_id = task.get("event_id")
+
             if done is not None:
                 task["done"] = done
             if notes is not None:
                 task["notes"] = notes
+            if scheduled_for is not None:
+                task["scheduled_for"] = scheduled_for
+            if event_id is not None:
+                task["event_id"] = event_id
+            if clear_schedule:
+                task.pop("scheduled_for", None)
+                task.pop("event_id", None)
+
+            # Include original event_id in return so caller can mark it complete
             updated_task = dict(task)
+            if clear_schedule and original_event_id:
+                updated_task["_cleared_event_id"] = original_event_id
             break
 
     if updated_task:
@@ -227,6 +248,68 @@ def get_all_pending_tasks(goal_id: str = None) -> list[dict]:
                     })
 
     return pending
+
+
+def get_all_scheduled_tasks() -> list[dict]:
+    """
+    Get all tasks with scheduled_for field set.
+
+    Returns list of dicts with goal_id, unit, and task info.
+    """
+    todos_dir = REPO_PATH / "_data" / "todos"
+    if not todos_dir.exists():
+        return []
+
+    scheduled = []
+
+    for goal_dir in todos_dir.iterdir():
+        if not goal_dir.is_dir():
+            continue
+        gid = goal_dir.name
+
+        for todo_file in goal_dir.glob("*.yml"):
+            unit = todo_file.stem
+            todo = get_unit_todo(gid, unit)
+
+            for task in todo.get("tasks", []):
+                if task.get("scheduled_for") and not task.get("done", False):
+                    scheduled.append({
+                        "goal_id": gid,
+                        "unit": unit,
+                        "task": dict(task)
+                    })
+
+    return scheduled
+
+
+def find_task_by_event_id(event_id: str) -> dict | None:
+    """
+    Find a task by its calendar event_id.
+
+    Returns dict with goal_id, unit, and task info, or None.
+    """
+    todos_dir = REPO_PATH / "_data" / "todos"
+    if not todos_dir.exists():
+        return None
+
+    for goal_dir in todos_dir.iterdir():
+        if not goal_dir.is_dir():
+            continue
+        gid = goal_dir.name
+
+        for todo_file in goal_dir.glob("*.yml"):
+            unit = todo_file.stem
+            todo = get_unit_todo(gid, unit)
+
+            for task in todo.get("tasks", []):
+                if task.get("event_id") == event_id:
+                    return {
+                        "goal_id": gid,
+                        "unit": unit,
+                        "task": dict(task)
+                    }
+
+    return None
 
 
 # --- Daily tracking ---

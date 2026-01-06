@@ -7,6 +7,7 @@ from mcp.types import TextContent, Tool
 from .storage import (
     get_goals_config, get_goal_logs, save_goal_logs,
     get_unit_todo, save_unit_todo, update_todo_task, get_all_pending_tasks,
+    get_all_scheduled_tasks, find_task_by_event_id,
     get_today, get_daily_entry, update_daily_entry, get_daily_entries, to_date_str
 )
 from .goals import get_current, compute_todos, resolve_goal_id
@@ -241,14 +242,22 @@ Use when setting up tasks for a new week/chapter or resetting the list.""",
         ),
         Tool(
             name="schedule",
-            description="""Schedule a goal for a specific time on Google Calendar.
-Creates a calendar event with [Goal] prefix. Can invite attendees.""",
+            description="""Schedule a todo task for a specific time on Google Calendar.
+Creates a calendar event with [Goal] prefix. Syncs to todo.yml for visibility.""",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "goal": {
                         "type": "string",
                         "description": "Goal ID or alias"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Task ID to schedule"
                     },
                     "time": {
                         "type": "string",
@@ -258,17 +267,13 @@ Creates a calendar event with [Goal] prefix. Can invite attendees.""",
                         "type": "number",
                         "description": "Duration in minutes (default: 30)"
                     },
-                    "notes": {
-                        "type": "string",
-                        "description": "Optional description for the event"
-                    },
                     "invite": {
                         "type": "array",
                         "items": {"type": "string"},
                         "description": "Email addresses to invite"
                     }
                 },
-                "required": ["goal", "time"]
+                "required": ["goal", "unit", "task", "time"]
             }
         ),
         Tool(
@@ -389,6 +394,40 @@ def handle_check_in() -> list[TextContent]:
             lines.append(f"- {m['title']} was scheduled for {m['date']} {m['time']} - not logged")
         lines.append("")
 
+    # Detect drift between todo.yml scheduled tasks and calendar
+    scheduled_tasks = get_all_scheduled_tasks()
+    drift_items = []
+    for st in scheduled_tasks:
+        task = st["task"]
+        event_id = task.get("event_id")
+        scheduled_for = task.get("scheduled_for")
+
+        if not event_id or not scheduled_for:
+            continue
+
+        event_info = calendar_service.get_event_info(event_id)
+        if event_info is None:
+            continue  # Not authenticated
+
+        task_name = task.get("name", task.get("id"))
+        task_path = f"{st['goal_id']}/{st['unit']}/{task['id']}"
+
+        if not event_info.get("exists"):
+            drift_items.append(f"- {task_name}: calendar event deleted (was {scheduled_for[:16]})")
+        elif event_info.get("start"):
+            cal_start = event_info["start"]
+            todo_time = datetime.fromisoformat(scheduled_for)
+            # Check if times differ by more than 1 minute
+            if abs((cal_start - todo_time).total_seconds()) > 60:
+                cal_time_str = cal_start.strftime("%I:%M%p").lower().lstrip("0")
+                drift_items.append(f"- {task_name}: moved to {cal_time_str} in calendar (todo says {scheduled_for[:16]})")
+
+    if drift_items:
+        lines.append("**Calendar drift detected:**")
+        lines.extend(drift_items)
+        lines.append("(Use reschedule/unschedule to sync)")
+        lines.append("")
+
     # Add pending tasks from todos
     if pending_tasks:
         lines.append("**Pending tasks:**")
@@ -501,20 +540,30 @@ def handle_log(arguments: dict) -> list[TextContent]:
 
     if todo_unit and todo_task:
         todo_notes = arguments.get("todo_notes")
-        updated = update_todo_task(goal_id, todo_unit, todo_task, done=True, notes=todo_notes)
+        # Mark done AND clear any scheduling fields
+        updated = update_todo_task(
+            goal_id, todo_unit, todo_task,
+            done=True, notes=todo_notes, clear_schedule=True
+        )
         if updated:
             result_lines.append(f"Todo updated: {todo_task} marked done")
             if todo_notes:
                 result_lines.append(f"Task notes: {todo_notes}")
+            # If task had a calendar event, mark it complete
+            cleared_event_id = updated.get("_cleared_event_id")
+            if cleared_event_id:
+                cal_result = calendar_service.mark_goal_complete(cleared_event_id)
+                if cal_result.get("success"):
+                    result_lines.append("Calendar event marked complete ✓")
         else:
             result_lines.append(f"Warning: Task '{todo_task}' not found in {todo_unit}")
-
-    # Sync with calendar - mark scheduled event as complete
-    event_id = calendar_service.find_goal_event_today(goal_id)
-    if event_id:
-        cal_result = calendar_service.mark_goal_complete(event_id)
-        if cal_result.get("success"):
-            result_lines.append("Calendar event marked complete ✓")
+    else:
+        # No specific task - try to find any goal event today
+        event_id = calendar_service.find_goal_event_today(goal_id)
+        if event_id:
+            cal_result = calendar_service.mark_goal_complete(event_id)
+            if cal_result.get("success"):
+                result_lines.append("Calendar event marked complete ✓")
 
     return [TextContent(type="text", text="\n".join(result_lines))]
 
@@ -754,7 +803,7 @@ def handle_write_todo(arguments: dict) -> list[TextContent]:
 
 
 def handle_schedule(arguments: dict) -> list[TextContent]:
-    """Handle schedule tool."""
+    """Handle schedule tool - schedules a todo task."""
     config = get_goals_config()
     goals = config.get("goals", {})
 
@@ -764,6 +813,26 @@ def handle_schedule(arguments: dict) -> list[TextContent]:
     if not goal_id:
         available = ", ".join(goals.keys())
         return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
+
+    unit = arguments.get("unit", "")
+    task_id = arguments.get("task", "")
+
+    if not unit or not task_id:
+        return [TextContent(type="text", text="Both 'unit' and 'task' are required to schedule a task")]
+
+    # Verify task exists
+    todo = get_unit_todo(goal_id, unit)
+    task_info = None
+    for t in todo.get("tasks", []):
+        if t.get("id") == task_id:
+            task_info = t
+            break
+
+    if not task_info:
+        return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
+
+    if task_info.get("done"):
+        return [TextContent(type="text", text=f"Task '{task_id}' is already completed")]
 
     time_str = arguments.get("time", "")
     time = calendar_service.parse_time(time_str)
@@ -779,6 +848,7 @@ def handle_schedule(arguments: dict) -> list[TextContent]:
 
     goal_config = goals[goal_id]
     goal_name = goal_config.get("name", goal_id)
+    task_name = task_info.get("name", task_id)
     color_id = goal_config.get("color")
 
     result = calendar_service.schedule_goal(
@@ -786,20 +856,35 @@ def handle_schedule(arguments: dict) -> list[TextContent]:
         goal_name=goal_name,
         time=time,
         duration_min=duration,
-        notes=arguments.get("notes", ""),
+        notes=task_name,
         invite_emails=arguments.get("invite", []),
         color_id=color_id,
     )
 
+    if not result.get("success"):
+        return [TextContent(type="text", text=result["message"] + conflict_warning)]
+
+    # Sync to todo.yml
+    event_id = result.get("event_id")
+    scheduled_for = time.isoformat()
+
+    updated = update_todo_task(
+        goal_id, unit, task_id,
+        scheduled_for=scheduled_for,
+        event_id=event_id
+    )
+
     message = result["message"] + conflict_warning
-    if result.get("event_id"):
-        message += f"\nEvent ID: {result['event_id']}"
+    if updated:
+        message += f"\nSynced to todo: {goal_id}/{unit}/{task_id}"
+    if event_id:
+        message += f"\nEvent ID: {event_id}"
 
     return [TextContent(type="text", text=message)]
 
 
 def handle_reschedule(arguments: dict) -> list[TextContent]:
-    """Handle reschedule tool."""
+    """Handle reschedule tool - syncs to todo.yml."""
     event_id = arguments.get("event_id", "")
     if not event_id:
         return [TextContent(type="text", text="event_id is required")]
@@ -810,17 +895,55 @@ def handle_reschedule(arguments: dict) -> list[TextContent]:
         return [TextContent(type="text", text=f"Could not parse time: '{time_str}'")]
 
     result = calendar_service.reschedule_goal(event_id, time)
-    return [TextContent(type="text", text=result["message"])]
+
+    if not result.get("success"):
+        return [TextContent(type="text", text=result["message"])]
+
+    # Sync to todo.yml - find task by event_id and update scheduled_for
+    task_info = find_task_by_event_id(event_id)
+    message = result["message"]
+
+    if task_info:
+        updated = update_todo_task(
+            task_info["goal_id"],
+            task_info["unit"],
+            task_info["task"]["id"],
+            scheduled_for=time.isoformat()
+        )
+        if updated:
+            message += f"\nSynced to todo: {task_info['goal_id']}/{task_info['unit']}/{task_info['task']['id']}"
+
+    return [TextContent(type="text", text=message)]
 
 
 def handle_unschedule(arguments: dict) -> list[TextContent]:
-    """Handle unschedule tool."""
+    """Handle unschedule tool - clears scheduling from todo.yml."""
     event_id = arguments.get("event_id", "")
     if not event_id:
         return [TextContent(type="text", text="event_id is required")]
 
+    # Find task before deleting event (need event_id to look up)
+    task_info = find_task_by_event_id(event_id)
+
     result = calendar_service.unschedule_goal(event_id)
-    return [TextContent(type="text", text=result["message"])]
+
+    if not result.get("success"):
+        return [TextContent(type="text", text=result["message"])]
+
+    message = result["message"]
+
+    # Clear scheduling fields from todo.yml
+    if task_info:
+        updated = update_todo_task(
+            task_info["goal_id"],
+            task_info["unit"],
+            task_info["task"]["id"],
+            clear_schedule=True
+        )
+        if updated:
+            message += f"\nCleared from todo: {task_info['goal_id']}/{task_info['unit']}/{task_info['task']['id']}"
+
+    return [TextContent(type="text", text=message)]
 
 
 def handle_list_scheduled(arguments: dict) -> list[TextContent]:
