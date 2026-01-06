@@ -10,6 +10,9 @@ goals:
     aliases: [hindi, language, chapter, chapters]
     content: Hindi/chapters/
     progression: sequential
+    urgency:
+      stale_days: 3
+      overdue_days: 5
 
   fitness:
     name: 200 min Zone 2
@@ -19,6 +22,10 @@ goals:
     content: fitness/weeks/
     progression: time-weekly
     start: 2026-01-05
+    urgency:
+      type: target
+      target: 200
+      warn_at: 0.5
 
   calendar:
     name: Calendar Mastery
@@ -27,6 +34,9 @@ goals:
     content: calendaring/weeks/
     progression: time-weekly
     start: 2026-01-05
+    urgency:
+      due_by: "09:00"
+      nag_from: "07:00"
 
   brother:
     name: Call Brother
@@ -50,6 +60,8 @@ goals:
     aliases: [sell, selling, sold]
     content: sell/
     progression: unordered
+    urgency:
+      type: none
 
   spend-less:
     name: Spend Less
@@ -60,6 +72,11 @@ goals:
     progression: sequential
     start: 2026-01-05
     target: 1000
+    urgency:
+      type: target
+      target: 1000
+      warn_at: 0.5
+      under_is_good: true
 
   work-boundaries:
     name: Work Boundaries

@@ -232,12 +232,16 @@ def handle_check_in() -> list[TextContent]:
     # Get today's daily entry
     today_entry = get_daily_entry()
 
-    lines = [f"📋 **Goals Check-in** ({get_today()})", ""]
+    # Get current time for display
+    now = datetime.now()
+    time_str = now.strftime("%I:%M%p").lower().lstrip("0")
+
+    lines = [f"Goals Check-in ({get_today()}, {time_str})", ""]
 
     # Show today's daily status first
     if today_entry:
         lines.append("**Today's tracking:**")
-        lines.append(f"  Calendar: {'✓' if today_entry.get('calendar') else '✗'}")
+        lines.append(f"  Calendar: {'yes' if today_entry.get('calendar') else 'no'}")
         lines.append(f"  Fitness: {today_entry.get('fitness', 0)} min")
         lines.append(f"  Hindi: {today_entry.get('hindi', 0)} chapters")
         if today_entry.get('mood'):
@@ -247,19 +251,20 @@ def handle_check_in() -> list[TextContent]:
         lines.append("**Today's tracking:** No entry yet. Use `daily` tool to log.")
         lines.append("")
 
-    high = [t for t in goal_todos if t.get("priority") == "high"]
-    medium = [t for t in goal_todos if t.get("priority") == "medium"]
+    # New priority categories: overdue, due, info
+    overdue = [t for t in goal_todos if t.get("priority") == "overdue"]
+    due = [t for t in goal_todos if t.get("priority") == "due"]
     info = [t for t in goal_todos if t.get("priority") == "info"]
 
-    if high:
-        lines.append("**Needs attention:**")
-        for t in high:
+    if overdue:
+        lines.append("**Overdue:**")
+        for t in overdue:
             lines.append(f"- {t['message']}")
         lines.append("")
 
-    if medium:
-        lines.append("**Coming up:**")
-        for t in medium:
+    if due:
+        lines.append("**Due:**")
+        for t in due:
             lines.append(f"- {t['message']}")
         lines.append("")
 
