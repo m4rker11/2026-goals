@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  goals-mcp:
+    build: .
+    container_name: goals-2026-mcp
+    ports:
+      - "8788:8788"
+    volumes:
+      # Mount the repo
+      - ..:/repo
+      # Git credentials for push
+      - ~/.ssh:/root/.ssh:ro
+      - ~/.gitconfig:/root/.gitconfig:ro
+      # Claude Code credentials (for future autonomous editing)
+      - ~/.claude:/root/.claude:ro
+    environment:
+      - REPO_PATH=/repo
+      - PORT=8788
+    restart: unless-stopped

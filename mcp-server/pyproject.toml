@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "goals-2026-mcp"
+version = "0.1.0"
+description = "MCP server for 2026 goals tracking"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "pyyaml>=6.0",
+    "starlette",
+    "uvicorn",
+    "sse-starlette",
+]
+
+[project.scripts]
+goals-mcp = "goals_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/goals_mcp"]
