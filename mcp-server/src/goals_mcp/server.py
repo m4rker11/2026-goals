@@ -3,6 +3,8 @@
 import os
 import sys
 import asyncio
+import logging
+from contextlib import asynccontextmanager
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
@@ -11,6 +13,11 @@ from mcp.types import Tool, Prompt, PromptMessage, TextContent
 from .storage import get_goals_config, get_today
 from .goals import compute_todos
 from .tools import get_tool_definitions, handle_tool
+from .git import commit_and_push
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # Create MCP server
@@ -109,6 +116,22 @@ async def run_stdio():
         await app.run(read_stream, write_stream, app.create_initialization_options())
 
 
+# Background sync task
+SYNC_INTERVAL_SECONDS = 60 * 60  # 1 hour
+
+
+async def background_sync_task():
+    """Background task that commits changes hourly."""
+    while True:
+        await asyncio.sleep(SYNC_INTERVAL_SECONDS)
+        try:
+            result = commit_and_push()
+            if "Nothing to commit" not in result["message"]:
+                logger.info(f"Background sync: {result['message']}")
+        except Exception as e:
+            logger.error(f"Background sync error: {e}")
+
+
 def create_sse_app():
     """Create SSE web application."""
     from starlette.applications import Starlette
@@ -117,6 +140,18 @@ def create_sse_app():
     from mcp.server.sse import SseServerTransport
 
     sse = SseServerTransport("/messages/")
+
+    @asynccontextmanager
+    async def lifespan(app):
+        """Start background sync task on startup."""
+        sync_task = asyncio.create_task(background_sync_task())
+        logger.info("Started hourly background sync task")
+        yield
+        sync_task.cancel()
+        try:
+            await sync_task
+        except asyncio.CancelledError:
+            logger.info("Background sync task stopped")
 
     async def handle_sse(request):
         async with sse.connect_sse(
@@ -171,7 +206,8 @@ def create_sse_app():
             Route("/", homepage),
             Route("/sse", handle_sse),
             Mount("/messages", app=handle_messages),
-        ]
+        ],
+        lifespan=lifespan
     )
 
 

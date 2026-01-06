@@ -340,6 +340,52 @@ def get_daily_entry(date: str = None) -> dict | None:
     return None
 
 
+# --- Memory storage ---
+
+def get_memory_path() -> Path:
+    """Get path to memory.yml."""
+    return REPO_PATH / "_data" / "memory.yml"
+
+
+def get_memory_entries() -> list:
+    """Load all memory entries."""
+    data = load_yaml(get_memory_path())
+    # Ensure we always return a list (load_yaml returns {} for missing files)
+    return data if isinstance(data, list) else []
+
+
+def save_memory_entries(entries: list) -> None:
+    """Save memory entries (used by condense)."""
+    save_yaml(get_memory_path(), entries)
+
+
+def add_memory_entry(text: str, date: str = None) -> dict:
+    """
+    Add a new memory entry.
+
+    Args:
+        text: The observation/quote/insight to remember
+        date: Date in YYYY-MM-DD format (defaults to today)
+
+    Returns:
+        The created entry
+    """
+    entries = get_memory_entries()
+    entry = {
+        "date": date or get_today(),
+        "text": text
+    }
+    entries.append(entry)
+    save_memory_entries(entries)
+    return entry
+
+
+def get_recent_memory(limit: int = 10) -> list:
+    """Get the most recent memory entries."""
+    entries = get_memory_entries()
+    return entries[-limit:] if entries else []
+
+
 def update_daily_entry(date: str = None, **fields) -> dict:
     """
     Update or create a daily entry.

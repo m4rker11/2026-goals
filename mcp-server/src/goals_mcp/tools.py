@@ -8,10 +8,10 @@ from .storage import (
     get_goals_config, get_goal_logs, save_goal_logs,
     get_unit_todo, save_unit_todo, update_todo_task, get_all_pending_tasks,
     get_all_scheduled_tasks, find_task_by_event_id,
-    get_today, get_daily_entry, update_daily_entry, get_daily_entries, to_date_str
+    get_today, get_daily_entry, update_daily_entry, get_daily_entries, to_date_str,
+    get_memory_entries, save_memory_entries, add_memory_entry, get_recent_memory
 )
 from .goals import get_current, compute_todos, resolve_goal_id
-from .git import commit_and_push
 from . import calendar_service
 
 
@@ -153,20 +153,6 @@ Updates _data/daily.yml which feeds the Jekyll dashboard.""",
                 }
             },
             "required": ["goal", "date"]
-        }
-    ),
-    Tool(
-        name="commit",
-        description="Commit and push changes to git. Call after logging to update GitHub Pages.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "description": "Commit message (auto-generated if not provided)"
-                }
-            },
-            "required": []
         }
     ),
     Tool(
@@ -321,6 +307,67 @@ Creates a calendar event with [Goal] prefix. Syncs to todo.yml for visibility.""
                 },
                 "required": []
             }
+        ),
+        Tool(
+            name="memory_save",
+            description="""Save an observation to memory. Call this when you notice:
+- Behavioral patterns (e.g., "Skipped fitness 3rd day - said 'too tired' but watched TV")
+- User quotes/commitments (e.g., "Quote: 'I'll definitely finish chapter 5 tomorrow'")
+- Insights about what works/doesn't (e.g., "Completed fitness despite resistance - felt great after")
+- Energy/context notes (e.g., "Very tired today, might need rest day")
+Memory is reviewed during check_in to surface patterns over time.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The observation, quote, or insight to remember"
+                    },
+                    "date": {
+                        "type": "string",
+                        "description": "Date in YYYY-MM-DD format (defaults to today)"
+                    }
+                },
+                "required": ["text"]
+            }
+        ),
+        Tool(
+            name="memory_read",
+            description="Read memory entries. Returns recent observations, quotes, and insights.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "limit": {
+                        "type": "number",
+                        "description": "Number of entries to return (default: 10)"
+                    }
+                },
+                "required": []
+            }
+        ),
+        Tool(
+            name="memory_condense",
+            description="""Condense memory by summarizing old entries. Use when memory gets long.
+Reads all entries, you provide a condensed summary, and it replaces the old entries.
+Keep: key patterns, significant quotes, important insights. Remove: redundant entries, noise.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "condensed_entries": {
+                        "type": "array",
+                        "description": "The condensed list of memory entries to save",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "date": {"type": "string", "description": "Date range covered (e.g., '2026-01-01 to 2026-01-15')"},
+                                "text": {"type": "string", "description": "The condensed observation"}
+                            },
+                            "required": ["date", "text"]
+                        }
+                    }
+                },
+                "required": ["condensed_entries"]
+            }
         )
     ]
 
@@ -334,11 +381,21 @@ def handle_check_in() -> list[TextContent]:
     # Get today's daily entry
     today_entry = get_daily_entry()
 
+    # Get recent memory entries
+    recent_memory = get_recent_memory(limit=5)
+
     # Get current time for display
     now = datetime.now()
     time_str = now.strftime("%I:%M%p").lower().lstrip("0")
 
     lines = [f"Goals Check-in ({get_today()}, {time_str})", ""]
+
+    # Show recent memory first (for context)
+    if recent_memory:
+        lines.append("**Recent memory:**")
+        for entry in recent_memory:
+            lines.append(f"- [{entry.get('date', '?')}] {entry.get('text', '')}")
+        lines.append("")
 
     # Show upcoming calendar events (next 4 hours)
     upcoming_events = calendar_service.get_upcoming_events(hours_ahead=4)
@@ -410,7 +467,6 @@ def handle_check_in() -> list[TextContent]:
             continue  # Not authenticated
 
         task_name = task.get("name", task.get("id"))
-        task_path = f"{st['goal_id']}/{st['unit']}/{task['id']}"
 
         if not event_info.get("exists"):
             drift_items.append(f"- {task_name}: calendar event deleted (was {scheduled_for[:16]})")
@@ -613,13 +669,6 @@ def handle_edit(arguments: dict) -> list[TextContent]:
 
     save_goal_logs(goal_id, logs)
     return [TextContent(type="text", text=f"Updated: {logs[found_idx]}")]
-
-
-def handle_commit(arguments: dict) -> list[TextContent]:
-    """Handle commit tool."""
-    message = arguments.get("message", f"Update goals - {get_today()}")
-    result = commit_and_push(message)
-    return [TextContent(type="text", text=result["message"])]
 
 
 def handle_status(arguments: dict) -> list[TextContent]:
@@ -967,6 +1016,60 @@ def handle_list_scheduled(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text="\n".join(lines))]
 
 
+def handle_memory_save(arguments: dict) -> list[TextContent]:
+    """Handle memory_save tool."""
+    text = arguments.get("text", "")
+    if not text:
+        return [TextContent(type="text", text="text is required")]
+
+    date = arguments.get("date")
+    entry = add_memory_entry(text, date)
+
+    return [TextContent(type="text", text=f"Saved to memory: [{entry['date']}] {entry['text']}")]
+
+
+def handle_memory_read(arguments: dict) -> list[TextContent]:
+    """Handle memory_read tool."""
+    limit = arguments.get("limit", 10)
+    entries = get_recent_memory(limit)
+
+    if not entries:
+        return [TextContent(type="text", text="No memory entries yet.")]
+
+    lines = ["**Memory:**", ""]
+    for entry in entries:
+        lines.append(f"- [{entry.get('date', '?')}] {entry.get('text', '')}")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_memory_condense(arguments: dict) -> list[TextContent]:
+    """Handle memory_condense tool."""
+    condensed = arguments.get("condensed_entries", [])
+
+    if not condensed:
+        # Return current memory for review
+        entries = get_memory_entries()
+        if not entries:
+            return [TextContent(type="text", text="No memory entries to condense.")]
+
+        lines = ["**Current memory (provide condensed_entries to replace):**", ""]
+        for entry in entries:
+            lines.append(f"- [{entry.get('date', '?')}] {entry.get('text', '')}")
+        lines.append("")
+        lines.append(f"Total: {len(entries)} entries")
+        return [TextContent(type="text", text="\n".join(lines))]
+
+    # Save condensed entries
+    old_count = len(get_memory_entries())
+    save_memory_entries(condensed)
+
+    return [TextContent(
+        type="text",
+        text=f"Memory condensed: {old_count} entries → {len(condensed)} entries"
+    )]
+
+
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
@@ -977,8 +1080,6 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_log(arguments)
     elif name == "edit":
         return handle_edit(arguments)
-    elif name == "commit":
-        return handle_commit(arguments)
     elif name == "status":
         return handle_status(arguments)
     elif name == "read_todo":
@@ -993,5 +1094,11 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_unschedule(arguments)
     elif name == "list_scheduled":
         return handle_list_scheduled(arguments)
+    elif name == "memory_save":
+        return handle_memory_save(arguments)
+    elif name == "memory_read":
+        return handle_memory_read(arguments)
+    elif name == "memory_condense":
+        return handle_memory_condense(arguments)
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
