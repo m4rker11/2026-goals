@@ -6,21 +6,95 @@ import asyncio
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-from mcp.types import Tool
+from mcp.types import Tool, Prompt, PromptMessage, TextContent
 
 from .storage import get_goals_config, get_today
 from .goals import compute_todos
-from .tools import TOOL_DEFINITIONS, handle_tool
+from .tools import get_tool_definitions, handle_tool
 
 
 # Create MCP server
 app = Server("goals-2026")
 
 
+def get_urgent_summary() -> str:
+    """Get a summary of urgent goals for injection."""
+    config = get_goals_config()
+    todos = compute_todos(config)
+
+    overdue = [t for t in todos if t.get("priority") == "overdue"]
+    due = [t for t in todos if t.get("priority") == "due"]
+
+    if not overdue and not due:
+        return "All goals on track."
+
+    lines = []
+    if overdue:
+        lines.append("OVERDUE: " + ", ".join(t["name"] for t in overdue))
+    if due:
+        lines.append("Due: " + ", ".join(t["name"] for t in due))
+
+    return " | ".join(lines)
+
+
+@app.list_prompts()
+async def list_prompts() -> list[Prompt]:
+    """List available prompts with dynamic urgent summary."""
+    summary = get_urgent_summary()
+    return [
+        Prompt(
+            name="goals-status",
+            description=f"Current goals status. {summary}",
+        )
+    ]
+
+
+@app.get_prompt()
+async def get_prompt(name: str, arguments: dict | None = None) -> list[PromptMessage]:
+    """Get prompt content."""
+    if name == "goals-status":
+        config = get_goals_config()
+        todos = compute_todos(config)
+
+        lines = [f"Goals Status ({get_today()})", ""]
+
+        overdue = [t for t in todos if t.get("priority") == "overdue"]
+        due = [t for t in todos if t.get("priority") == "due"]
+        info = [t for t in todos if t.get("priority") == "info"]
+
+        if overdue:
+            lines.append("⚠️ OVERDUE:")
+            for t in overdue:
+                lines.append(f"  - {t['message']}")
+            lines.append("")
+
+        if due:
+            lines.append("📌 Due:")
+            for t in due:
+                lines.append(f"  - {t['message']}")
+            lines.append("")
+
+        if info:
+            lines.append("📊 Progress:")
+            for t in info:
+                lines.append(f"  - {t['message']}")
+
+        return [PromptMessage(
+            role="user",
+            content=TextContent(type="text", text="\n".join(lines))
+        )]
+
+    return []
+
+
 @app.list_tools()
 async def list_tools() -> list[Tool]:
-    """List available tools."""
-    return TOOL_DEFINITIONS
+    """List available tools with dynamic descriptions."""
+    summary = get_urgent_summary()
+    config = get_goals_config()
+    goals = config.get("goals", {})
+    goals_list = ", ".join(goals.keys())
+    return get_tool_definitions(summary, goals_list)
 
 
 @app.call_tool()

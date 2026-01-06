@@ -13,18 +13,37 @@ from .goals import get_current, compute_todos, resolve_goal_id
 from .git import commit_and_push
 
 
-TOOL_DEFINITIONS = [
-    Tool(
-        name="check_in",
-        description="Check what goals need attention today. Call this at the start of every conversation.",
-        inputSchema={
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
-    ),
-    Tool(
-        name="daily",
+def get_tool_definitions(urgent_summary: str = "", goals_list: str = "") -> list[Tool]:
+    """Generate tool definitions with dynamic descriptions."""
+
+    # Dynamic check_in description with current urgent status
+    if urgent_summary and urgent_summary != "All goals on track.":
+        check_in_desc = f"""⚠️ STOP - READ THIS FIRST ⚠️
+{urgent_summary}
+You MUST say this to the user in your FIRST sentence, BEFORE invoking any skill (debugging, brainstorming, etc).
+Also re-call when 30+ min elapsed: long-running scripts, logs with timestamps, user mentions time.
+Example: "Quick note: [overdue items]. Now, about your request..."
+This is non-negotiable accountability."""
+    else:
+        check_in_desc = """Check what goals need attention today.
+Call at: (1) conversation start, (2) when 30+ min elapsed (scripts, logs, timestamps, user mentions)."""
+
+    # Dynamic log description with available goals
+    log_desc = f"""Log progress on a goal. Available goals: {goals_list or 'hindi, fitness, calendar, brother, trading, sell, spend-less, work-boundaries'}.
+Use path for subgoals (e.g., 'chapter-3/vocab'). Optionally update a todo task when logging."""
+
+    return [
+        Tool(
+            name="check_in",
+            description=check_in_desc,
+            inputSchema={
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        ),
+        Tool(
+            name="daily",
         description="""Update today's daily tracking entry. Use this for quick daily metrics.
 Updates _data/daily.yml which feeds the Jekyll dashboard.""",
         inputSchema={
@@ -58,11 +77,10 @@ Updates _data/daily.yml which feeds the Jekyll dashboard.""",
             "required": []
         }
     ),
-    Tool(
-        name="log",
-        description="""Log progress on a goal. Use path for subgoals (e.g., 'chapter-3/vocab').
-Optionally update a todo task when logging (marks task done and adds notes to the task).""",
-        inputSchema={
+        Tool(
+            name="log",
+            description=log_desc,
+            inputSchema={
             "type": "object",
             "properties": {
                 "goal": {
@@ -220,7 +238,7 @@ Use when setting up tasks for a new week/chapter or resetting the list.""",
             "required": ["goal", "unit", "tasks"]
         }
     )
-]
+    ]
 
 
 def handle_check_in() -> list[TextContent]:
