@@ -126,15 +126,7 @@ Simple approach:
 
 ## Daily Tracking
 
-| Day | Gym on calendar? | Dinner on calendar? | Work end time on calendar? |
-|-----|-----------------|--------------------|-----------------------------|
-| Mon | [ ] | [ ] | [ ] |
-| Tue | [ ] | [ ] | [ ] |
-| Wed | [ ] | [ ] | [ ] |
-| Thu | [ ] | [ ] | [ ] |
-| Fri | [ ] | [ ] | [ ] |
-| Sat | [ ] | [ ] | [ ] |
-| Sun | [ ] | [ ] | [ ] |
+{% include todo-list.html goal="calendar" unit="week-4" %}
 
 ---
 

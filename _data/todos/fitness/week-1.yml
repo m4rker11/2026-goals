@@ -1,17 +1,29 @@
 unit: week-1
 tasks:
-  - id: session-1
-    name: Zone 2 session 1 (40+ min)
+  # Sessions
+  - id: upper-session
+    name: Upper bodyweight session (20 min)
     done: false
-  - id: session-2
-    name: Zone 2 session 2 (40+ min)
+  - id: mid-session
+    name: Mid/PT focus session (15 min)
     done: false
-  - id: session-3
-    name: Zone 2 session 3 (40+ min)
+  - id: pt-stretches-1
+    name: PT Stretches #1 (15 min)
     done: false
-  - id: strength
-    name: Strength training session
+  - id: pt-stretches-2
+    name: PT Stretches #2 (15 min)
     done: false
-  - id: review
-    name: End of week review
+  # Equipment prep
+  - id: pack-clothes
+    name: Pack comfortable workout clothes
+    done: false
+  - id: pack-band
+    name: Pack resistance band (optional)
+    done: false
+  - id: pack-pt-notes
+    name: Pack PT stretch notes
+    done: false
+  # Weekly review
+  - id: weekly-review
+    name: End of week reflection
     done: false

@@ -1,26 +1,35 @@
 unit: week-1
 tasks:
-  - id: mon-morning
+  # Setup tasks
+  - id: widget-home
+    name: Calendar widget is on home screen
+    done: false
+  - id: phone-calendar
+    name: Opening phone = seeing calendar
+    done: false
+  # Daily tracking
+  - id: mon-check
     name: Monday morning check
     done: false
-  - id: tue-morning
+  - id: tue-check
     name: Tuesday morning check
     done: false
-  - id: wed-morning
+  - id: wed-check
     name: Wednesday morning check
     done: false
-  - id: thu-morning
+  - id: thu-check
     name: Thursday morning check
     done: false
-  - id: fri-morning
+  - id: fri-check
     name: Friday morning check
     done: false
-  - id: sat-morning
+  - id: sat-check
     name: Saturday morning check
     done: false
-  - id: sun-morning
+  - id: sun-check
     name: Sunday morning check
     done: false
+  # Weekly reflection
   - id: weekly-review
-    name: Weekly calendar review
+    name: End of week reflection
     done: false

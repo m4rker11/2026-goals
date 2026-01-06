@@ -79,15 +79,7 @@ Every time something gets scheduled:
 
 ## Daily Tracking
 
-| Day | Events scheduled | Added immediately? | Slipped? Why? |
-|-----|-----------------|-------------------|---------------|
-| Mon | | [ ] Yes [ ] No | |
-| Tue | | [ ] Yes [ ] No | |
-| Wed | | [ ] Yes [ ] No | |
-| Thu | | [ ] Yes [ ] No | |
-| Fri | | [ ] Yes [ ] No | |
-| Sat | | [ ] Yes [ ] No | |
-| Sun | | [ ] Yes [ ] No | |
+{% include todo-list.html goal="calendar" unit="week-2" %}
 
 ---
 

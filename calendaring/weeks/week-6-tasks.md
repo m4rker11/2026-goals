@@ -117,14 +117,7 @@ Where will you do the weekly review?
 
 ## Tracking This Week
 
-| Task | Done? |
-|------|-------|
-| Weekly review completed | [ ] |
-| Time chosen for review | [ ] |
-| Anuska sync method decided | [ ] |
-| Shared calendar created (if applicable) | [ ] |
-| First Anuska sync done | [ ] |
-| Week felt more planned than previous weeks | [ ] |
+{% include todo-list.html goal="calendar" unit="week-6" %}
 
 ---
 

@@ -102,14 +102,7 @@ Whatever Kai wants to do + your exercises
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper Push (30 min) | Mon Jan 26 | [ ] | Pushups: ___ |
-| Upper Pull (30 min) | Wed Jan 28 | [ ] | Pullups: ___ |
-| Mid + Cardio (30 min) | Thu Jan 29 | [ ] | |
-| PT Stretches #1 | Fri Jan 30 | [ ] | |
-| Blink with Kai (45 min) | Sat Jan 31 | [ ] | First buddy session! |
-| PT Stretches #2 | Sun Feb 1 | [ ] | |
+{% include todo-list.html goal="fitness" unit="week-4" %}
 
 ---
 

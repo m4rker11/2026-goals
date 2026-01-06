@@ -15,11 +15,7 @@ Put a 5-min "Market Scan" on your calendar for Monday. Use it.
 
 ## Routine Checklist
 
-- [ ] Calendar event created for Monday market scan
-- [ ] Did the Monday scan
-- [ ] Identified momentum candidate
-- [ ] Messaged BuffedApe
-- [ ] Executed trade
+{% include todo-list.html goal="trading" unit="period-2" %}
 
 ---
 

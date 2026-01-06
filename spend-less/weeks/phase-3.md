@@ -11,6 +11,12 @@ You know your triggers now. Time to add a simple rule that breaks the impulse cy
 
 ---
 
+## Phase Tasks
+
+{% include todo-list.html goal="spend-less" unit="phase-3" %}
+
+---
+
 ## The 24-Hour Rule
 
 > **Anything over $20 → wait 24 hours before buying.**

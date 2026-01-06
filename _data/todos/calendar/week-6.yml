@@ -1,0 +1,63 @@
+unit: week-6
+tasks:
+  # Setup tasks
+  - id: weekly-time
+    name: Choose weekly review time
+    done: false
+  - id: weekly-spot
+    name: Choose weekly review location/spot
+    done: false
+  - id: anuska-method
+    name: Decide Anuska sync method
+    done: false
+  - id: shared-calendar
+    name: Create shared calendar (if applicable)
+    done: false
+  # Weekly review
+  - id: weekly-review-done
+    name: Weekly review completed
+    done: false
+  - id: first-anuska-sync
+    name: First Anuska sync done
+    done: false
+  - id: week-felt-planned
+    name: Week felt more planned than previous weeks
+    done: false
+  # Weekly review outputs
+  - id: appointments-on
+    name: Every known appointment on calendar
+    done: false
+  - id: gym-scheduled
+    name: Gym sessions scheduled
+    done: false
+  - id: dinner-decided
+    name: Dinner duty decided for the week
+    done: false
+  - id: deadlines-visible
+    name: Work deadlines visible
+    done: false
+  - id: tasks-assigned
+    name: Tasks assigned to days
+    done: false
+  # 6-week retrospective
+  - id: habits-morning
+    name: "Habit stuck: Morning check"
+    done: false
+  - id: habits-immediate
+    name: "Habit stuck: Immediate input"
+    done: false
+  - id: habits-evening
+    name: "Habit stuck: Evening review"
+    done: false
+  - id: habits-daily
+    name: "Habit stuck: Daily activities on calendar"
+    done: false
+  - id: habits-check
+    name: "Habit stuck: Check before committing"
+    done: false
+  - id: habits-weekly
+    name: "Habit stuck: Weekly planning"
+    done: false
+  - id: habits-partner
+    name: "Habit stuck: Partner sync"
+    done: false

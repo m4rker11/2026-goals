@@ -1,0 +1,67 @@
+unit: week-0
+tasks:
+  # Phase 1: Phone Setup
+  - id: widget-calendar
+    name: Add Google Calendar widget to main home screen
+    done: false
+  - id: widget-position
+    name: Position widget where eyes naturally go
+    done: false
+  - id: widget-tasks
+    name: Add Google Tasks widget to home screen
+    done: false
+  - id: voice-calendar
+    name: Test voice command for adding calendar events
+    done: false
+  - id: voice-reminder
+    name: Test voice command for adding reminders
+    done: false
+  - id: default-notifications
+    name: "Set default notifications: 10 min, 1 hr, 1 day"
+    done: false
+  # Phase 2: Browser Setup
+  - id: browser-homepage
+    name: Set browser homepage to calendar.google.com
+    done: false
+  # Phase 3: Calendar Settings
+  - id: color-work
+    name: Create Work calendar (blue)
+    done: false
+  - id: color-personal
+    name: Create Personal calendar (green)
+    done: false
+  - id: color-social
+    name: Create Social calendar (purple)
+    done: false
+  - id: color-health
+    name: Create Health calendar (red)
+    done: false
+  - id: work-sync
+    name: Sync work calendar
+    done: false
+  # Phase 4: Google Tasks Setup
+  - id: tasks-app
+    name: Install Google Tasks app
+    done: false
+  - id: tasks-calendar-view
+    name: Enable Tasks in Calendar view
+    done: false
+  - id: tasks-lists
+    name: Create task lists (Daily, This Week, Recurring, Someday)
+    done: false
+  - id: tasks-test
+    name: Test tasks appearing on calendar
+    done: false
+  # Verification
+  - id: verify-widget
+    name: When I unlock phone, I see today's calendar
+    done: false
+  - id: verify-voice
+    name: Voice command adds events successfully
+    done: false
+  - id: verify-browser
+    name: Browser opens to calendar
+    done: false
+  - id: verify-reminders
+    name: Events have 3 default reminders
+    done: false

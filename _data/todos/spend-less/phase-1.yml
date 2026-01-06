@@ -1,14 +1,36 @@
 unit: phase-1
 tasks:
+  # One-time setup
   - id: remove-amazon
     name: Remove saved cards from Amazon
     done: false
   - id: remove-browser
     name: Clear browser autofill payment methods
     done: false
-  - id: new-card-rule
-    name: Don't save new card anywhere
+  - id: remove-applepay
+    name: Remove card from Apple Pay / Google Pay (optional)
     done: false
+  - id: remove-apps
+    name: Remove card from any impulse-buy apps
+    done: false
+  # New card rules
+  - id: no-save-card
+    name: Do NOT save new card anywhere
+    done: false
+  - id: card-in-wallet
+    name: Keep card in wallet, not memorized
+    done: false
+  - id: physical-card
+    name: Every purchase = physically get card out
+    done: false
+  # Browser extensions (optional)
+  - id: impulse-blocker
+    name: Install "Impulse Blocker" for shopping sites
+    done: false
+  - id: block-list
+    name: Add shopping sites to block list during work hours
+    done: false
+  # Weekly savings
   - id: week-1-save
     name: Save $91 (Week 1)
     done: false

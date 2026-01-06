@@ -98,14 +98,7 @@ Buddy sessions are now routine
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper Push (35 min) | Thu Feb 6 | [ ] | Pushups: ___ |
-| Blink with Kai (45 min) | Sat Feb 8 | [ ] | |
-| Bollywood (60 min) | Sun Feb 9 | [ ] | |
-| Upper Pull (35 min) | Mon Feb 10 | [ ] | Pullups: ___ |
-| Cardio (25 min) | Tue Feb 11 | [ ] | Type: ___ |
-| PT Stretches | Wed Feb 12 | [ ] | 30 min |
+{% include todo-list.html goal="fitness" unit="week-6" %}
 
 ---
 

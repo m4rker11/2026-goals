@@ -72,12 +72,7 @@ Your regular PT routine. These count toward minutes.
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper (20 min) | Wed Jan 7 | [ ] | Pushup max: ___ |
-| Mid (15 min) | Sat Jan 10 | [ ] | |
-| PT Stretches #1 | Tue Jan 6 | [ ] | |
-| PT Stretches #2 | Thu Jan 8 | [ ] | |
+{% include todo-list.html goal="fitness" unit="week-1" %}
 
 ---
 

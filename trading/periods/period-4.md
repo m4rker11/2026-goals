@@ -18,10 +18,7 @@ You've built the pieces. Now run the **full system**:
 
 ## Full System Checklist
 
-- [ ] Monday market scan
-- [ ] Messaged BuffedApe
-- [ ] Executed trade (calls/puts on momentum)
-- [ ] Reflection written within 24 hours
+{% include todo-list.html goal="trading" unit="period-4" %}
 
 ---
 

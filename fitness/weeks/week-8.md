@@ -111,15 +111,7 @@ Final week - celebrate with your gym buddy
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper Push (40 min) | Thu Feb 20 | [ ] | Pushups: ___ |
-| Swim/OT (45 min) | Fri Feb 21 | [ ] | Which one? |
-| Blink with Kai (45 min) | Sat Feb 22 | [ ] | |
-| Bollywood (60 min) | Sun Feb 23 | [ ] | |
-| Upper Pull (40 min) | Mon Feb 24 | [ ] | Pullups: ___ |
-| Lower/Cardio (30 min) | Tue Feb 25 | [ ] | |
-| PT Stretches | Wed Feb 26 | [ ] | 30 min |
+{% include todo-list.html goal="fitness" unit="week-8" %}
 
 ---
 

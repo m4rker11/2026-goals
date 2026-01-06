@@ -91,13 +91,7 @@ Goal: Complete the session without quitting early
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper (30 min) | Tue Jan 20 | [ ] | Pushups: ___ Pullups: ___ |
-| Lower (25 min) | Thu Jan 22 | [ ] | |
-| Swim (45 min) | Fri Jan 23 | [ ] | First swim! |
-| PT Stretches #1 | Wed Jan 21 | [ ] | |
-| PT Stretches #2 | Sat Jan 24 | [ ] | |
+{% include todo-list.html goal="fitness" unit="week-3" %}
 
 ---
 

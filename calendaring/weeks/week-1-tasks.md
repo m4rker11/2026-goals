@@ -54,8 +54,11 @@ Verbalizing makes it stick. Even just mumbling "Hindi tutor at 3" encodes it dif
 ## Friction Reducers
 
 These should already be done from Week 0:
-- [ ] Calendar widget is on home screen
-- [ ] Opening phone = seeing calendar
+
+{% assign setup_tasks = site.data.todos.calendar.week-1.tasks | where_exp: "t", "t.id contains 'widget' or t.id contains 'phone'" %}
+{% for task in setup_tasks %}
+- [{% if task.done %}x{% else %} {% endif %}] {{ task.name }}
+{% endfor %}
 
 If you're reaching for calendar and getting distracted by notifications first, consider:
 - Turning on Do Not Disturb until after morning check
@@ -65,15 +68,7 @@ If you're reaching for calendar and getting distracted by notifications first, c
 
 ## Daily Tracking
 
-| Day | Did morning check? | What time? | Notes |
-|-----|-------------------|------------|-------|
-| Mon | [ ] | | |
-| Tue | [ ] | | |
-| Wed | [ ] | | |
-| Thu | [ ] | | |
-| Fri | [ ] | | |
-| Sat | [ ] | | |
-| Sun | [ ] | | |
+{% include todo-list.html goal="calendar" unit="week-1" title="Week 1 Progress" %}
 
 ---
 
@@ -95,16 +90,16 @@ Answer these before Week 2:
 1. **Compliance:** How many mornings did I check? ___/7
 
 2. **Friction:** What made it hard?
-   - [ ] Forgot entirely
-   - [ ] Got distracted before I could
-   - [ ] Checked but didn't really look
-   - [ ] Other: _______________
+   - Forgot entirely
+   - Got distracted before I could
+   - Checked but didn't really look
+   - Other: _______________
 
 3. **What helped?**
-   - [ ] Widget visibility
-   - [ ] Voice command
-   - [ ] Specific trigger moment
-   - [ ] Other: _______________
+   - Widget visibility
+   - Voice command
+   - Specific trigger moment
+   - Other: _______________
 
 4. **Adjustment for Week 2:**
 

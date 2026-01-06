@@ -15,10 +15,7 @@ Don't overthink. Find something moving, pick a direction, small size.
 
 ## Pre-Trade Checklist
 
-- [ ] Scanned watchlist for momentum
-- [ ] Identified 1-2 candidates
-- [ ] Messaged BuffedApe
-- [ ] Decided: call or put?
+{% include todo-list.html goal="trading" unit="period-1" %}
 
 ---
 

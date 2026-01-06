@@ -1,0 +1,37 @@
+unit: week-3
+tasks:
+  # Daily evening reviews
+  - id: mon-evening
+    name: Monday evening review
+    done: false
+  - id: tue-evening
+    name: Tuesday evening review
+    done: false
+  - id: wed-evening
+    name: Wednesday evening review
+    done: false
+  - id: thu-evening
+    name: Thursday evening review
+    done: false
+  - id: fri-evening
+    name: Friday evening review
+    done: false
+  - id: sat-evening
+    name: Saturday evening review
+    done: false
+  - id: sun-evening
+    name: Sunday evening review
+    done: false
+  # Stack maintenance
+  - id: stack-morning
+    name: "Maintaining: Morning check (Week 1)"
+    done: false
+  - id: stack-immediate
+    name: "Maintaining: Add events immediately (Week 2)"
+    done: false
+  - id: stack-evening
+    name: "Maintaining: Evening review (Week 3)"
+    done: false
+  - id: weekly-review
+    name: End of week reflection
+    done: false

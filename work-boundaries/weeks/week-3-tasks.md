@@ -90,15 +90,7 @@ Life happens. If there's a genuine reason to start late:
 
 ## Daily Tracking
 
-| Day | Target time | Actual start | Within 15 min? | What helped/hurt? |
-|-----|-------------|--------------|----------------|-------------------|
-| Mon | | | [ ] | |
-| Tue | | | [ ] | |
-| Wed | | | [ ] | |
-| Thu | | | [ ] | |
-| Fri | | | [ ] | |
-| Sat | | | [ ] | |
-| Sun | | | [ ] | |
+{% include todo-list.html goal="work-boundaries" unit="week-3" %}
 
 ---
 

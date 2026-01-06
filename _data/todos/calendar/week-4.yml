@@ -1,0 +1,63 @@
+unit: week-4
+tasks:
+  # Daily tracking
+  - id: mon-gym
+    name: Monday - gym on calendar
+    done: false
+  - id: mon-dinner
+    name: Monday - dinner on calendar
+    done: false
+  - id: mon-work-end
+    name: Monday - work end time on calendar
+    done: false
+  - id: tue-gym
+    name: Tuesday - gym on calendar
+    done: false
+  - id: tue-dinner
+    name: Tuesday - dinner on calendar
+    done: false
+  - id: tue-work-end
+    name: Tuesday - work end time on calendar
+    done: false
+  - id: wed-gym
+    name: Wednesday - gym on calendar
+    done: false
+  - id: wed-dinner
+    name: Wednesday - dinner on calendar
+    done: false
+  - id: wed-work-end
+    name: Wednesday - work end time on calendar
+    done: false
+  - id: thu-gym
+    name: Thursday - gym on calendar
+    done: false
+  - id: thu-dinner
+    name: Thursday - dinner on calendar
+    done: false
+  - id: thu-work-end
+    name: Thursday - work end time on calendar
+    done: false
+  - id: fri-gym
+    name: Friday - gym on calendar
+    done: false
+  - id: fri-dinner
+    name: Friday - dinner on calendar
+    done: false
+  - id: fri-work-end
+    name: Friday - work end time on calendar
+    done: false
+  - id: sat-gym
+    name: Saturday - gym on calendar
+    done: false
+  - id: sat-dinner
+    name: Saturday - dinner on calendar
+    done: false
+  - id: sun-gym
+    name: Sunday - gym on calendar
+    done: false
+  - id: sun-dinner
+    name: Sunday - dinner on calendar
+    done: false
+  - id: weekly-review
+    name: End of week reflection
+    done: false

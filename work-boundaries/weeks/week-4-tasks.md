@@ -117,15 +117,7 @@ Remember the evidence you gathered in Week 1. Breaks aren't a sacrifice - they'r
 
 ## Daily Tracking
 
-| Day | End time target | Actual stop | Within 30 min? | Used "15 more"? | Break taken? |
-|-----|-----------------|-------------|----------------|-----------------|--------------|
-| Mon | | | [ ] | [ ] | [ ] |
-| Tue | | | [ ] | [ ] | [ ] |
-| Wed | | | [ ] | [ ] | [ ] |
-| Thu | | | [ ] | [ ] | [ ] |
-| Fri | | | [ ] | [ ] | [ ] |
-| Sat | | | [ ] | [ ] | [ ] |
-| Sun | | | [ ] | [ ] | [ ] |
+{% include todo-list.html goal="work-boundaries" unit="week-4" %}
 
 ---
 

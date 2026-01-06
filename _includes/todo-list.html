@@ -1,0 +1,50 @@
+{% comment %}
+  Render a todo list from _data/todos/{goal}/{unit}.yml
+
+  Usage:
+    {% include todo-list.html goal="calendar" unit="week-1" %}
+    {% include todo-list.html goal="fitness" unit="week-1" title="Session Tracking" %}
+
+  Parameters:
+    goal: Goal ID (calendar, fitness, spend-less, etc.)
+    unit: Unit ID (week-1, phase-1, etc.)
+    title: Optional title for the section (default: "Tasks")
+    show_progress: Show progress bar (default: true)
+{% endcomment %}
+
+{% assign todo_file = site.data.todos[include.goal][include.unit] %}
+{% assign tasks = todo_file.tasks %}
+{% assign title = include.title | default: "Tasks" %}
+{% assign show_progress = include.show_progress | default: true %}
+
+{% if tasks %}
+  {% assign total = tasks | size %}
+  {% assign done_count = 0 %}
+  {% for task in tasks %}
+    {% if task.done %}
+      {% assign done_count = done_count | plus: 1 %}
+    {% endif %}
+  {% endfor %}
+  {% assign pct = done_count | times: 100 | divided_by: total %}
+
+  {% if show_progress == true %}
+  <div class="todo-progress" style="margin-bottom: 1rem;">
+    <strong>{{ title }}:</strong> {{ done_count }}/{{ total }} complete
+    <progress value="{{ done_count }}" max="{{ total }}" style="width: 100%;"></progress>
+  </div>
+  {% endif %}
+
+  <div class="todo-list">
+  {% for task in tasks %}
+    <div class="todo-item" style="padding: 0.25rem 0;">
+      {% if task.done %}
+      - [x] <s>{{ task.name }}</s>{% if task.notes %} <em>({{ task.notes }})</em>{% endif %}
+      {% else %}
+      - [ ] {{ task.name }}{% if task.notes %} <em>({{ task.notes }})</em>{% endif %}
+      {% endif %}
+    </div>
+  {% endfor %}
+  </div>
+{% else %}
+  <p><em>No tasks defined for {{ include.goal }}/{{ include.unit }}</em></p>
+{% endif %}

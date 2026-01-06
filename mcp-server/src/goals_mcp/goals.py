@@ -2,12 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from .storage import get_goal_logs, discover_content
-
-
-def get_today() -> str:
-    """Get today's date as YYYY-MM-DD."""
-    return datetime.now().strftime("%Y-%m-%d")
+from .storage import get_goal_logs, discover_content, get_today, to_date_str
 
 
 def get_completed_items(logs: list) -> set:
@@ -53,7 +48,7 @@ def get_current(goal_config: dict, logs: list) -> dict:
         }
 
     elif progression == "time-weekly":
-        start_str = goal_config.get("start", "2026-01-01")
+        start_str = to_date_str(goal_config.get("start", "2026-01-01"))
         start = datetime.strptime(start_str, "%Y-%m-%d")
         now = datetime.now()
         week_num = ((now - start).days // 7) + 1
@@ -103,7 +98,7 @@ def compute_todos(config: dict) -> list[dict]:
 
         # Cadence-based reminders
         if cadence == "daily":
-            today_logs = [l for l in logs if l.get("date") == today]
+            today_logs = [l for l in logs if to_date_str(l.get("date")) == today]
             if not today_logs:
                 todos.append({
                     "goal": goal_id,
@@ -117,7 +112,7 @@ def compute_todos(config: dict) -> list[dict]:
             week_start_str = week_start.strftime("%Y-%m-%d")
             week_total = sum(
                 l.get("value", 0) for l in logs
-                if l.get("date", "") >= week_start_str
+                if to_date_str(l.get("date")) >= week_start_str
             )
             unit = goal_config.get("unit", "")
             todos.append({
@@ -129,7 +124,7 @@ def compute_todos(config: dict) -> list[dict]:
 
         elif cadence == "every_2_weeks":
             if last_log_date:
-                last_date = datetime.strptime(last_log_date, "%Y-%m-%d")
+                last_date = datetime.strptime(to_date_str(last_log_date), "%Y-%m-%d")
                 days_since = (now - last_date).days
                 if days_since >= 12:
                     todos.append({

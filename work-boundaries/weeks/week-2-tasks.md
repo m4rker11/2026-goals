@@ -103,15 +103,7 @@ She might also help enforce: "Can you let me know if I forget to tell you in the
 
 ## Daily Tracking
 
-| Day | Morning announce? | Anuska's reaction | Needed 15 more? | Announced it? |
-|-----|------------------|-------------------|-----------------|---------------|
-| Mon | [ ] | | [ ] | [ ] |
-| Tue | [ ] | | [ ] | [ ] |
-| Wed | [ ] | | [ ] | [ ] |
-| Thu | [ ] | | [ ] | [ ] |
-| Fri | [ ] | | [ ] | [ ] |
-| Sat | [ ] | | [ ] | [ ] |
-| Sun | [ ] | | [ ] | [ ] |
+{% include todo-list.html goal="work-boundaries" unit="week-2" %}
 
 ---
 

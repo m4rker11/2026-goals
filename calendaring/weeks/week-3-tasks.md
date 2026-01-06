@@ -79,15 +79,7 @@ This reduces next-day friction and decision fatigue.
 
 ## Daily Tracking
 
-| Day | Did evening review? | Trigger used | Tomorrow prepped? |
-|-----|--------------------|--------------|--------------------|
-| Mon | [ ] | | |
-| Tue | [ ] | | |
-| Wed | [ ] | | |
-| Thu | [ ] | | |
-| Fri | [ ] | | |
-| Sat | [ ] | | |
-| Sun | [ ] | | |
+{% include todo-list.html goal="calendar" unit="week-3" %}
 
 ---
 

@@ -8,8 +8,8 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool
 
-from .storage import get_goals_config
-from .goals import compute_todos, get_today
+from .storage import get_goals_config, get_today
+from .goals import compute_todos
 from .tools import TOOL_DEFINITIONS, handle_tool
 
 
@@ -38,7 +38,7 @@ async def run_stdio():
 def create_sse_app():
     """Create SSE web application."""
     from starlette.applications import Starlette
-    from starlette.routing import Route
+    from starlette.routing import Route, Mount
     from starlette.responses import HTMLResponse
     from mcp.server.sse import SseServerTransport
 
@@ -52,8 +52,8 @@ def create_sse_app():
                 streams[0], streams[1], app.create_initialization_options()
             )
 
-    async def handle_messages(request):
-        await sse.handle_post_message(request.scope, request.receive, request._send)
+    async def handle_messages(scope, receive, send):
+        await sse.handle_post_message(scope, receive, send)
 
     async def homepage(request):
         config = get_goals_config()
@@ -96,7 +96,7 @@ def create_sse_app():
         routes=[
             Route("/", homepage),
             Route("/sse", handle_sse),
-            Route("/messages/", handle_messages, methods=["POST"]),
+            Mount("/messages", app=handle_messages),
         ]
     )
 

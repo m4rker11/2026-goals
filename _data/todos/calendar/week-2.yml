@@ -1,0 +1,48 @@
+unit: week-2
+tasks:
+  # Daily tasks
+  - id: mon-morning
+    name: Monday morning check
+    done: false
+  - id: mon-immediate
+    name: Monday - all events added immediately
+    done: false
+  - id: tue-morning
+    name: Tuesday morning check
+    done: false
+  - id: tue-immediate
+    name: Tuesday - all events added immediately
+    done: false
+  - id: wed-morning
+    name: Wednesday morning check
+    done: false
+  - id: wed-immediate
+    name: Wednesday - all events added immediately
+    done: false
+  - id: thu-morning
+    name: Thursday morning check
+    done: false
+  - id: thu-immediate
+    name: Thursday - all events added immediately
+    done: false
+  - id: fri-morning
+    name: Friday morning check
+    done: false
+  - id: fri-immediate
+    name: Friday - all events added immediately
+    done: false
+  - id: sat-morning
+    name: Saturday morning check
+    done: false
+  - id: sat-immediate
+    name: Saturday - all events added immediately
+    done: false
+  - id: sun-morning
+    name: Sunday morning check
+    done: false
+  - id: sun-immediate
+    name: Sunday - all events added immediately
+    done: false
+  - id: weekly-review
+    name: End of week reflection
+    done: false

@@ -15,11 +15,7 @@ Write the 3-sentence reflection within 24 hours of the trade closing.
 
 ## Routine Checklist
 
-- [ ] Monday market scan (calendar event)
-- [ ] Identified momentum candidate
-- [ ] Messaged BuffedApe
-- [ ] Executed trade
-- [ ] **Wrote reflection within 24 hours of close**
+{% include todo-list.html goal="trading" unit="period-3" %}
 
 ---
 

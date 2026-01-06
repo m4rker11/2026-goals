@@ -104,14 +104,7 @@ Keep the buddy momentum going
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper Push (40 min) | Thu Feb 13 | [ ] | Pushups: ___ |
-| Blink with Kai (45 min) | Sat Feb 15 | [ ] | |
-| Bollywood (60 min) | Sun Feb 16 | [ ] | |
-| Lower (35 min) | Mon Feb 17 | [ ] | Did it? |
-| Mid + Cardio (30 min) | Tue Feb 18 | [ ] | Plank: ___ sec |
-| PT Stretches | Wed Feb 19 | [ ] | 30 min |
+{% include todo-list.html goal="fitness" unit="week-7" %}
 
 ---
 

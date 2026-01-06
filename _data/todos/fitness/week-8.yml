@@ -1,0 +1,25 @@
+unit: week-8
+tasks:
+  # Sessions - 200+ min target
+  - id: swim-session
+    name: Swim session (55 min)
+    done: false
+  - id: gym-1
+    name: Gym session #1 (50 min)
+    done: false
+  - id: gym-2
+    name: Gym session #2 (50 min)
+    done: false
+  - id: bollywood
+    name: Bollywood dance class (60 min)
+    done: false
+  - id: pt-stretches
+    name: PT stretches (15 min)
+    done: false
+  # Program complete
+  - id: weekly-review
+    name: End of week reflection
+    done: false
+  - id: maintenance-plan
+    name: Create maintenance routine plan
+    done: false

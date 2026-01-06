@@ -157,18 +157,9 @@ If you have todos scattered elsewhere:
 
 ---
 
-## Verification Checklist
+## Setup Tasks
 
-Before moving to Week 1, confirm:
-
-- [ ] When I unlock phone, I see today's calendar
-- [ ] Voice command adds events successfully
-- [ ] Browser opens to calendar
-- [ ] Events have 3 default reminders (10 min, 1 hr, 1 day)
-- [ ] Work calendar is visible
-- [ ] Google Tasks is visible in calendar
-- [ ] (Optional) Smart home announces events
-- [ ] (Optional) Watch taps me for events
+{% include todo-list.html goal="calendar" unit="week-0" %}
 
 ---
 

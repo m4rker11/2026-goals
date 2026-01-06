@@ -1,0 +1,26 @@
+unit: week-3
+tasks:
+  # Sessions
+  - id: swim-session
+    name: Swim session (40 min) - FIRST SWIM
+    done: false
+  - id: upper-gym
+    name: Upper gym session (35 min)
+    done: false
+  - id: lower-gym
+    name: Lower gym session (35 min) - optional
+    done: false
+  - id: pt-stretches-1
+    name: PT Stretches (15 min)
+    done: false
+  # Gym setup
+  - id: gym-visit
+    name: Visit Anuska's gym, get oriented
+    done: false
+  - id: gym-hours
+    name: Know gym hours and busy times
+    done: false
+  # Weekly review
+  - id: weekly-review
+    name: End of week reflection
+    done: false

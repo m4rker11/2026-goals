@@ -1,12 +1,51 @@
 """YAML storage operations for goals and logs."""
 
 import os
+from datetime import datetime
+from datetime import date as date_type
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-REPO_PATH = Path(os.environ.get("REPO_PATH", "/repo"))
+
+def to_date_str(value) -> str:
+    """Convert date value to string, handling both str and datetime.date."""
+    if isinstance(value, date_type):
+        return value.strftime("%Y-%m-%d")
+    return str(value) if value else ""
+
+
+def _discover_repo_path() -> Path:
+    """
+    Discover the repo path dynamically.
+
+    Priority:
+    1. REPO_PATH environment variable (for Docker/explicit config)
+    2. Walk up from this file to find _data/goals.yml
+    """
+    if env_path := os.environ.get("REPO_PATH"):
+        return Path(env_path)
+
+    # Walk up from this file's location to find repo root
+    current = Path(__file__).resolve().parent
+    for _ in range(10):  # Max 10 levels up
+        if (current / "_data" / "goals.yml").exists():
+            return current
+        if current.parent == current:
+            break
+        current = current.parent
+
+    # Fallback for Docker (original default)
+    return Path("/repo")
+
+
+REPO_PATH = _discover_repo_path()
+
+
+def get_today() -> str:
+    """Get today's date as YYYY-MM-DD."""
+    return datetime.now().strftime("%Y-%m-%d")
 
 
 def load_yaml(path: Path) -> Any:
@@ -156,3 +195,79 @@ def get_all_pending_tasks(goal_id: str = None) -> list[dict]:
                     })
 
     return pending
+
+
+# --- Daily tracking ---
+
+def get_daily_path() -> Path:
+    """Get path to daily.yml."""
+    return REPO_PATH / "_data" / "daily.yml"
+
+
+def get_daily_entries() -> list:
+    """Load all daily entries."""
+    return load_yaml(get_daily_path())
+
+
+def save_daily_entries(entries: list) -> None:
+    """Save daily entries."""
+    save_yaml(get_daily_path(), entries)
+
+
+def get_daily_entry(date: str = None) -> dict | None:
+    """Get a specific day's entry, or today's if no date specified."""
+    target_date = date or get_today()
+    entries = get_daily_entries()
+
+    for entry in entries:
+        if to_date_str(entry.get("date")) == target_date:
+            return entry
+    return None
+
+
+def update_daily_entry(date: str = None, **fields) -> dict:
+    """
+    Update or create a daily entry.
+
+    Args:
+        date: Date in YYYY-MM-DD format (defaults to today)
+        **fields: Fields to update (calendar, fitness, hindi, mood, notes)
+
+    Returns:
+        The updated entry
+    """
+    target_date = date or get_today()
+    entries = get_daily_entries()
+
+    # Find existing entry
+    found_idx = None
+    for i, entry in enumerate(entries):
+        if to_date_str(entry.get("date")) == target_date:
+            found_idx = i
+            break
+
+    if found_idx is not None:
+        # Update existing
+        for key, value in fields.items():
+            if value is not None:
+                entries[found_idx][key] = value
+        result = entries[found_idx]
+    else:
+        # Create new entry with defaults
+        new_entry = {
+            "date": target_date,
+            "calendar": fields.get("calendar", False),
+            "fitness": fields.get("fitness", 0),
+            "hindi": fields.get("hindi", 0),
+        }
+        # Add optional fields if provided
+        if "mood" in fields:
+            new_entry["mood"] = fields["mood"]
+        if "notes" in fields:
+            new_entry["notes"] = fields["notes"]
+
+        entries.append(new_entry)
+        result = new_entry
+
+    save_daily_entries(entries)
+    return result

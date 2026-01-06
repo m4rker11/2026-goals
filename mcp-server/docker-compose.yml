@@ -12,8 +12,6 @@ services:
       # Git credentials for push
       - ~/.ssh:/root/.ssh:ro
       - ~/.gitconfig:/root/.gitconfig:ro
-      # Claude Code credentials (for future autonomous editing)
-      - ~/.claude:/root/.claude:ro
     environment:
       - REPO_PATH=/repo
       - PORT=8788

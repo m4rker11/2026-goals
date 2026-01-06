@@ -1,0 +1,19 @@
+unit: week-4
+tasks:
+  # Sessions
+  - id: swim-session
+    name: Swim session (45 min)
+    done: false
+  - id: upper-gym
+    name: Upper gym session (40 min)
+    done: false
+  - id: lower-gym
+    name: Lower gym session (40 min)
+    done: false
+  - id: pt-stretches
+    name: PT stretches (15 min)
+    done: false
+  # Weekly review
+  - id: weekly-review
+    name: End of week reflection
+    done: false

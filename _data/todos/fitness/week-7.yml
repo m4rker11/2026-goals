@@ -1,0 +1,22 @@
+unit: week-7
+tasks:
+  # Sessions
+  - id: swim-session
+    name: Swim session (50 min)
+    done: false
+  - id: gym-1
+    name: Gym session #1 (45 min)
+    done: false
+  - id: gym-2
+    name: Gym session #2 (45 min)
+    done: false
+  - id: bollywood
+    name: Bollywood dance class (60 min)
+    done: false
+  - id: pt-stretches
+    name: PT stretches (15 min)
+    done: false
+  # Weekly review
+  - id: weekly-review
+    name: End of week reflection
+    done: false

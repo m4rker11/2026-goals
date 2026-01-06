@@ -95,13 +95,7 @@ Continue the buddy routine
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper (35 min) | Mon Feb 2 | [ ] | Pushups: ___ Pullups: ___ |
-| Lower (30 min) | Wed Feb 4 | [ ] | |
-| PT Stretches | Thu Feb 5 | [ ] | |
-| Bollywood (60 min) | Sat Feb 7 | [ ] | First class! |
-| Blink with Kai (45 min) | Sun Feb 8 | [ ] | |
+{% include todo-list.html goal="fitness" unit="week-5" %}
 
 ---
 

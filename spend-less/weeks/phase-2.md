@@ -11,6 +11,12 @@ You can't fix what you don't see. This phase is about observation, not perfectio
 
 ---
 
+## Phase Tasks
+
+{% include todo-list.html goal="spend-less" unit="phase-2" %}
+
+---
+
 ## The Impulse Log
 
 Every time you feel the urge to buy something (whether you buy it or not), log it:

@@ -91,13 +91,7 @@ Option B: Brisk walk
 
 ## Session Tracking
 
-| Session | Planned | Done? | Notes |
-|---------|---------|-------|-------|
-| Upper (25 min) | Mon Jan 12 | [ ] | Pushup max: ___ |
-| Lower (20 min) | Wed Jan 14 | [ ] | |
-| Cardio (20 min) | Thu Jan 15 | [ ] | Jog / Walk |
-| PT Stretches #1 | Fri Jan 16 | [ ] | |
-| PT Stretches #2 | Sat Jan 17 | [ ] | |
+{% include todo-list.html goal="fitness" unit="week-2" %}
 
 ---
 

@@ -87,15 +87,7 @@ Total time: 15 seconds.
 
 ## Daily Tracking
 
-| Day | How many "check calendar" moments? | Did you actually check? |
-|-----|-----------------------------------|------------------------|
-| Mon | | [ ] All [ ] Most [ ] Some [ ] None |
-| Tue | | [ ] All [ ] Most [ ] Some [ ] None |
-| Wed | | [ ] All [ ] Most [ ] Some [ ] None |
-| Thu | | [ ] All [ ] Most [ ] Some [ ] None |
-| Fri | | [ ] All [ ] Most [ ] Some [ ] None |
-| Sat | | [ ] All [ ] Most [ ] Some [ ] None |
-| Sun | | [ ] All [ ] Most [ ] Some [ ] None |
+{% include todo-list.html goal="calendar" unit="week-5" %}
 
 ---
 

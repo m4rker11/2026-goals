@@ -11,26 +11,9 @@ You can't willpower your way past one-click buying. Change the environment inste
 
 ---
 
-## One-Time Setup (Do This Week 1)
+## Setup Tasks
 
-### Remove Saved Payment Methods
-
-- [ ] Amazon - remove saved cards
-- [ ] Chrome/Safari - clear autofill payment
-- [ ] Apple Pay / Google Pay - remove card (optional, more extreme)
-- [ ] Any app you impulse-buy from
-
-### New Card Rule
-
-When your new card arrives:
-- [ ] **Do NOT save it anywhere**
-- [ ] Keep it in wallet, not memorized
-- [ ] Every purchase = physically get card out
-
-### Browser Extensions (Optional)
-
-- [ ] Install "Impulse Blocker" or similar for shopping sites
-- [ ] Add shopping sites to block list during work hours
+{% include todo-list.html goal="spend-less" unit="phase-1" %}
 
 ---
 

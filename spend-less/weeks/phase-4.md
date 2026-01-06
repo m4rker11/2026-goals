@@ -11,6 +11,12 @@ The system is built. Now make it stick with a simple weekly review.
 
 ---
 
+## Phase Tasks
+
+{% include todo-list.html goal="spend-less" unit="phase-4" %}
+
+---
+
 ## Weekly Monarch Review (10 min, Sundays)
 
 1. Open Monarch

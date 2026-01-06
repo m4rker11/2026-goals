@@ -6,11 +6,11 @@ from mcp.types import TextContent, Tool
 
 from .storage import (
     get_goals_config, get_goal_logs, save_goal_logs,
-    get_unit_todo, save_unit_todo, update_todo_task, get_all_pending_tasks
+    get_unit_todo, save_unit_todo, update_todo_task, get_all_pending_tasks,
+    get_today, get_daily_entry, update_daily_entry, get_daily_entries, to_date_str
 )
-from .goals import get_today, get_current, compute_todos, resolve_goal_id
+from .goals import get_current, compute_todos, resolve_goal_id
 from .git import commit_and_push
-from .claude import edit_and_commit, ALLOWED_PATHS
 
 
 TOOL_DEFINITIONS = [
@@ -20,6 +20,41 @@ TOOL_DEFINITIONS = [
         inputSchema={
             "type": "object",
             "properties": {},
+            "required": []
+        }
+    ),
+    Tool(
+        name="daily",
+        description="""Update today's daily tracking entry. Use this for quick daily metrics.
+Updates _data/daily.yml which feeds the Jekyll dashboard.""",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "calendar": {
+                    "type": "boolean",
+                    "description": "Did you check your calendar today?"
+                },
+                "fitness": {
+                    "type": "number",
+                    "description": "Minutes of exercise today"
+                },
+                "hindi": {
+                    "type": "number",
+                    "description": "Hindi chapters/lessons completed today"
+                },
+                "mood": {
+                    "type": "number",
+                    "description": "Energy/motivation level 1-5"
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "Brief reflection on the day"
+                },
+                "date": {
+                    "type": "string",
+                    "description": "Date in YYYY-MM-DD format (defaults to today)"
+                }
+            },
             "required": []
         }
     ),
@@ -134,36 +169,6 @@ Optionally update a todo task when logging (marks task done and adds notes to th
         }
     ),
     Tool(
-        name="edit_content",
-        description=f"""Edit goal content files (markdown) using Claude Code. Use for:
-- Updating weekly task files (marking checkboxes, adding reflections)
-- Adding notes to Hindi chapter synopses
-- Updating sell item details (price, status, listing info)
-- Modifying workout plans or session notes
-- Updating Goals.md with new insights
-
-Allowed paths: {', '.join(ALLOWED_PATHS)}
-NOT for log entries (use 'log' tool) or goals.yml (use dedicated tools).""",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "instruction": {
-                    "type": "string",
-                    "description": "What to edit. Be specific: 'Mark Monday calendar check done', 'Add note to chapter 5: tricky conjugation'"
-                },
-                "file": {
-                    "type": "string",
-                    "description": "Optional file path relative to repo (e.g., 'calendaring/weeks/week-1-tasks.md')"
-                },
-                "auto_commit": {
-                    "type": "boolean",
-                    "description": "Auto-commit and push after edit (default: true)"
-                }
-            },
-            "required": ["instruction"]
-        }
-    ),
-    Tool(
         name="read_todo",
         description="""Read todo tasks for a specific unit (week/chapter).
 Returns the task list with completion status and notes.""",
@@ -224,10 +229,23 @@ def handle_check_in() -> list[TextContent]:
     goal_todos = compute_todos(config)
     pending_tasks = get_all_pending_tasks()
 
-    if not goal_todos and not pending_tasks:
-        return [TextContent(type="text", text="All caught up! No urgent items.")]
+    # Get today's daily entry
+    today_entry = get_daily_entry()
 
     lines = [f"📋 **Goals Check-in** ({get_today()})", ""]
+
+    # Show today's daily status first
+    if today_entry:
+        lines.append("**Today's tracking:**")
+        lines.append(f"  Calendar: {'✓' if today_entry.get('calendar') else '✗'}")
+        lines.append(f"  Fitness: {today_entry.get('fitness', 0)} min")
+        lines.append(f"  Hindi: {today_entry.get('hindi', 0)} chapters")
+        if today_entry.get('mood'):
+            lines.append(f"  Mood: {today_entry['mood']}/5")
+        lines.append("")
+    else:
+        lines.append("**Today's tracking:** No entry yet. Use `daily` tool to log.")
+        lines.append("")
 
     high = [t for t in goal_todos if t.get("priority") == "high"]
     medium = [t for t in goal_todos if t.get("priority") == "medium"]
@@ -269,6 +287,54 @@ def handle_check_in() -> list[TextContent]:
                 lines.append(f"- {gid}/{pt['unit']}: {task.get('name', task.get('id'))}")
             if len(tasks) > 3:
                 lines.append(f"  (+{len(tasks) - 3} more)")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_daily(arguments: dict) -> list[TextContent]:
+    """Handle daily tool - update today's daily tracking."""
+    date = arguments.get("date")
+
+    # Build fields to update (only include provided values)
+    fields = {}
+    if "calendar" in arguments:
+        fields["calendar"] = arguments["calendar"]
+    if "fitness" in arguments:
+        fields["fitness"] = arguments["fitness"]
+    if "hindi" in arguments:
+        fields["hindi"] = arguments["hindi"]
+    if "mood" in arguments:
+        fields["mood"] = arguments["mood"]
+    if "notes" in arguments:
+        fields["notes"] = arguments["notes"]
+
+    if not fields:
+        # No fields provided, just show current status
+        entry = get_daily_entry(date)
+        if entry:
+            lines = [f"📅 **Daily Entry** ({entry['date']})", ""]
+            lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
+            lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
+            lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
+            if entry.get('mood'):
+                lines.append(f"  Mood: {entry['mood']}/5")
+            if entry.get('notes'):
+                lines.append(f"  Notes: {entry['notes']}")
+            return [TextContent(type="text", text="\n".join(lines))]
+        else:
+            return [TextContent(type="text", text=f"No entry for {date or get_today()}. Provide fields to create one.")]
+
+    # Update the entry
+    entry = update_daily_entry(date, **fields)
+
+    lines = [f"✅ **Daily Updated** ({entry['date']})", ""]
+    lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
+    lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
+    lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
+    if entry.get('mood'):
+        lines.append(f"  Mood: {entry['mood']}/5")
+    if entry.get('notes'):
+        lines.append(f"  Notes: {entry['notes']}")
 
     return [TextContent(type="text", text="\n".join(lines))]
 
@@ -343,7 +409,7 @@ def handle_edit(arguments: dict) -> list[TextContent]:
 
     found_idx = None
     for i, log in enumerate(logs):
-        if log.get("date") == target_date:
+        if to_date_str(log.get("date")) == target_date:
             if target_path:
                 if log.get("path") == target_path:
                     found_idx = i
@@ -410,9 +476,22 @@ def handle_status(arguments: dict) -> list[TextContent]:
 
     lines = [f"📊 **Status** ({period})", ""]
 
+    # Include daily summary for this period
+    daily_entries = get_daily_entries()
+    period_daily = [d for d in daily_entries if to_date_str(d.get("date")) >= start_date]
+    if period_daily:
+        total_fitness = sum(d.get("fitness", 0) for d in period_daily)
+        total_hindi = sum(d.get("hindi", 0) for d in period_daily)
+        calendar_days = sum(1 for d in period_daily if d.get("calendar"))
+        lines.append(f"**Daily totals ({len(period_daily)} days):**")
+        lines.append(f"  Fitness: {total_fitness} min")
+        lines.append(f"  Hindi: {total_hindi} chapters")
+        lines.append(f"  Calendar: {calendar_days}/{len(period_daily)} days")
+        lines.append("")
+
     for goal_id, goal_config in target_goals.items():
         logs = get_goal_logs(goal_id)
-        period_logs = [l for l in logs if l.get("date", "") >= start_date]
+        period_logs = [l for l in logs if to_date_str(l.get("date")) >= start_date]
         progression = goal_config.get("progression")
 
         lines.append(f"**{goal_config.get('name', goal_id)}**")
@@ -458,33 +537,6 @@ def handle_status(arguments: dict) -> list[TextContent]:
                 lines.append(entry_str)
 
         lines.append("")
-
-    return [TextContent(type="text", text="\n".join(lines))]
-
-
-def handle_edit_content(arguments: dict) -> list[TextContent]:
-    """Handle edit_content tool - uses Claude Code to edit markdown files."""
-    instruction = arguments.get("instruction", "")
-    file_path = arguments.get("file")
-    auto_commit = arguments.get("auto_commit", True)
-
-    if not instruction:
-        return [TextContent(type="text", text="Error: instruction is required")]
-
-    result = edit_and_commit(instruction, file_path, auto_commit)
-
-    lines = []
-    if result["success"]:
-        lines.append("✅ **Edit completed**")
-        if result.get("files_changed"):
-            lines.append(f"Files: {', '.join(result['files_changed'])}")
-        if result.get("committed"):
-            lines.append(f"Committed: {result.get('commit_message', 'yes')}")
-        elif result.get("files_changed"):
-            lines.append("Not committed (auto_commit=false)")
-    else:
-        lines.append("❌ **Edit failed**")
-        lines.append(result["message"])
 
     return [TextContent(type="text", text="\n".join(lines))]
 
@@ -578,6 +630,8 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
         return handle_check_in()
+    elif name == "daily":
+        return handle_daily(arguments)
     elif name == "log":
         return handle_log(arguments)
     elif name == "edit":
@@ -586,8 +640,6 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_commit(arguments)
     elif name == "status":
         return handle_status(arguments)
-    elif name == "edit_content":
-        return handle_edit_content(arguments)
     elif name == "read_todo":
         return handle_read_todo(arguments)
     elif name == "write_todo":
