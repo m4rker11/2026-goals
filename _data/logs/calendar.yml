@@ -1,2 +1,8 @@
 # Calendar habit progress
 # path = morning-check, evening-plan, etc.
+
+- date: '2026-01-06'
+  done: true
+  notes: 'Completed 13/20 setup tasks: widgets, voice commands, notifications, browser
+    homepage, Tasks app install, all verifications passed'
+  path: week-0-setup

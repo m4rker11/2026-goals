@@ -398,8 +398,9 @@ def find_goal_event_today(goal_id: str) -> Optional[str]:
 def mark_goal_complete(event_id: str) -> dict:
     """
     Mark a goal event as complete by prefixing with checkmark.
+    Also completes the linked Google Task if TaskID is in description.
 
-    Returns: {success, message}
+    Returns: {success, message, task_completed}
     """
     gc = get_calendar()
     if not gc:
@@ -414,7 +415,20 @@ def mark_goal_complete(event_id: str) -> dict:
             event.summary = "✓ " + event.summary
             gc.update_event(event)
 
-        return {"success": True, "message": "Marked complete"}
+        # Check for linked Google Task
+        task_completed = False
+        if event.description:
+            for line in event.description.split("\n"):
+                if line.startswith("TaskID: "):
+                    task_id = line.replace("TaskID: ", "").strip()
+                    # Import here to avoid circular imports
+                    from . import tasks_service
+                    task_result = tasks_service.complete_task(task_id)
+                    if task_result.get("success"):
+                        task_completed = True
+                    break
+
+        return {"success": True, "message": "Marked complete", "task_completed": task_completed}
     except Exception as e:
         return {"success": False, "message": f"Failed: {e}"}
 

@@ -13,6 +13,7 @@ from .storage import (
 )
 from .goals import get_current, compute_todos, resolve_goal_id
 from . import calendar_service
+from . import tasks_service
 
 
 def get_tool_definitions(urgent_summary: str = "", goals_list: str = "") -> list[Tool]:
@@ -371,6 +372,48 @@ Keep: key patterns, significant quotes, important insights. Remove: redundant en
                     }
                 },
                 "required": ["condensed_entries"]
+            }
+        ),
+        Tool(
+            name="add",
+            description="""Add an event or task to Google Calendar.
+- type="event": Calendar event only (meetings, appointments)
+- type="task": Calendar event + Google Task (action items to complete)
+Tasks appear both on calendar (time block) and in Google Tasks (checklist).""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Event/task title"
+                    },
+                    "time": {
+                        "type": "string",
+                        "description": "When to schedule: 'today 4pm', 'tomorrow 9am', or ISO datetime"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["event", "task"],
+                        "description": "event = calendar only, task = calendar + Google Tasks"
+                    },
+                    "duration": {
+                        "type": "number",
+                        "description": "Duration in minutes (default: 30)"
+                    },
+                    "calendar": {
+                        "type": "string",
+                        "description": "Calendar name (e.g., 'Personal', 'Work'). Defaults to primary."
+                    },
+                    "color": {
+                        "type": "number",
+                        "description": "Color ID: 9=blue(Work), 2=green(Personal), 3=purple(Social), 11=red(Health), 6=orange(Anuska)"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Optional description/notes"
+                    }
+                },
+                "required": ["title", "time", "type"]
             }
         )
     ]
@@ -1086,6 +1129,98 @@ def handle_memory_condense(arguments: dict) -> list[TextContent]:
     )]
 
 
+def handle_add(arguments: dict) -> list[TextContent]:
+    """Handle add tool - creates calendar event and optionally Google Task."""
+    title = arguments.get("title", "")
+    if not title:
+        return [TextContent(type="text", text="title is required")]
+
+    time_str = arguments.get("time", "")
+    time = calendar_service.parse_time(time_str)
+    if not time:
+        return [TextContent(type="text", text=f"Could not parse time: '{time_str}'. Try 'today 4pm' or 'tomorrow 9am'")]
+
+    item_type = arguments.get("type", "event")
+    if item_type not in ("event", "task"):
+        return [TextContent(type="text", text="type must be 'event' or 'task'")]
+
+    duration = arguments.get("duration", 30)
+    calendar_name = arguments.get("calendar")
+    calendar_id = calendar_service.resolve_calendar(calendar_name) if calendar_name else None
+    color_id = arguments.get("color")
+    notes = arguments.get("notes", "")
+
+    # Check for conflicts
+    conflicts = calendar_service.check_conflicts(time, duration)
+    conflict_warning = ""
+    if conflicts:
+        conflict_warning = f"\n⚠️ Conflicts with: {', '.join(c['title'] + ' at ' + c['time'] for c in conflicts)}"
+
+    # Build description
+    description = notes or ""
+
+    # If task type, create Google Task first to get task_id
+    task_id = None
+    if item_type == "task":
+        task_result = tasks_service.create_task(
+            title=title,
+            due_date=time.date(),
+            notes=notes,
+        )
+        if task_result.get("success"):
+            task_id = task_result.get("task_id")
+            # Store task_id in calendar event description for sync
+            description = f"TaskID: {task_id}\n{notes}" if notes else f"TaskID: {task_id}"
+        else:
+            # Task creation failed but continue with calendar
+            conflict_warning += f"\n⚠️ Google Task creation failed: {task_result.get('message')}"
+
+    # Create calendar event
+    from gcsa.google_calendar import GoogleCalendar
+    from gcsa.event import Event
+
+    if calendar_id:
+        try:
+            gc = GoogleCalendar(
+                default_calendar=calendar_id,
+                credentials_path=str(calendar_service.CREDENTIALS_PATH),
+                token_path=str(calendar_service.TOKEN_PATH),
+            )
+        except Exception as e:
+            return [TextContent(type="text", text=f"Failed to access calendar: {e}")]
+    else:
+        gc = calendar_service.get_calendar()
+
+    if not gc:
+        return [TextContent(type="text", text="Not authenticated. Run: goals-mcp auth")]
+
+    end_time = time + timedelta(minutes=duration)
+
+    try:
+        event = Event(
+            summary=title,
+            start=time,
+            end=end_time,
+            description=description if description else None,
+            color_id=str(color_id) if color_id else None,
+        )
+
+        created = gc.add_event(event)
+
+        result_lines = [f"Created {item_type}: {title} at {time.strftime('%I:%M%p').lower().lstrip('0')}"]
+        if item_type == "task" and task_id:
+            result_lines.append(f"Google Task created (ID: {task_id})")
+        if created.event_id:
+            result_lines.append(f"Calendar event ID: {created.event_id}")
+        if conflict_warning:
+            result_lines.append(conflict_warning)
+
+        return [TextContent(type="text", text="\n".join(result_lines))]
+
+    except Exception as e:
+        return [TextContent(type="text", text=f"Failed to create calendar event: {e}{conflict_warning}")]
+
+
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
@@ -1116,5 +1251,7 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_memory_read(arguments)
     elif name == "memory_condense":
         return handle_memory_condense(arguments)
+    elif name == "add":
+        return handle_add(arguments)
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]

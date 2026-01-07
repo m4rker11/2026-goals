@@ -1,4 +1,4 @@
-"""Google Calendar OAuth authentication."""
+"""Google Calendar and Tasks OAuth authentication."""
 
 import sys
 from pathlib import Path
@@ -17,12 +17,12 @@ def run_auth():
 
     if not CREDENTIALS_PATH.exists():
         print(f"""
-Google Calendar credentials not found.
+Google credentials not found.
 
 To set up:
 1. Go to https://console.cloud.google.com/
 2. Create a project (or use existing)
-3. Enable Google Calendar API
+3. Enable Google Calendar API AND Google Tasks API
 4. Create OAuth 2.0 credentials (Desktop app)
 5. Download credentials.json
 6. Save to: {CREDENTIALS_PATH}
@@ -36,7 +36,10 @@ Then run: goals-mcp auth
         import pickle
         import webbrowser
 
-        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        SCOPES = [
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/tasks',
+        ]
 
         from urllib.parse import urlparse, parse_qs
 
