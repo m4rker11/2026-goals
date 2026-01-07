@@ -32,13 +32,12 @@ This is non-negotiable accountability."""
         check_in_desc = """Check what goals need attention today.
 Call at: (1) conversation start, (2) when 30+ min elapsed (scripts, logs, timestamps, user mentions)."""
 
-    # Dynamic log description with available goals
-    log_desc = f"""Log progress or daily reflection. Available goals: {goals_list or 'hindi, fitness, calendar, brother, trading, sell, spend-less, work-boundaries'}.
-- With goal: logs progress (auto-syncs to daily.yml for fitness/calendar/hindi)
-- Without goal: logs mood/notes only (daily reflection)
-Use path for subgoals. Optionally update a todo task when logging."""
+    # Dynamic log_goal description with available goals
+    log_goal_desc = f"""Log progress on a goal. Available goals: {goals_list or 'hindi, fitness, calendar, brother, trading, sell, spend-less, work-boundaries'}.
+Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optionally mark a todo task done."""
 
     return [
+        # ==================== CHECK-IN ====================
         Tool(
             name="check_in",
             description=check_in_desc,
@@ -48,177 +47,220 @@ Use path for subgoals. Optionally update a todo task when logging."""
                 "required": []
             }
         ),
+
+        # ==================== LOG_GOAL ====================
         Tool(
-            name="log",
-            description=log_desc,
-            inputSchema={
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "type": "string",
-                    "description": "Goal ID or alias. Omit to log mood/notes only."
-                },
-                "value": {
-                    "type": ["number", "boolean"],
-                    "description": "Value to log (minutes for fitness, true/false for completion)"
-                },
-                "path": {
-                    "type": "string",
-                    "description": "Subgoal path (e.g., 'chapter-3', 'morning-check')"
-                },
-                "mood": {
-                    "type": "number",
-                    "description": "Energy/motivation level 1-5 (for daily reflection)"
-                },
-                "notes": {
-                    "type": "string",
-                    "description": "Optional notes about completion (stored in log)"
-                },
-                "date": {
-                    "type": "string",
-                    "description": "Date in YYYY-MM-DD format (defaults to today)"
-                },
-                "todo_unit": {
-                    "type": "string",
-                    "description": "Unit for todo update (e.g., 'week-1', '01-foundations-of-case')"
-                },
-                "todo_task": {
-                    "type": "string",
-                    "description": "Task ID to mark done in the unit's todo.yml"
-                },
-                "todo_notes": {
-                    "type": "string",
-                    "description": "Notes to add to the todo task (learnings, context about the task)"
-                }
-            },
-            "required": []
-        }
-    ),
-    Tool(
-        name="edit",
-        description="Edit or delete an existing log entry.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "type": "string",
-                    "description": "Goal ID or alias"
-                },
-                "date": {
-                    "type": "string",
-                    "description": "Date of entry to edit (YYYY-MM-DD)"
-                },
-                "path": {
-                    "type": "string",
-                    "description": "Path of entry to edit (if applicable)"
-                },
-                "value": {
-                    "type": ["number", "boolean"],
-                    "description": "New value"
-                },
-                "notes": {
-                    "type": "string",
-                    "description": "New notes"
-                },
-                "delete": {
-                    "type": "boolean",
-                    "description": "Set to true to delete the entry"
-                }
-            },
-            "required": ["goal", "date"]
-        }
-    ),
-    Tool(
-        name="status",
-        description="Get detailed status for a goal or all goals.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "type": "string",
-                    "description": "Goal ID or alias (omit for all goals)"
-                },
-                "period": {
-                    "type": "string",
-                    "enum": ["today", "week", "month", "all"],
-                    "description": "Time period to show (defaults to 'week')"
-                }
-            },
-            "required": []
-        }
-    ),
-    Tool(
-        name="read_todo",
-        description="""Read todo tasks for a specific unit (week/chapter).
-Returns the task list with completion status and notes.""",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "type": "string",
-                    "description": "Goal ID or alias"
-                },
-                "unit": {
-                    "type": "string",
-                    "description": "Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
-                }
-            },
-            "required": ["goal", "unit"]
-        }
-    ),
-    Tool(
-        name="write_todo",
-        description="""Create or overwrite the todo list for a unit.
-Use when setting up tasks for a new week/chapter or resetting the list.""",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "type": "string",
-                    "description": "Goal ID or alias"
-                },
-                "unit": {
-                    "type": "string",
-                    "description": "Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
-                },
-                "tasks": {
-                    "type": "array",
-                    "description": "List of tasks",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "string", "description": "Task identifier (e.g., 'vocab', 'synopsis')"},
-                            "name": {"type": "string", "description": "Human-readable task name"},
-                            "done": {"type": "boolean", "description": "Whether task is complete (default: false)"},
-                            "notes": {"type": "string", "description": "Optional notes about the task"}
-                        },
-                        "required": ["id", "name"]
-                    }
-                }
-            },
-            "required": ["goal", "unit", "tasks"]
-        }
-        ),
-        Tool(
-            name="schedule",
-            description="""Add event to Google Calendar. Use type='goal' for goal tasks (syncs to todo.yml), type='personal' for regular events.
-- type='goal': requires goal, unit, task - creates [Goal] prefixed event, syncs to todo
-- type='personal': requires title - creates regular calendar event (optionally + Google Task)""",
+            name="log_goal",
+            description=log_goal_desc,
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "type": {
+                    "goal": {
                         "type": "string",
-                        "enum": ["goal", "personal"],
-                        "description": "goal = todo task with sync, personal = regular calendar event"
+                        "description": "Goal ID or alias (e.g., 'fitness', 'hindi', 'calendar')"
+                    },
+                    "value": {
+                        "type": ["number", "boolean"],
+                        "description": "Value to log (minutes for fitness, true/false for completion)"
+                    },
+                    "path": {
+                        "type": "string",
+                        "description": "Subgoal path (e.g., 'chapter-3', 'morning-check')"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Notes about what was accomplished"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date in YYYY-MM-DD format (defaults to today)"
+                    },
+                    "todo_unit": {
+                        "type": "string",
+                        "description": "Unit for todo update (e.g., 'week-1', '01-foundations-of-case')"
+                    },
+                    "todo_task": {
+                        "type": "string",
+                        "description": "Task ID to mark done in the unit's todo.yml"
+                    },
+                    "todo_notes": {
+                        "type": "string",
+                        "description": "Notes to add to the todo task (learnings, context)"
+                    }
+                },
+                "required": ["goal"]
+            }
+        ),
+
+        # ==================== LOG_DAILY ====================
+        Tool(
+            name="log_daily",
+            description="Record daily mood and reflection notes. Updates _data/daily.yml for the Jekyll dashboard.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "mood": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5,
+                        "description": "Energy/motivation level (1=low, 5=high)"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Brief reflection on the day"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date in YYYY-MM-DD format (defaults to today)"
+                    }
+                },
+                "required": []
+            }
+        ),
+
+        # ==================== EDIT_GOAL_LOG ====================
+        Tool(
+            name="edit_goal_log",
+            description="Edit or delete an existing goal log entry. Use to correct mistakes or remove erroneous entries.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID or alias (e.g., 'fitness', 'hindi')"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date of entry to edit (YYYY-MM-DD)"
+                    },
+                    "path": {
+                        "type": "string",
+                        "description": "Path of entry to edit (if applicable)"
+                    },
+                    "value": {
+                        "type": ["number", "boolean"],
+                        "description": "New value to set"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "New notes to set"
+                    },
+                    "delete": {
+                        "type": "boolean",
+                        "description": "Set to true to delete the entry entirely"
+                    }
+                },
+                "required": ["goal", "date"]
+            }
+        ),
+
+        # ==================== GET_GOAL_STATUS ====================
+        Tool(
+            name="get_goal_status",
+            description="Get detailed status and recent activity for a goal or all goals.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID or alias (omit for all goals)"
+                    },
+                    "period": {
+                        "type": "string",
+                        "enum": ["today", "week", "month", "all"],
+                        "description": "Time period to show (defaults to 'week')"
+                    }
+                },
+                "required": []
+            }
+        ),
+
+        # ==================== READ_TODO ====================
+        Tool(
+            name="read_todo",
+            description="Read todo tasks for a specific unit (week/chapter). Returns task list with completion status and notes.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID or alias (e.g., 'fitness', 'hindi')"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
+                    }
+                },
+                "required": ["goal", "unit"]
+            }
+        ),
+
+        # ==================== WRITE_TODO ====================
+        Tool(
+            name="write_todo",
+            description="Create or overwrite the todo list for a unit. Use when setting up tasks for a new week/chapter.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID or alias (e.g., 'fitness', 'hindi')"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
+                    },
+                    "tasks": {
+                        "type": "array",
+                        "description": "List of tasks to create",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "string", "description": "Task identifier (e.g., 'vocab', 'synopsis')"},
+                                "name": {"type": "string", "description": "Human-readable task name"},
+                                "done": {"type": "boolean", "description": "Whether task is complete (default: false)"},
+                                "notes": {"type": "string", "description": "Optional notes about the task"}
+                            },
+                            "required": ["id", "name"]
+                        }
+                    }
+                },
+                "required": ["goal", "unit", "tasks"]
+            }
+        ),
+
+        # ==================== SCHEDULE_GOAL_TASK ====================
+        Tool(
+            name="schedule_goal_task",
+            description="Schedule a goal todo task on Google Calendar. Creates [Goal] prefixed event and syncs to todo.yml.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID or alias (e.g., 'fitness', 'hindi')"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Task ID to schedule (from todo.yml)"
                     },
                     "time": {
                         "type": "string",
                         "description": "When to schedule: 'today 4pm', 'tomorrow 9am', or ISO datetime"
                     },
                     "duration": {
-                        "type": "number",
-                        "description": "Duration in minutes (default: 30)"
+                        "type": "integer",
+                        "minimum": 5,
+                        "maximum": 480,
+                        "description": "Duration in minutes (default: 30, max: 8 hours)"
                     },
                     "calendar": {
                         "type": "string",
@@ -226,50 +268,72 @@ Use when setting up tasks for a new week/chapter or resetting the list.""",
                     },
                     "notes": {
                         "type": "string",
-                        "description": "Optional description/notes"
-                    },
-                    "goal": {
-                        "type": "string",
-                        "description": "[type=goal] Goal ID or alias"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "description": "[type=goal] Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
-                    },
-                    "task": {
-                        "type": "string",
-                        "description": "[type=goal] Task ID to schedule"
+                        "description": "Additional notes for the calendar event"
                     },
                     "invite": {
                         "type": "array",
-                        "items": {"type": "string"},
-                        "description": "[type=goal] Email addresses to invite"
-                    },
+                        "items": {"type": "string", "format": "email"},
+                        "description": "Email addresses to invite"
+                    }
+                },
+                "required": ["goal", "unit", "task", "time"]
+            }
+        ),
+
+        # ==================== ADD_CALENDAR_EVENT ====================
+        Tool(
+            name="add_calendar_event",
+            description="Add a personal event to Google Calendar. Optionally create a linked Google Task.",
+            inputSchema={
+                "type": "object",
+                "properties": {
                     "title": {
                         "type": "string",
-                        "description": "[type=personal] Event title"
+                        "description": "Event title"
+                    },
+                    "time": {
+                        "type": "string",
+                        "description": "When to schedule: 'today 4pm', 'tomorrow 9am', or ISO datetime"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "minimum": 5,
+                        "maximum": 480,
+                        "description": "Duration in minutes (default: 30, max: 8 hours)"
+                    },
+                    "calendar": {
+                        "type": "string",
+                        "description": "Calendar name (e.g., 'Personal', 'Work'). Defaults to primary."
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Event description/notes"
                     },
                     "color": {
-                        "type": "number",
-                        "description": "[type=personal] Color ID: 9=blue(Work), 2=green(Personal), 3=purple(Social), 11=red(Health), 6=orange(Anuska)"
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 11,
+                        "description": "Color ID: 9=blue(Work), 2=green(Personal), 3=purple(Social), 11=red(Health), 6=orange"
                     },
                     "create_task": {
                         "type": "boolean",
-                        "description": "[type=personal] Also create Google Task (default: false)"
+                        "description": "Also create Google Task (default: false)"
                     }
                 },
-                "required": ["type", "time"]
+                "required": ["title", "time"]
             }
         ),
+
+        # ==================== RESCHEDULE_EVENT ====================
         Tool(
-            name="reschedule",
-            description="Move a scheduled goal to a new time.",
+            name="reschedule_event",
+            description="Move a scheduled calendar event to a new time. Syncs changes to todo.yml if it's a goal task.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "event_id": {
                         "type": "string",
-                        "description": "Calendar event ID (from list_scheduled)"
+                        "description": "Calendar event ID (from list_calendar_events)"
                     },
                     "new_time": {
                         "type": "string",
@@ -279,9 +343,11 @@ Use when setting up tasks for a new week/chapter or resetting the list.""",
                 "required": ["event_id", "new_time"]
             }
         ),
+
+        # ==================== DELETE_EVENT ====================
         Tool(
-            name="unschedule",
-            description="Remove a scheduled goal event from calendar.",
+            name="delete_event",
+            description="Remove a calendar event. Clears scheduling info from todo.yml if it's a goal task.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -293,43 +359,53 @@ Use when setting up tasks for a new week/chapter or resetting the list.""",
                 "required": ["event_id"]
             }
         ),
+
+        # ==================== LIST_CALENDAR_EVENTS ====================
         Tool(
-            name="list_scheduled",
-            description="Show scheduled events from Google Calendar. Shows both goal events and regular events.",
+            name="list_calendar_events",
+            description="Show upcoming events from Google Calendar. Shows both goal events and personal events.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "hours": {
-                        "type": "number",
-                        "description": "Hours ahead to look (default: 24)"
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 168,
+                        "description": "Hours ahead to look (default: 24, max: 1 week)"
                     }
                 },
                 "required": []
             }
         ),
+
+        # ==================== MEMORY_SAVE ====================
         Tool(
             name="memory_save",
-            description="""Save an observation to memory. Call this when you notice:
+            description="""Save an observation to memory. Call when you notice:
 - Behavioral patterns (e.g., "Skipped fitness 3rd day - said 'too tired' but watched TV")
 - User quotes/commitments (e.g., "Quote: 'I'll definitely finish chapter 5 tomorrow'")
 - Insights about what works/doesn't (e.g., "Completed fitness despite resistance - felt great after")
-- Energy/context notes (e.g., "Very tired today, might need rest day")
 Memory is reviewed during check_in to surface patterns over time.""",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "text": {
                         "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500,
                         "description": "The observation, quote, or insight to remember"
                     },
                     "date": {
                         "type": "string",
+                        "format": "date",
                         "description": "Date in YYYY-MM-DD format (defaults to today)"
                     }
                 },
                 "required": ["text"]
             }
         ),
+
+        # ==================== MEMORY_READ ====================
         Tool(
             name="memory_read",
             description="Read memory entries. Returns recent observations, quotes, and insights.",
@@ -337,28 +413,32 @@ Memory is reviewed during check_in to surface patterns over time.""",
                 "type": "object",
                 "properties": {
                     "limit": {
-                        "type": "number",
-                        "description": "Number of entries to return (default: 10)"
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "description": "Number of entries to return (default: 10, max: 100)"
                     }
                 },
                 "required": []
             }
         ),
+
+        # ==================== MEMORY_CONDENSE ====================
         Tool(
             name="memory_condense",
             description="""Condense memory by summarizing old entries. Use when memory gets long.
-Reads all entries, you provide a condensed summary, and it replaces the old entries.
-Keep: key patterns, significant quotes, important insights. Remove: redundant entries, noise.""",
+Provide condensed_entries to replace all existing memory. Keep key patterns and significant insights.""",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "condensed_entries": {
                         "type": "array",
                         "description": "The condensed list of memory entries to save",
+                        "minItems": 1,
                         "items": {
                             "type": "object",
                             "properties": {
-                                "date": {"type": "string", "description": "Date range covered (e.g., '2026-01-01 to 2026-01-15')"},
+                                "date": {"type": "string", "description": "Date or range (e.g., '2026-01-01 to 2026-01-15')"},
                                 "text": {"type": "string", "description": "The condensed observation"}
                             },
                             "required": ["date", "text"]
@@ -368,8 +448,10 @@ Keep: key patterns, significant quotes, important insights. Remove: redundant en
                 "required": ["condensed_entries"]
             }
         ),
+
+        # ==================== MANAGE_PROGRESS ====================
         Tool(
-            name="progress",
+            name="manage_progress",
             description="""Manage learning progress and schedule adjustments for goals.
 
 Actions:
@@ -383,13 +465,10 @@ Actions:
 - clear: Clear offset/override to resume normal schedule
 
 Examples:
-- progress goal=hindi action=view
-- progress goal=hindi action=start chapter=02-compound-postpositions
-- progress goal=hindi action=review chapter=01-foundations-of-case
-- progress goal=hindi action=focus chapters=["01-foundations-of-case", "02-compound-postpositions"]
-- progress goal=fitness action=offset weeks=2 reason="Pulled muscle"
-- progress goal=fitness action=override week=3 reason="Starting over"
-- progress goal=fitness action=clear""",
+- manage_progress goal=hindi action=view
+- manage_progress goal=hindi action=start chapter=02-compound-postpositions
+- manage_progress goal=fitness action=offset weeks=2 reason="Pulled muscle"
+- manage_progress goal=fitness action=clear""",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -404,7 +483,7 @@ Examples:
                     },
                     "chapter": {
                         "type": "string",
-                        "description": "Chapter ID for start/review/complete actions (e.g., '01-foundations-of-case')"
+                        "description": "Chapter ID for start/review/complete (e.g., '01-foundations-of-case')"
                     },
                     "chapters": {
                         "type": "array",
@@ -412,11 +491,15 @@ Examples:
                         "description": "Array of chapter IDs for focus action"
                     },
                     "weeks": {
-                        "type": "number",
-                        "description": "Number of weeks to offset (positive = behind schedule)"
+                        "type": "integer",
+                        "minimum": -52,
+                        "maximum": 52,
+                        "description": "Weeks to offset (positive = behind schedule)"
                     },
                     "week": {
-                        "type": "number",
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 52,
                         "description": "Week number to override to"
                     },
                     "reason": {
@@ -564,53 +647,14 @@ def handle_check_in() -> list[TextContent]:
     return [TextContent(type="text", text="\n".join(lines))]
 
 
-def handle_log(arguments: dict) -> list[TextContent]:
-    """Handle log tool - logs goal progress or daily mood/notes."""
+def handle_log_goal(arguments: dict) -> list[TextContent]:
+    """Handle log_goal tool - logs progress on a specific goal."""
     goal_input = arguments.get("goal", "")
     date = arguments.get("date", get_today())
 
-    # === NO GOAL: Daily mood/notes only ===
     if not goal_input:
-        mood = arguments.get("mood")
-        notes = arguments.get("notes")
+        return [TextContent(type="text", text="goal is required. Use log_daily for mood/notes.")]
 
-        if mood is None and notes is None:
-            # No goal, no mood/notes - show current daily status
-            entry = get_daily_entry(date)
-            if entry:
-                lines = [f"📅 **Daily Entry** ({entry['date']})", ""]
-                lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
-                lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
-                lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
-                if entry.get('mood'):
-                    lines.append(f"  Mood: {entry['mood']}/5")
-                if entry.get('notes'):
-                    lines.append(f"  Notes: {entry['notes']}")
-                return [TextContent(type="text", text="\n".join(lines))]
-            else:
-                return [TextContent(type="text", text=f"No daily entry for {date}. Use log with goal or mood/notes.")]
-
-        # Update mood/notes in daily.yml
-        fields = {}
-        if mood is not None:
-            fields["mood"] = mood
-        if notes is not None:
-            fields["notes"] = notes
-
-        entry = update_daily_entry(date, **fields)
-
-        lines = [f"✅ **Daily Updated** ({entry['date']})", ""]
-        lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
-        lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
-        lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
-        if entry.get('mood'):
-            lines.append(f"  Mood: {entry['mood']}/5")
-        if entry.get('notes'):
-            lines.append(f"  Notes: {entry['notes']}")
-
-        return [TextContent(type="text", text="\n".join(lines))]
-
-    # === WITH GOAL: Log progress ===
     config = get_goals_config()
     goals = config.get("goals", {})
     goal_id = resolve_goal_id(goals, goal_input)
@@ -709,8 +753,51 @@ def handle_log(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text="\n".join(result_lines))]
 
 
-def handle_edit(arguments: dict) -> list[TextContent]:
-    """Handle edit tool."""
+def handle_log_daily(arguments: dict) -> list[TextContent]:
+    """Handle log_daily tool - records daily mood and reflection notes."""
+    date = arguments.get("date", get_today())
+    mood = arguments.get("mood")
+    notes = arguments.get("notes")
+
+    if mood is None and notes is None:
+        # No input - show current daily status
+        entry = get_daily_entry(date)
+        if entry:
+            lines = [f"📅 **Daily Entry** ({entry['date']})", ""]
+            lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
+            lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
+            lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
+            if entry.get('mood'):
+                lines.append(f"  Mood: {entry['mood']}/5")
+            if entry.get('notes'):
+                lines.append(f"  Notes: {entry['notes']}")
+            return [TextContent(type="text", text="\n".join(lines))]
+        else:
+            return [TextContent(type="text", text=f"No daily entry for {date}. Provide mood or notes to create one.")]
+
+    # Update mood/notes in daily.yml
+    fields = {}
+    if mood is not None:
+        fields["mood"] = mood
+    if notes is not None:
+        fields["notes"] = notes
+
+    entry = update_daily_entry(date, **fields)
+
+    lines = [f"✅ **Daily Updated** ({entry['date']})", ""]
+    lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
+    lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
+    lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
+    if entry.get('mood'):
+        lines.append(f"  Mood: {entry['mood']}/5")
+    if entry.get('notes'):
+        lines.append(f"  Notes: {entry['notes']}")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_edit_goal_log(arguments: dict) -> list[TextContent]:
+    """Handle edit_goal_log tool - edit or delete existing log entries."""
     config = get_goals_config()
     goals = config.get("goals", {})
 
@@ -756,8 +843,8 @@ def handle_edit(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text=f"Updated: {logs[found_idx]}")]
 
 
-def handle_status(arguments: dict) -> list[TextContent]:
-    """Handle status tool."""
+def handle_get_goal_status(arguments: dict) -> list[TextContent]:
+    """Handle get_goal_status tool - get detailed status for goals."""
     config = get_goals_config()
     goals = config.get("goals", {})
 
@@ -936,11 +1023,96 @@ def handle_write_todo(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text=f"Created todo for {goal_name}/{unit} with {len(tasks)} tasks")]
 
 
-def handle_schedule(arguments: dict) -> list[TextContent]:
-    """Handle schedule tool - schedules goal tasks or personal events."""
-    schedule_type = arguments.get("type", "")
-    if not schedule_type:
-        return [TextContent(type="text", text="type is required (goal or personal)")]
+def handle_schedule_goal_task(arguments: dict) -> list[TextContent]:
+    """Handle schedule_goal_task tool - schedule a goal todo task on calendar."""
+    time_str = arguments.get("time", "")
+    time = calendar_service.parse_time(time_str)
+    if not time:
+        return [TextContent(type="text", text=f"Could not parse time: '{time_str}'. Try 'today 4pm' or 'tomorrow 9am'")]
+
+    duration = arguments.get("duration", 30)
+    calendar_name = arguments.get("calendar")
+    calendar_id = calendar_service.resolve_calendar(calendar_name) if calendar_name else None
+
+    # Check for conflicts
+    conflicts = calendar_service.check_conflicts(time, duration)
+    conflict_warning = ""
+    if conflicts:
+        conflict_warning = f"\n⚠️ Conflicts with: {', '.join(c['title'] + ' at ' + c['time'] for c in conflicts)}"
+
+    config = get_goals_config()
+    goals = config.get("goals", {})
+
+    goal_input = arguments.get("goal", "")
+    goal_id = resolve_goal_id(goals, goal_input)
+
+    if not goal_id:
+        available = ", ".join(goals.keys())
+        return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
+
+    unit = arguments.get("unit", "")
+    task_id = arguments.get("task", "")
+
+    if not unit or not task_id:
+        return [TextContent(type="text", text="unit and task are required")]
+
+    # Verify task exists
+    todo = get_unit_todo(goal_id, unit)
+    task_info = None
+    for t in todo.get("tasks", []):
+        if t.get("id") == task_id:
+            task_info = t
+            break
+
+    if not task_info:
+        return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
+
+    if task_info.get("done"):
+        return [TextContent(type="text", text=f"Task '{task_id}' is already completed")]
+
+    goal_config = goals[goal_id]
+    goal_name = goal_config.get("name", goal_id)
+    task_name = task_info.get("name", task_id)
+    color_id = goal_config.get("color")
+
+    result = calendar_service.schedule_goal(
+        goal_id=goal_id,
+        goal_name=goal_name,
+        time=time,
+        duration_min=duration,
+        notes=arguments.get("notes") or task_name,
+        invite_emails=arguments.get("invite", []),
+        color_id=color_id,
+        calendar_id=calendar_id,
+    )
+
+    if not result.get("success"):
+        return [TextContent(type="text", text=result["message"] + conflict_warning)]
+
+    # Sync to todo.yml
+    event_id = result.get("event_id")
+    scheduled_for = time.isoformat()
+
+    updated = update_todo_task(
+        goal_id, unit, task_id,
+        scheduled_for=scheduled_for,
+        event_id=event_id
+    )
+
+    message = result["message"] + conflict_warning
+    if updated:
+        message += f"\nSynced to todo: {goal_id}/{unit}/{task_id}"
+    if event_id:
+        message += f"\nEvent ID: {event_id}"
+
+    return [TextContent(type="text", text=message)]
+
+
+def handle_add_calendar_event(arguments: dict) -> list[TextContent]:
+    """Handle add_calendar_event tool - add a personal event to calendar."""
+    title = arguments.get("title", "")
+    if not title:
+        return [TextContent(type="text", text="title is required")]
 
     time_str = arguments.get("time", "")
     time = calendar_service.parse_time(time_str)
@@ -957,153 +1129,75 @@ def handle_schedule(arguments: dict) -> list[TextContent]:
     if conflicts:
         conflict_warning = f"\n⚠️ Conflicts with: {', '.join(c['title'] + ' at ' + c['time'] for c in conflicts)}"
 
-    # === TYPE: GOAL ===
-    if schedule_type == "goal":
-        config = get_goals_config()
-        goals = config.get("goals", {})
+    color_id = arguments.get("color")
+    notes = arguments.get("notes", "")
+    create_task = arguments.get("create_task", False)
 
-        goal_input = arguments.get("goal", "")
-        goal_id = resolve_goal_id(goals, goal_input)
+    # Build description
+    description = notes or ""
 
-        if not goal_id:
-            available = ", ".join(goals.keys())
-            return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
-
-        unit = arguments.get("unit", "")
-        task_id = arguments.get("task", "")
-
-        if not unit or not task_id:
-            return [TextContent(type="text", text="For type=goal, 'unit' and 'task' are required")]
-
-        # Verify task exists
-        todo = get_unit_todo(goal_id, unit)
-        task_info = None
-        for t in todo.get("tasks", []):
-            if t.get("id") == task_id:
-                task_info = t
-                break
-
-        if not task_info:
-            return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
-
-        if task_info.get("done"):
-            return [TextContent(type="text", text=f"Task '{task_id}' is already completed")]
-
-        goal_config = goals[goal_id]
-        goal_name = goal_config.get("name", goal_id)
-        task_name = task_info.get("name", task_id)
-        color_id = goal_config.get("color")
-
-        result = calendar_service.schedule_goal(
-            goal_id=goal_id,
-            goal_name=goal_name,
-            time=time,
-            duration_min=duration,
-            notes=arguments.get("notes") or task_name,
-            invite_emails=arguments.get("invite", []),
-            color_id=color_id,
-            calendar_id=calendar_id,
+    # If create_task, create Google Task first
+    google_task_id = None
+    if create_task:
+        task_result = tasks_service.create_task(
+            title=title,
+            due_date=time.date(),
+            notes=notes,
         )
-
-        if not result.get("success"):
-            return [TextContent(type="text", text=result["message"] + conflict_warning)]
-
-        # Sync to todo.yml
-        event_id = result.get("event_id")
-        scheduled_for = time.isoformat()
-
-        updated = update_todo_task(
-            goal_id, unit, task_id,
-            scheduled_for=scheduled_for,
-            event_id=event_id
-        )
-
-        message = result["message"] + conflict_warning
-        if updated:
-            message += f"\nSynced to todo: {goal_id}/{unit}/{task_id}"
-        if event_id:
-            message += f"\nEvent ID: {event_id}"
-
-        return [TextContent(type="text", text=message)]
-
-    # === TYPE: PERSONAL ===
-    elif schedule_type == "personal":
-        title = arguments.get("title", "")
-        if not title:
-            return [TextContent(type="text", text="For type=personal, 'title' is required")]
-
-        color_id = arguments.get("color")
-        notes = arguments.get("notes", "")
-        create_task = arguments.get("create_task", False)
-
-        # Build description
-        description = notes or ""
-
-        # If create_task, create Google Task first
-        google_task_id = None
-        if create_task:
-            task_result = tasks_service.create_task(
-                title=title,
-                due_date=time.date(),
-                notes=notes,
-            )
-            if task_result.get("success"):
-                google_task_id = task_result.get("task_id")
-                description = f"TaskID: {google_task_id}\n{notes}" if notes else f"TaskID: {google_task_id}"
-            else:
-                conflict_warning += f"\n⚠️ Google Task creation failed: {task_result.get('message')}"
-
-        # Create calendar event
-        from gcsa.google_calendar import GoogleCalendar
-        from gcsa.event import Event
-
-        if calendar_id:
-            try:
-                gc = GoogleCalendar(
-                    default_calendar=calendar_id,
-                    credentials_path=str(calendar_service.CREDENTIALS_PATH),
-                    token_path=str(calendar_service.TOKEN_PATH),
-                )
-            except Exception as e:
-                return [TextContent(type="text", text=f"Failed to access calendar: {e}")]
+        if task_result.get("success"):
+            google_task_id = task_result.get("task_id")
+            description = f"TaskID: {google_task_id}\n{notes}" if notes else f"TaskID: {google_task_id}"
         else:
-            gc = calendar_service.get_calendar()
+            conflict_warning += f"\n⚠️ Google Task creation failed: {task_result.get('message')}"
 
-        if not gc:
-            return [TextContent(type="text", text="Not authenticated. Run: goals-mcp auth")]
+    # Create calendar event
+    from gcsa.google_calendar import GoogleCalendar
+    from gcsa.event import Event
 
-        end_time = time + timedelta(minutes=duration)
-
+    if calendar_id:
         try:
-            event = Event(
-                summary=title,
-                start=time,
-                end=end_time,
-                description=description if description else None,
-                color_id=str(color_id) if color_id else None,
+            gc = GoogleCalendar(
+                default_calendar=calendar_id,
+                credentials_path=str(calendar_service.CREDENTIALS_PATH),
+                token_path=str(calendar_service.TOKEN_PATH),
             )
-
-            created = gc.add_event(event)
-
-            result_lines = [f"Created: {title} at {time.strftime('%I:%M%p').lower().lstrip('0')}"]
-            if create_task and google_task_id:
-                result_lines.append(f"Google Task created (ID: {google_task_id})")
-            if created.event_id:
-                result_lines.append(f"Event ID: {created.event_id}")
-            if conflict_warning:
-                result_lines.append(conflict_warning)
-
-            return [TextContent(type="text", text="\n".join(result_lines))]
-
         except Exception as e:
-            return [TextContent(type="text", text=f"Failed to create calendar event: {e}{conflict_warning}")]
-
+            return [TextContent(type="text", text=f"Failed to access calendar: {e}")]
     else:
-        return [TextContent(type="text", text=f"Unknown type: '{schedule_type}'. Use 'goal' or 'personal'")]
+        gc = calendar_service.get_calendar()
+
+    if not gc:
+        return [TextContent(type="text", text="Not authenticated. Run: goals-mcp auth")]
+
+    end_time = time + timedelta(minutes=duration)
+
+    try:
+        event = Event(
+            summary=title,
+            start=time,
+            end=end_time,
+            description=description if description else None,
+            color_id=str(color_id) if color_id else None,
+        )
+
+        created = gc.add_event(event)
+
+        result_lines = [f"Created: {title} at {time.strftime('%I:%M%p').lower().lstrip('0')}"]
+        if create_task and google_task_id:
+            result_lines.append(f"Google Task created (ID: {google_task_id})")
+        if created.event_id:
+            result_lines.append(f"Event ID: {created.event_id}")
+        if conflict_warning:
+            result_lines.append(conflict_warning)
+
+        return [TextContent(type="text", text="\n".join(result_lines))]
+
+    except Exception as e:
+        return [TextContent(type="text", text=f"Failed to create calendar event: {e}{conflict_warning}")]
 
 
-def handle_reschedule(arguments: dict) -> list[TextContent]:
-    """Handle reschedule tool - syncs to todo.yml."""
+def handle_reschedule_event(arguments: dict) -> list[TextContent]:
+    """Handle reschedule_event tool - move a calendar event to a new time."""
     event_id = arguments.get("event_id", "")
     if not event_id:
         return [TextContent(type="text", text="event_id is required")]
@@ -1135,8 +1229,8 @@ def handle_reschedule(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text=message)]
 
 
-def handle_unschedule(arguments: dict) -> list[TextContent]:
-    """Handle unschedule tool - clears scheduling from todo.yml."""
+def handle_delete_event(arguments: dict) -> list[TextContent]:
+    """Handle delete_event tool - remove a calendar event."""
     event_id = arguments.get("event_id", "")
     if not event_id:
         return [TextContent(type="text", text="event_id is required")]
@@ -1165,8 +1259,8 @@ def handle_unschedule(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text=message)]
 
 
-def handle_list_scheduled(arguments: dict) -> list[TextContent]:
-    """Handle list_scheduled tool."""
+def handle_list_calendar_events(arguments: dict) -> list[TextContent]:
+    """Handle list_calendar_events tool - show upcoming calendar events."""
     hours = arguments.get("hours", 24)
     events = calendar_service.get_upcoming_events(hours_ahead=hours)
 
@@ -1240,8 +1334,8 @@ def handle_memory_condense(arguments: dict) -> list[TextContent]:
     )]
 
 
-def handle_progress(arguments: dict) -> list[TextContent]:
-    """Handle progress tool - manage learning progress and schedule adjustments."""
+def handle_manage_progress(arguments: dict) -> list[TextContent]:
+    """Handle manage_progress tool - manage learning progress and schedule adjustments."""
     goal = arguments.get("goal", "").lower()
     action = arguments.get("action", "")
 
@@ -1529,31 +1623,35 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
         return handle_check_in()
-    elif name == "log":
-        return handle_log(arguments)
-    elif name == "edit":
-        return handle_edit(arguments)
-    elif name == "status":
-        return handle_status(arguments)
+    elif name == "log_goal":
+        return handle_log_goal(arguments)
+    elif name == "log_daily":
+        return handle_log_daily(arguments)
+    elif name == "edit_goal_log":
+        return handle_edit_goal_log(arguments)
+    elif name == "get_goal_status":
+        return handle_get_goal_status(arguments)
     elif name == "read_todo":
         return handle_read_todo(arguments)
     elif name == "write_todo":
         return handle_write_todo(arguments)
-    elif name == "schedule":
-        return handle_schedule(arguments)
-    elif name == "reschedule":
-        return handle_reschedule(arguments)
-    elif name == "unschedule":
-        return handle_unschedule(arguments)
-    elif name == "list_scheduled":
-        return handle_list_scheduled(arguments)
+    elif name == "schedule_goal_task":
+        return handle_schedule_goal_task(arguments)
+    elif name == "add_calendar_event":
+        return handle_add_calendar_event(arguments)
+    elif name == "reschedule_event":
+        return handle_reschedule_event(arguments)
+    elif name == "delete_event":
+        return handle_delete_event(arguments)
+    elif name == "list_calendar_events":
+        return handle_list_calendar_events(arguments)
     elif name == "memory_save":
         return handle_memory_save(arguments)
     elif name == "memory_read":
         return handle_memory_read(arguments)
     elif name == "memory_condense":
         return handle_memory_condense(arguments)
-    elif name == "progress":
-        return handle_progress(arguments)
+    elif name == "manage_progress":
+        return handle_manage_progress(arguments)
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
