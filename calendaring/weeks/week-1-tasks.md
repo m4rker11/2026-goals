@@ -60,8 +60,12 @@ Verbalizing makes it stick. Even just mumbling "Hindi tutor at 3" encodes it dif
 
 These should already be done from Week 0:
 
-{% assign setup_tasks = site.data.todos.calendar["week-1"].tasks | where_exp: "t", "t.id contains 'widget' or t.id contains 'phone'" %}
-{% for task in setup_tasks %}
+{% assign widget_tasks = site.data.todos.calendar["week-1"].tasks | where_exp: "t", "t.id contains 'widget'" %}
+{% assign phone_tasks = site.data.todos.calendar["week-1"].tasks | where_exp: "t", "t.id contains 'phone'" %}
+{% for task in widget_tasks %}
+- [{% if task.done %}x{% else %} {% endif %}] {{ task.name }}
+{% endfor %}
+{% for task in phone_tasks %}
 - [{% if task.done %}x{% else %} {% endif %}] {{ task.name }}
 {% endfor %}
 
