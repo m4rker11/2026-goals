@@ -253,6 +253,10 @@ Creates a calendar event with [Goal] prefix. Syncs to todo.yml for visibility.""
                         "type": "number",
                         "description": "Duration in minutes (default: 30)"
                     },
+                    "calendar": {
+                        "type": "string",
+                        "description": "Calendar name (e.g., 'Personal', 'Work'). Defaults to primary calendar."
+                    },
                     "invite": {
                         "type": "array",
                         "items": {"type": "string"},
@@ -566,29 +570,36 @@ def handle_log(arguments: dict) -> list[TextContent]:
         available = ", ".join(goals.keys())
         return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
 
-    logs = get_goal_logs(goal_id)
+    # Check if we have meaningful log data (not just marking a todo done)
+    has_log_data = any(k in arguments for k in ("value", "path", "notes"))
 
-    entry = {"date": arguments.get("date", get_today())}
+    # Only create log entry if we have actual progress to log
+    entry = None
+    if has_log_data or not (arguments.get("todo_unit") and arguments.get("todo_task")):
+        logs = get_goal_logs(goal_id)
+        entry = {"date": arguments.get("date", get_today())}
 
-    if "path" in arguments:
-        entry["path"] = arguments["path"]
+        if "path" in arguments:
+            entry["path"] = arguments["path"]
 
-    if "value" in arguments:
-        if isinstance(arguments["value"], bool):
-            entry["done"] = arguments["value"]
+        if "value" in arguments:
+            if isinstance(arguments["value"], bool):
+                entry["done"] = arguments["value"]
+            else:
+                entry["value"] = arguments["value"]
         else:
-            entry["value"] = arguments["value"]
-    else:
-        entry["done"] = True
+            entry["done"] = True
 
-    if "notes" in arguments:
-        entry["notes"] = arguments["notes"]
+        if "notes" in arguments:
+            entry["notes"] = arguments["notes"]
 
-    logs.append(entry)
-    save_goal_logs(goal_id, logs)
+        logs.append(entry)
+        save_goal_logs(goal_id, logs)
 
     goal_name = goals[goal_id].get("name", goal_id)
-    result_lines = [f"Logged to {goal_name}: {entry}"]
+    result_lines = []
+    if entry:
+        result_lines.append(f"Logged to {goal_name}: {entry}")
 
     # Handle todo update if specified
     todo_unit = arguments.get("todo_unit")
@@ -900,6 +911,10 @@ def handle_schedule(arguments: dict) -> list[TextContent]:
     task_name = task_info.get("name", task_id)
     color_id = goal_config.get("color")
 
+    # Resolve calendar name to ID
+    calendar_name = arguments.get("calendar")
+    calendar_id = calendar_service.resolve_calendar(calendar_name) if calendar_name else None
+
     result = calendar_service.schedule_goal(
         goal_id=goal_id,
         goal_name=goal_name,
@@ -908,6 +923,7 @@ def handle_schedule(arguments: dict) -> list[TextContent]:
         notes=task_name,
         invite_emails=arguments.get("invite", []),
         color_id=color_id,
+        calendar_id=calendar_id,
     )
 
     if not result.get("success"):

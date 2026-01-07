@@ -41,6 +41,53 @@ def is_authenticated() -> bool:
     return TOKEN_PATH.exists() and CREDENTIALS_PATH.exists()
 
 
+def get_calendars() -> list[dict]:
+    """
+    Get list of available calendars.
+
+    Returns list of {id, name, is_primary}.
+    """
+    gc = get_calendar()
+    if not gc:
+        return []
+
+    try:
+        calendars = []
+        for cal in gc.get_calendar_list():
+            calendars.append({
+                "id": cal.calendar_id,
+                "name": cal.summary,
+                "is_primary": cal.calendar_id == gc.default_calendar,
+            })
+        return calendars
+    except Exception:
+        return []
+
+
+def resolve_calendar(name: str) -> Optional[str]:
+    """
+    Resolve calendar name to calendar ID.
+
+    Accepts: calendar name (case-insensitive), or 'primary'/'main' for default.
+    Returns calendar ID or None if not found.
+    """
+    if not name or name.lower() in ("primary", "main", "default"):
+        return None  # Use default calendar
+
+    gc = get_calendar()
+    if not gc:
+        return None
+
+    try:
+        name_lower = name.lower()
+        for cal in gc.get_calendar_list():
+            if cal.summary.lower() == name_lower:
+                return cal.calendar_id
+        return None
+    except Exception:
+        return None
+
+
 def get_upcoming_events(hours_ahead: int = 8) -> list[dict]:
     """
     Get upcoming calendar events.
@@ -99,9 +146,13 @@ def schedule_goal(
     notes: str = "",
     invite_emails: list[str] = None,
     color_id: int = None,
+    calendar_id: str = None,
 ) -> dict:
     """
     Schedule a goal on the calendar.
+
+    Args:
+        calendar_id: Specific calendar ID to add event to. None = primary calendar.
 
     Returns: {success, event_id, message}
 
@@ -109,7 +160,19 @@ def schedule_goal(
                6=Tangerine, 7=Peacock, 8=Graphite, 9=Blueberry,
                10=Basil, 11=Tomato
     """
-    gc = get_calendar()
+    if calendar_id:
+        # Use specific calendar
+        try:
+            gc = GoogleCalendar(
+                default_calendar=calendar_id,
+                credentials_path=str(CREDENTIALS_PATH),
+                token_path=str(TOKEN_PATH),
+            )
+        except Exception:
+            return {"success": False, "message": f"Failed to access calendar: {calendar_id}"}
+    else:
+        gc = get_calendar()
+
     if not gc:
         return {"success": False, "message": "Not authenticated. Run: goals-mcp auth"}
 
