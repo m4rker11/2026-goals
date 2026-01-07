@@ -1,46 +1,83 @@
-# Manual progress tracking for sequential/parallel goals
-# Update these as you progress - they don't auto-advance with time
+# Current Progress State
+# Updated via MCP `progress` tool - tracks where you actually are vs the schedule
 #
-# Time-based goals (fitness, calendar, work-boundaries, trading, spend-less)
-# are calculated from schedule.yml - but you can track catch-up here
+# schedule.yml = the plan (fixed week dates, phases, periods)
+# current.yml = reality (adjustments, parallel work, review cycles)
 
 # ============================================
 # HINDI - Parallel learning with review cycles
 # ============================================
 hindi:
-  # Primary unit to show in dashboard deep link
-  focus: 01-foundations-of-case
+  # Primary chapters to show in dashboard (can be multiple)
+  focus:
+    - 01-foundations-of-case
 
-  # Units currently being learned (new material)
+  # Chapters currently being learned (new material)
   learning:
     - 01-foundations-of-case
 
-  # Units in review cycle (completed but reinforcing)
+  # Chapters in review cycle (reinforcing learned material)
+  # Format: chapter-id or {id: chapter-id, cycle: N, max_cycles: M}
   reviewing: []
 
-  # Completed units (all review cycles done)
-  # completed: []
+  # Completed chapters (all review cycles done)
+  completed: []
 
 # ============================================
-# FITNESS - Can track catch-up if behind
+# FITNESS - Week adjustments for life events
 # ============================================
 fitness:
-  # Week to link to (usually current_week from schedule)
-  # Only set if you need to override the calculated week
-  # focus: 1
+  # Offset in weeks (positive = behind schedule, negative = ahead)
+  # If injured and need 2 weeks off: offset_weeks: 2
+  # This shifts "current week" calculation
+  offset_weeks: 0
 
-  # If catching up on previous weeks while in current week
-  catching_up: []
+  # Pause until date (alternative to offset)
+  # paused_until: "2026-01-20"
+
+  # Override current week entirely (ignores date calculation)
+  # override_week: 3
+
+  # Notes about adjustment
+  # adjustment_reason: "Pulled muscle on Jan 10"
 
 # ============================================
-# BROTHER - Sequential calls
+# CALENDAR - Week adjustments
+# ============================================
+calendar:
+  offset_weeks: 0
+
+# ============================================
+# WORK-BOUNDARIES - Week adjustments
+# ============================================
+work-boundaries:
+  offset_weeks: 0
+
+# ============================================
+# SPEND-LESS - Phase adjustments
+# ============================================
+spend-less:
+  # Override current phase (ignores date calculation)
+  # override_phase: phase-2
+
+  # Offset phases
+  offset_phases: 0
+
+# ============================================
+# TRADING - Period adjustments
+# ============================================
+trading:
+  offset_periods: 0
+
+# ============================================
+# BROTHER - Call tracking
 # ============================================
 brother:
   current_call: 1
-  # Next scheduled: Week of Jan 26
+  # completed_calls: [1, 2]
 
 # ============================================
-# SELL - Unordered project, no "current"
+# SELL - No progression tracking needed
 # ============================================
 sell:
-  # Track in todos/sell/prep.yml
+  # Tracked via todos/sell/prep.yml

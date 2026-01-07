@@ -93,6 +93,204 @@ def get_goals_config() -> dict:
     return load_yaml(REPO_PATH / "_data" / "goals.yml")
 
 
+# --- Schedule and Current Progress ---
+
+def get_schedule() -> dict:
+    """Load schedule configuration (week dates, phases, periods)."""
+    return load_yaml(REPO_PATH / "_data" / "schedule.yml")
+
+
+def _load_current_progress_ruamel():
+    """Load current.yml with ruamel to preserve comments."""
+    path = REPO_PATH / "_data" / "current.yml"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        return _ruamel.load(f) or {}
+
+
+def get_current_progress() -> dict:
+    """Load current progress state (focus, learning, reviewing, offsets)."""
+    data = _load_current_progress_ruamel()
+    # Convert to regular dict for reading (ruamel CommentedMap)
+    return dict(data) if data else {}
+
+
+def save_current_progress(data) -> None:
+    """Save current progress state (expects ruamel CommentedMap to preserve comments)."""
+    path = REPO_PATH / "_data" / "current.yml"
+    with open(path, 'w') as f:
+        _ruamel.dump(data, f)
+
+
+def update_current_goal(goal_id: str, updates: dict) -> dict:
+    """
+    Update specific fields for a goal in current.yml.
+    Preserves comments by using ruamel for round-trip.
+
+    Args:
+        goal_id: Goal identifier (hindi, fitness, etc.)
+        updates: Dict of fields to update
+
+    Returns:
+        The updated goal section
+    """
+    # Load with ruamel to preserve comments
+    current = _load_current_progress_ruamel()
+
+    if goal_id not in current:
+        current[goal_id] = {}
+
+    goal_section = current[goal_id]
+
+    # Save and clear end comments before inserting new keys
+    # (ruamel attaches trailing blank lines/comments to mapping end)
+    end_comment = None
+    if hasattr(goal_section, 'ca') and goal_section.ca.comment:
+        end_comment = goal_section.ca.comment
+        goal_section.ca.comment = None
+
+    for key, value in updates.items():
+        if key in goal_section:
+            # Key exists - update in place (preserves position)
+            goal_section[key] = value
+        else:
+            # New key - insert at end of existing keys
+            existing_keys = list(goal_section.keys())
+            insert_pos = len(existing_keys)
+            goal_section.insert(insert_pos, key, value)
+
+    # Restore end comments after the new keys
+    if end_comment:
+        goal_section.ca.comment = end_comment
+
+    save_current_progress(current)
+    return dict(current[goal_id])
+
+
+def get_current_week(schedule: dict = None) -> dict:
+    """
+    Calculate current week from schedule.yml.
+
+    Returns dict with:
+        number: Week number (1-8)
+        start: Start date string
+        end: End date string
+    """
+    if schedule is None:
+        schedule = get_schedule()
+
+    today = get_today()
+
+    for week in schedule.get("weeks", []):
+        if week["start"] <= today <= week["end"]:
+            return {
+                "number": week["number"],
+                "start": week["start"],
+                "end": week["end"]
+            }
+
+    # Fallback: return week 1 or last week based on date
+    weeks = schedule.get("weeks", [])
+    if weeks:
+        if today < weeks[0]["start"]:
+            return weeks[0]
+        if today > weeks[-1]["end"]:
+            return weeks[-1]
+
+    return {"number": 1, "start": "?", "end": "?"}
+
+
+def get_effective_week(goal_id: str, schedule: dict = None, current: dict = None) -> dict:
+    """
+    Get effective current week for a goal, accounting for offsets/overrides.
+
+    Checks current.yml for:
+        - override_week: Use this week number directly
+        - offset_weeks: Shift calculated week by this amount
+        - paused_until: If today < this date, return paused status
+
+    Returns dict with:
+        number: Effective week number
+        start: Week start date
+        end: Week end date
+        adjusted: True if offset/override applied
+        paused: True if goal is paused
+        reason: Adjustment reason if set
+    """
+    if schedule is None:
+        schedule = get_schedule()
+    if current is None:
+        current = get_current_progress()
+
+    base_week = get_current_week(schedule)
+    goal_current = current.get(goal_id, {})
+
+    # Check for pause
+    paused_until = goal_current.get("paused_until")
+    if paused_until and get_today() < paused_until:
+        return {
+            "number": base_week["number"],
+            "start": base_week["start"],
+            "end": base_week["end"],
+            "adjusted": True,
+            "paused": True,
+            "paused_until": paused_until,
+            "reason": goal_current.get("adjustment_reason", "Paused")
+        }
+
+    # Check for override
+    override = goal_current.get("override_week")
+    if override:
+        # Find the override week in schedule
+        weeks = schedule.get("weeks", [])
+        for week in weeks:
+            if week["number"] == override:
+                return {
+                    "number": override,
+                    "start": week["start"],
+                    "end": week["end"],
+                    "adjusted": True,
+                    "paused": False,
+                    "reason": goal_current.get("adjustment_reason", f"Overridden to week {override}")
+                }
+        # Override week not found, use the number anyway
+        return {
+            "number": override,
+            "start": "?",
+            "end": "?",
+            "adjusted": True,
+            "paused": False,
+            "reason": goal_current.get("adjustment_reason")
+        }
+
+    # Check for offset
+    offset = goal_current.get("offset_weeks", 0)
+    if offset:
+        effective_num = max(1, base_week["number"] - offset)
+        weeks = schedule.get("weeks", [])
+        for week in weeks:
+            if week["number"] == effective_num:
+                return {
+                    "number": effective_num,
+                    "start": week["start"],
+                    "end": week["end"],
+                    "adjusted": True,
+                    "paused": False,
+                    "reason": goal_current.get("adjustment_reason", f"Offset by {offset} weeks")
+                }
+
+    # No adjustments
+    return {
+        "number": base_week["number"],
+        "start": base_week["start"],
+        "end": base_week["end"],
+        "adjusted": False,
+        "paused": False,
+        "reason": None
+    }
+
+
 def get_goal_logs(goal_id: str) -> list:
     """Load logs for a specific goal."""
     return load_yaml(REPO_PATH / "_data" / "logs" / f"{goal_id}.yml")

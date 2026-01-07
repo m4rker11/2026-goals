@@ -126,7 +126,7 @@ title: Home
 | Calendar | [Week {{ current_week }} Tasks →](calendaring/weeks/week-{{ current_week }}-tasks) | Week {{ current_week }} of 6 |
 | Fitness | [Week {{ current_week }} Plan →](fitness/weeks/week-{{ current_week }}) | Week {{ current_week }} of 8 |
 | Work Boundaries | {% if current_week <= 4 %}[Week {{ current_week }} Tasks →](work-boundaries/weeks/week-{{ current_week }}-tasks){% else %}Program complete{% endif %} | {% if current_week <= 4 %}Week {{ current_week }} of 4{% else %}Done{% endif %} |
-| Hindi | [{{ current.hindi.focus }} →](Hindi/chapters/{{ current.hindi.focus }}/) | {% if hindi_learning_count > 0 %}{{ hindi_learning_count }} learning{% endif %}{% if hindi_reviewing_count > 0 %}{% if hindi_learning_count > 0 %}, {% endif %}{{ hindi_reviewing_count }} reviewing{% endif %}{% if hindi_active_count == 0 %}Not started{% endif %} |
+{% assign hindi_focus = current.hindi.focus | first %}| Hindi | [{{ hindi_focus }} →](Hindi/chapters/{{ hindi_focus }}/){% if current.hindi.focus.size > 1 %} +{{ current.hindi.focus.size | minus: 1 }}{% endif %} | {% if hindi_learning_count > 0 %}{{ hindi_learning_count }} learning{% endif %}{% if hindi_reviewing_count > 0 %}{% if hindi_learning_count > 0 %}, {% endif %}{{ hindi_reviewing_count }} reviewing{% endif %}{% if hindi_active_count == 0 %}Not started{% endif %} |
 | Spend Less | [{{ current_phase }} →](spend-less/weeks/{{ current_phase }}) | {{ current_phase_name }} |
 {% if trading_started %}| Trading | [{{ current_period }} →](trading/periods/{{ current_period }}) | {{ current_period_name }} |{% else %}| Trading | Starts Jan 12 | Not yet active |{% endif %}
 
@@ -211,7 +211,7 @@ title: Home
 
 | Goal | Progress | Current | Status |
 |------|----------|---------|--------|
-| [Hindi to B2](Hindi/) | <progress value="{{ total_hindi }}" max="25"></progress> {{ total_hindi }}/25 | [{{ current.hindi.focus }} →](Hindi/chapters/{{ current.hindi.focus }}/) | {% if hindi_learning_count > 0 %}{{ hindi_learning_count }}L{% endif %}{% if hindi_reviewing_count > 0 %} {{ hindi_reviewing_count }}R{% endif %}{% if hindi_active_count == 0 %}Not Started{% endif %} |
+| [Hindi to B2](Hindi/) | <progress value="{{ total_hindi }}" max="25"></progress> {{ total_hindi }}/25 | [{{ hindi_focus }} →](Hindi/chapters/{{ hindi_focus }}/){% if current.hindi.focus.size > 1 %} +{{ current.hindi.focus.size | minus: 1 }}{% endif %} | {% if hindi_learning_count > 0 %}{{ hindi_learning_count }}L{% endif %}{% if hindi_reviewing_count > 0 %} {{ hindi_reviewing_count }}R{% endif %}{% if hindi_active_count == 0 %}Not Started{% endif %} |
 | [Calendar Mastery](calendaring/) | <progress value="{{ calendar_pct }}" max="100"></progress> {{ calendar_pct }}% | [Wk {{ current_week }} →](calendaring/weeks/week-{{ current_week }}-tasks) | Streak: {{ streak }} days |
 | [200 min Zone 2](fitness/) | <progress value="{{ week_fitness }}" max="200"></progress> {{ week_fitness }}/200 | [Wk {{ current_week }} →](fitness/weeks/week-{{ current_week }}) | {% if week_fitness >= 200 %}On Target{% elsif week_fitness > 0 %}Building{% else %}Starting{% endif %} |
 | [Work Boundaries](work-boundaries/) | <progress value="{{ calendar_pct }}" max="100"></progress> | {% if current_week <= 4 %}[Wk {{ current_week }} →](work-boundaries/weeks/week-{{ current_week }}-tasks){% else %}Done{% endif %} | {% if current_week <= 4 %}Week {{ current_week }}/4{% else %}Complete{% endif %} |

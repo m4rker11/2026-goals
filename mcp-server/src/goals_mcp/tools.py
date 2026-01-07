@@ -9,7 +9,8 @@ from .storage import (
     get_unit_todo, save_unit_todo, update_todo_task, get_all_pending_tasks,
     get_all_scheduled_tasks, find_task_by_event_id,
     get_today, get_daily_entry, update_daily_entry, get_daily_entries, to_date_str,
-    get_memory_entries, save_memory_entries, add_memory_entry, get_recent_memory
+    get_memory_entries, save_memory_entries, add_memory_entry, get_recent_memory,
+    get_schedule, get_current_progress, update_current_goal, get_current_week, get_effective_week
 )
 from .goals import get_current, compute_todos, resolve_goal_id
 from . import calendar_service
@@ -414,6 +415,65 @@ Tasks appear both on calendar (time block) and in Google Tasks (checklist).""",
                     }
                 },
                 "required": ["title", "time", "type"]
+            }
+        ),
+        Tool(
+            name="progress",
+            description="""Manage learning progress and schedule adjustments for goals.
+
+Actions:
+- view: Show current status (learning, reviewing, completed chapters; week offsets)
+- start: Start learning a new chapter (adds to learning array)
+- review: Move chapter from learning to reviewing
+- complete: Complete a chapter (move from reviewing to completed)
+- focus: Set which chapters to show in dashboard focus
+- offset: Adjust week offset for time-based goals (e.g., injury causing 2-week delay)
+- override: Override current week entirely (ignores date calculation)
+- clear: Clear offset/override to resume normal schedule
+
+Examples:
+- progress goal=hindi action=view
+- progress goal=hindi action=start chapter=02-compound-postpositions
+- progress goal=hindi action=review chapter=01-foundations-of-case
+- progress goal=hindi action=focus chapters=["01-foundations-of-case", "02-compound-postpositions"]
+- progress goal=fitness action=offset weeks=2 reason="Pulled muscle"
+- progress goal=fitness action=override week=3 reason="Starting over"
+- progress goal=fitness action=clear""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID (hindi, fitness, calendar, work-boundaries, spend-less, trading)"
+                    },
+                    "action": {
+                        "type": "string",
+                        "enum": ["view", "start", "review", "complete", "focus", "offset", "override", "clear"],
+                        "description": "Action to perform"
+                    },
+                    "chapter": {
+                        "type": "string",
+                        "description": "Chapter ID for start/review/complete actions (e.g., '01-foundations-of-case')"
+                    },
+                    "chapters": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Array of chapter IDs for focus action"
+                    },
+                    "weeks": {
+                        "type": "number",
+                        "description": "Number of weeks to offset (positive = behind schedule)"
+                    },
+                    "week": {
+                        "type": "number",
+                        "description": "Week number to override to"
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Reason for offset/override (stored for reference)"
+                    }
+                },
+                "required": ["goal", "action"]
             }
         )
     ]
@@ -1221,6 +1281,291 @@ def handle_add(arguments: dict) -> list[TextContent]:
         return [TextContent(type="text", text=f"Failed to create calendar event: {e}{conflict_warning}")]
 
 
+def handle_progress(arguments: dict) -> list[TextContent]:
+    """Handle progress tool - manage learning progress and schedule adjustments."""
+    goal = arguments.get("goal", "").lower()
+    action = arguments.get("action", "")
+
+    if not goal:
+        return [TextContent(type="text", text="goal is required")]
+    if not action:
+        return [TextContent(type="text", text="action is required")]
+
+    # Normalize goal aliases
+    goal_map = {
+        "hindi": "hindi",
+        "fitness": "fitness",
+        "gym": "fitness",
+        "calendar": "calendar",
+        "work-boundaries": "work-boundaries",
+        "work": "work-boundaries",
+        "spend-less": "spend-less",
+        "spending": "spend-less",
+        "trading": "trading",
+    }
+    goal_id = goal_map.get(goal, goal)
+
+    current = get_current_progress()
+    schedule = get_schedule()
+
+    # Handle VIEW action
+    if action == "view":
+        lines = [f"**Progress: {goal_id}**", ""]
+
+        if goal_id == "hindi":
+            hindi = current.get("hindi", {})
+            focus = hindi.get("focus", [])
+            learning = hindi.get("learning", [])
+            reviewing = hindi.get("reviewing", [])
+            completed = hindi.get("completed", [])
+
+            lines.append(f"**Focus:** {', '.join(focus) if focus else 'None set'}")
+            lines.append(f"**Learning:** {', '.join(learning) if learning else 'None'}")
+            lines.append(f"**Reviewing:** {', '.join(reviewing) if reviewing else 'None'}")
+            lines.append(f"**Completed:** {len(completed)} chapters")
+            if completed:
+                lines.append(f"  {', '.join(completed)}")
+
+        elif goal_id in ("fitness", "calendar", "work-boundaries"):
+            goal_data = current.get(goal_id, {})
+            current_week_info = get_current_week(schedule)
+            effective = get_effective_week(goal_id, schedule, current)
+
+            lines.append(f"**Schedule week:** {current_week_info.get('number', '?')}")
+            lines.append(f"**Effective week:** {effective.get('number', '?')}")
+
+            if goal_data.get("offset_weeks"):
+                lines.append(f"**Offset:** {goal_data['offset_weeks']} weeks")
+            if goal_data.get("override_week"):
+                lines.append(f"**Override:** Week {goal_data['override_week']}")
+            if goal_data.get("paused_until"):
+                lines.append(f"**Paused until:** {goal_data['paused_until']}")
+            if goal_data.get("adjustment_reason"):
+                lines.append(f"**Reason:** {goal_data['adjustment_reason']}")
+
+        elif goal_id == "spend-less":
+            goal_data = current.get("spend-less", {})
+            lines.append(f"**Offset phases:** {goal_data.get('offset_phases', 0)}")
+            if goal_data.get("override_phase"):
+                lines.append(f"**Override phase:** {goal_data['override_phase']}")
+
+        elif goal_id == "trading":
+            goal_data = current.get("trading", {})
+            lines.append(f"**Offset periods:** {goal_data.get('offset_periods', 0)}")
+
+        else:
+            lines.append(f"No progress tracking for {goal_id}")
+
+        return [TextContent(type="text", text="\n".join(lines))]
+
+    # Handle START action (Hindi only)
+    if action == "start":
+        if goal_id != "hindi":
+            return [TextContent(type="text", text="'start' action only applies to hindi goal")]
+
+        chapter = arguments.get("chapter", "")
+        if not chapter:
+            return [TextContent(type="text", text="chapter is required for start action")]
+
+        hindi = current.get("hindi", {})
+        learning = hindi.get("learning", [])
+        reviewing = hindi.get("reviewing", [])
+        completed = hindi.get("completed", [])
+
+        if chapter in learning:
+            return [TextContent(type="text", text=f"'{chapter}' is already in learning")]
+        if chapter in reviewing:
+            return [TextContent(type="text", text=f"'{chapter}' is already in reviewing (use 'complete' to finish it)")]
+        if chapter in completed:
+            return [TextContent(type="text", text=f"'{chapter}' is already completed")]
+
+        learning.append(chapter)
+        # Auto-add to focus if focus is empty or has only this chapter
+        focus = hindi.get("focus", [])
+        if not focus or (len(focus) == 1 and focus[0] == learning[0] if len(learning) > 0 else True):
+            focus = [chapter]
+
+        update_current_goal("hindi", {
+            "learning": learning,
+            "focus": focus
+        })
+
+        return [TextContent(type="text", text=f"Started learning: {chapter}\nFocus: {', '.join(focus)}")]
+
+    # Handle REVIEW action (Hindi only)
+    if action == "review":
+        if goal_id != "hindi":
+            return [TextContent(type="text", text="'review' action only applies to hindi goal")]
+
+        chapter = arguments.get("chapter", "")
+        if not chapter:
+            return [TextContent(type="text", text="chapter is required for review action")]
+
+        hindi = current.get("hindi", {})
+        learning = hindi.get("learning", [])
+        reviewing = hindi.get("reviewing", [])
+
+        if chapter not in learning:
+            return [TextContent(type="text", text=f"'{chapter}' is not in learning (add it first with 'start')")]
+
+        learning.remove(chapter)
+        reviewing.append(chapter)
+
+        update_current_goal("hindi", {
+            "learning": learning,
+            "reviewing": reviewing
+        })
+
+        return [TextContent(type="text", text=f"Moved to reviewing: {chapter}\nLearning: {', '.join(learning) if learning else 'None'}\nReviewing: {', '.join(reviewing)}")]
+
+    # Handle COMPLETE action (Hindi only)
+    if action == "complete":
+        if goal_id != "hindi":
+            return [TextContent(type="text", text="'complete' action only applies to hindi goal")]
+
+        chapter = arguments.get("chapter", "")
+        if not chapter:
+            return [TextContent(type="text", text="chapter is required for complete action")]
+
+        hindi = current.get("hindi", {})
+        learning = hindi.get("learning", [])
+        reviewing = hindi.get("reviewing", [])
+        completed = hindi.get("completed", [])
+
+        if chapter in learning:
+            learning.remove(chapter)
+        elif chapter in reviewing:
+            reviewing.remove(chapter)
+        else:
+            return [TextContent(type="text", text=f"'{chapter}' is not in learning or reviewing")]
+
+        completed.append(chapter)
+
+        # Update focus if the completed chapter was in focus
+        focus = hindi.get("focus", [])
+        if chapter in focus:
+            focus.remove(chapter)
+            # Set focus to first learning chapter if available
+            if learning:
+                focus = [learning[0]]
+            elif reviewing:
+                focus = [reviewing[0]]
+
+        update_current_goal("hindi", {
+            "learning": learning,
+            "reviewing": reviewing,
+            "completed": completed,
+            "focus": focus
+        })
+
+        return [TextContent(type="text", text=f"Completed: {chapter}\nTotal completed: {len(completed)}")]
+
+    # Handle FOCUS action (Hindi only)
+    if action == "focus":
+        if goal_id != "hindi":
+            return [TextContent(type="text", text="'focus' action only applies to hindi goal")]
+
+        chapters = arguments.get("chapters", [])
+        chapter = arguments.get("chapter")
+
+        # Allow single chapter via 'chapter' param
+        if chapter and not chapters:
+            chapters = [chapter]
+
+        if not chapters:
+            return [TextContent(type="text", text="chapters array (or chapter) is required for focus action")]
+
+        update_current_goal("hindi", {"focus": chapters})
+
+        return [TextContent(type="text", text=f"Focus set to: {', '.join(chapters)}")]
+
+    # Handle OFFSET action (time-based goals)
+    if action == "offset":
+        if goal_id not in ("fitness", "calendar", "work-boundaries", "spend-less", "trading"):
+            return [TextContent(type="text", text=f"'offset' action not applicable to {goal_id}")]
+
+        weeks = arguments.get("weeks")
+        reason = arguments.get("reason", "")
+
+        if weeks is None:
+            return [TextContent(type="text", text="weeks is required for offset action")]
+
+        if goal_id in ("fitness", "calendar", "work-boundaries"):
+            updates = {"offset_weeks": int(weeks)}
+            if reason:
+                updates["adjustment_reason"] = reason
+            # Clear override if setting offset
+            updates["override_week"] = None
+            update_current_goal(goal_id, updates)
+
+            effective = get_effective_week(goal_id, schedule)
+            return [TextContent(type="text", text=f"Offset set: {weeks} weeks\nEffective week: {effective.get('number', '?')}" + (f"\nReason: {reason}" if reason else ""))]
+
+        elif goal_id == "spend-less":
+            update_current_goal("spend-less", {"offset_phases": int(weeks)})
+            return [TextContent(type="text", text=f"Phase offset set: {weeks}")]
+
+        elif goal_id == "trading":
+            update_current_goal("trading", {"offset_periods": int(weeks)})
+            return [TextContent(type="text", text=f"Period offset set: {weeks}")]
+
+    # Handle OVERRIDE action (time-based goals)
+    if action == "override":
+        if goal_id not in ("fitness", "calendar", "work-boundaries", "spend-less"):
+            return [TextContent(type="text", text=f"'override' action not applicable to {goal_id}")]
+
+        week = arguments.get("week")
+        reason = arguments.get("reason", "")
+
+        if goal_id in ("fitness", "calendar", "work-boundaries"):
+            if week is None:
+                return [TextContent(type="text", text="week is required for override action")]
+
+            updates = {"override_week": int(week)}
+            if reason:
+                updates["adjustment_reason"] = reason
+            # Clear offset if setting override
+            updates["offset_weeks"] = 0
+            update_current_goal(goal_id, updates)
+
+            return [TextContent(type="text", text=f"Week override set: {week}" + (f"\nReason: {reason}" if reason else ""))]
+
+        elif goal_id == "spend-less":
+            phase = arguments.get("chapter", "")  # reuse chapter param for phase
+            if not phase:
+                return [TextContent(type="text", text="Use chapter param for phase ID (e.g., 'phase-2')")]
+            update_current_goal("spend-less", {"override_phase": phase})
+            return [TextContent(type="text", text=f"Phase override set: {phase}")]
+
+    # Handle CLEAR action
+    if action == "clear":
+        if goal_id in ("fitness", "calendar", "work-boundaries"):
+            update_current_goal(goal_id, {
+                "offset_weeks": 0,
+                "override_week": None,
+                "paused_until": None,
+                "adjustment_reason": None
+            })
+            current_week_info = get_current_week(schedule)
+            return [TextContent(type="text", text=f"Cleared all adjustments for {goal_id}\nNow on schedule week: {current_week_info.get('number', '?')}")]
+
+        elif goal_id == "spend-less":
+            update_current_goal("spend-less", {
+                "offset_phases": 0,
+                "override_phase": None
+            })
+            return [TextContent(type="text", text=f"Cleared all adjustments for spend-less")]
+
+        elif goal_id == "trading":
+            update_current_goal("trading", {"offset_periods": 0})
+            return [TextContent(type="text", text=f"Cleared offset for trading")]
+
+        else:
+            return [TextContent(type="text", text=f"No adjustments to clear for {goal_id}")]
+
+    return [TextContent(type="text", text=f"Unknown action: {action}")]
+
+
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
@@ -1253,5 +1598,7 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_memory_condense(arguments)
     elif name == "add":
         return handle_add(arguments)
+    elif name == "progress":
+        return handle_progress(arguments)
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
