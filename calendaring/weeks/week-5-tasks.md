@@ -68,11 +68,11 @@ Variations:
 
 This week, consciously use "let me check" for:
 
-- [ ] Work meeting requests
-- [ ] Friend/social invitations
-- [ ] Anuska suggesting plans
-- [ ] Doctor/appointment scheduling
-- [ ] Any "are you free on X?"
+- Work meeting requests
+- Friend/social invitations
+- Anuska suggesting plans
+- Doctor/appointment scheduling
+- Any "are you free on X?"
 
 Even if you KNOW you're free, check anyway. Build the muscle.
 
@@ -110,10 +110,10 @@ Total time: 15 seconds.
 ## Signs It's Working
 
 By end of week, you should notice:
-- [ ] Zero "oh no I double-booked"
-- [ ] Feeling more in control of commitments
-- [ ] Calendar feels like the truth
-- [ ] You check reflexively, not consciously
+- Zero "oh no I double-booked"
+- Feeling more in control of commitments
+- Calendar feels like the truth
+- You check reflexively, not consciously
 
 ---
 
@@ -145,10 +145,10 @@ The calendar is now **authoritative**.
 ## Stack Check
 
 By end of Week 5, you should be doing:
-- [ ] Morning: Look at today
-- [ ] Throughout: Add events immediately
-- [ ] Throughout: Check before committing ← NEW
-- [ ] Evening: Review tomorrow
+- Morning: Look at today
+- Throughout: Add events immediately
+- Throughout: Check before committing (NEW)
+- Evening: Review tomorrow
 
 You're now operating at a high level. Week 6 adds the final piece: weekly planning.
 

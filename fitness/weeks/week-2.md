@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 2: Seattle Movement"
+---
+
 # Week 2: Seattle Movement
 
 **Focus:** Add variety while still traveling
@@ -116,16 +121,16 @@ Answer before Week 3:
 1. **Compliance:** How many sessions? ___/5
 
 2. **Did you try Lower?**
-   - [ ] Yes, completed it
-   - [ ] Started but cut short
-   - [ ] Skipped entirely
+   - Yes, completed it
+   - Started but cut short
+   - Skipped entirely
    - Notes: _______________
 
 3. **Cardio experience:**
-   - [ ] Jogged - felt good
-   - [ ] Jogged - was hard
-   - [ ] Walked instead
-   - [ ] Skipped
+   - Jogged - felt good
+   - Jogged - was hard
+   - Walked instead
+   - Skipped
    - Notes: _______________
 
 4. **Pushup progress:** Max reps set 1: ___ (vs Week 1: ___)

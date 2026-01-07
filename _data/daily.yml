@@ -9,9 +9,13 @@
 #   mood: 1-5 (optional, energy/motivation level)
 #   notes: string (optional, brief reflection)
 
-- date: 2026-01-05
-  calendar: false
+- calendar: false
+  date: 2026-01-05
   fitness: 0
   hindi: 0
   mood: 4
-  notes: "Setup day - created goals tracking site"
+  notes: Setup day - created goals tracking site
+- calendar: true
+  date: '2026-01-06'
+  fitness: 0
+  hindi: 0

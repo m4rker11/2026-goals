@@ -16,10 +16,10 @@ tasks:
   # Equipment prep
   - id: pack-clothes
     name: Pack comfortable workout clothes
-    done: false
+    done: true
   - id: pack-band
     name: Pack resistance band (optional)
-    done: false
+    done: true
   - id: pack-pt-notes
     name: Pack PT stretch notes
     done: false

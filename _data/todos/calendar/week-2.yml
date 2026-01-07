@@ -1,48 +1,48 @@
 unit: week-2
 tasks:
-  # Daily tasks
+  # Daily tasks - Morning check (what's today look like?) + Immediate input (add events the moment they're scheduled)
   - id: mon-morning
-    name: Monday morning check
+    name: "Mon AM: Check calendar first thing - what's on today?"
     done: false
   - id: mon-immediate
-    name: Monday - all events added immediately
+    name: "Mon: Every event added immediately when scheduled (don't wait)"
     done: false
   - id: tue-morning
-    name: Tuesday morning check
+    name: "Tue AM: Check calendar first thing - what's on today?"
     done: false
   - id: tue-immediate
-    name: Tuesday - all events added immediately
+    name: "Tue: Every event added immediately when scheduled (don't wait)"
     done: false
   - id: wed-morning
-    name: Wednesday morning check
+    name: "Wed AM: Check calendar first thing - what's on today?"
     done: false
   - id: wed-immediate
-    name: Wednesday - all events added immediately
+    name: "Wed: Every event added immediately when scheduled (don't wait)"
     done: false
   - id: thu-morning
-    name: Thursday morning check
+    name: "Thu AM: Check calendar first thing - what's on today?"
     done: false
   - id: thu-immediate
-    name: Thursday - all events added immediately
+    name: "Thu: Every event added immediately when scheduled (don't wait)"
     done: false
   - id: fri-morning
-    name: Friday morning check
+    name: "Fri AM: Check calendar first thing - what's on today?"
     done: false
   - id: fri-immediate
-    name: Friday - all events added immediately
+    name: "Fri: Every event added immediately when scheduled (don't wait)"
     done: false
   - id: sat-morning
-    name: Saturday morning check
+    name: "Sat AM: Check calendar first thing - what's on today?"
     done: false
   - id: sat-immediate
-    name: Saturday - all events added immediately
+    name: "Sat: Every event added immediately when scheduled (don't wait)"
     done: false
   - id: sun-morning
-    name: Sunday morning check
+    name: "Sun AM: Check calendar first thing - what's on today?"
     done: false
   - id: sun-immediate
-    name: Sunday - all events added immediately
+    name: "Sun: Every event added immediately when scheduled (don't wait)"
     done: false
   - id: weekly-review
-    name: End of week reflection
+    name: "End of week: What % of events went in immediately? What caused friction?"
     done: false

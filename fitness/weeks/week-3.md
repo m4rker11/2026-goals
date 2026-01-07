@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 3: Return + First Swim"
+---
+
 # Week 3: Return + First Swim
 
 **Focus:** Back in NYC, add swimming
@@ -110,10 +115,10 @@ Goal: Complete the session without quitting early
 ## Swim Logistics
 
 **YMCA prep:**
-- [ ] Know which YMCA location
-- [ ] Check lap swim hours
-- [ ] Bring: swimsuit, goggles, towel, lock
-- [ ] Budget: ~$15-20 per visit (or check day pass options)
+- Know which YMCA location
+- Check lap swim hours
+- Bring: swimsuit, goggles, towel, lock
+- Budget: ~$15-20 per visit (or check day pass options)
 
 **First time anxiety:**
 - It's normal to feel awkward
@@ -127,15 +132,15 @@ Goal: Complete the session without quitting early
 1. **Compliance:** Sessions completed: ___/5
 
 2. **First swim:**
-   - [ ] Did it, felt good
-   - [ ] Did it, was hard
-   - [ ] Didn't do it
+   - Did it, felt good
+   - Did it, was hard
+   - Didn't do it
    - Notes: _______________
 
 3. **Gym sessions feel:**
-   - [ ] Too short, wanted more
-   - [ ] Just right
-   - [ ] Too long, cut them short
+   - Too short, wanted more
+   - Just right
+   - Too long, cut them short
 
 4. **Key numbers:**
    - Pushups set 1: ___

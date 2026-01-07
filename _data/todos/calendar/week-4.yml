@@ -1,63 +1,63 @@
 unit: week-4
 tasks:
-  # Daily tracking
+  # Daily tracking - Are gym, dinner, and work end time ON your calendar today?
   - id: mon-gym
-    name: Monday - gym on calendar
+    name: "Mon: Gym block on calendar (or 'rest day' noted)"
     done: false
   - id: mon-dinner
-    name: Monday - dinner on calendar
+    name: "Mon: Dinner on calendar (who's cooking? what time?)"
     done: false
   - id: mon-work-end
-    name: Monday - work end time on calendar
+    name: "Mon: Work END time on calendar (hard stop visible)"
     done: false
   - id: tue-gym
-    name: Tuesday - gym on calendar
+    name: "Tue: Gym block on calendar (or 'rest day' noted)"
     done: false
   - id: tue-dinner
-    name: Tuesday - dinner on calendar
+    name: "Tue: Dinner on calendar (who's cooking? what time?)"
     done: false
   - id: tue-work-end
-    name: Tuesday - work end time on calendar
+    name: "Tue: Work END time on calendar (hard stop visible)"
     done: false
   - id: wed-gym
-    name: Wednesday - gym on calendar
+    name: "Wed: Gym block on calendar (or 'rest day' noted)"
     done: false
   - id: wed-dinner
-    name: Wednesday - dinner on calendar
+    name: "Wed: Dinner on calendar (who's cooking? what time?)"
     done: false
   - id: wed-work-end
-    name: Wednesday - work end time on calendar
+    name: "Wed: Work END time on calendar (hard stop visible)"
     done: false
   - id: thu-gym
-    name: Thursday - gym on calendar
+    name: "Thu: Gym block on calendar (or 'rest day' noted)"
     done: false
   - id: thu-dinner
-    name: Thursday - dinner on calendar
+    name: "Thu: Dinner on calendar (who's cooking? what time?)"
     done: false
   - id: thu-work-end
-    name: Thursday - work end time on calendar
+    name: "Thu: Work END time on calendar (hard stop visible)"
     done: false
   - id: fri-gym
-    name: Friday - gym on calendar
+    name: "Fri: Gym block on calendar (or 'rest day' noted)"
     done: false
   - id: fri-dinner
-    name: Friday - dinner on calendar
+    name: "Fri: Dinner on calendar (who's cooking? what time?)"
     done: false
   - id: fri-work-end
-    name: Friday - work end time on calendar
+    name: "Fri: Work END time on calendar (hard stop visible)"
     done: false
   - id: sat-gym
-    name: Saturday - gym on calendar
+    name: "Sat: Gym block on calendar (or 'rest day' noted)"
     done: false
   - id: sat-dinner
-    name: Saturday - dinner on calendar
+    name: "Sat: Dinner on calendar (who's cooking? what time?)"
     done: false
   - id: sun-gym
-    name: Sunday - gym on calendar
+    name: "Sun: Gym block on calendar (or 'rest day' noted)"
     done: false
   - id: sun-dinner
-    name: Sunday - dinner on calendar
+    name: "Sun: Dinner on calendar (who's cooking? what time?)"
     done: false
   - id: weekly-review
-    name: End of week reflection
+    name: "End of week: How many days had all 3 (gym/dinner/work-end) on calendar?"
     done: false

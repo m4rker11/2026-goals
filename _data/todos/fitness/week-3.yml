@@ -1,26 +1,26 @@
 unit: week-3
 tasks:
-  # Sessions
+  # Sessions - Target: 130 min (back in NYC, add swimming)
   - id: swim-session
-    name: Swim session (40 min) - FIRST SWIM
+    name: "FIRST SWIM at YMCA (40 min) - just show up, it's a block away"
     done: false
   - id: upper-gym
-    name: Upper gym session (35 min)
+    name: "Upper gym session (35 min) - pushups, pullups, dips, rows, shoulders"
     done: false
   - id: lower-gym
-    name: Lower gym session (35 min) - optional
+    name: "Lower gym session (35 min) - squats, lunges, RDLs (optional this week)"
     done: false
   - id: pt-stretches-1
-    name: PT Stretches (15 min)
+    name: "PT stretches (15 min) - your prescribed routine"
     done: false
   # Gym setup
   - id: gym-visit
-    name: Visit Anuska's gym, get oriented
+    name: "Visit Anuska's building gym - get oriented, know where equipment is"
     done: false
   - id: gym-hours
-    name: Know gym hours and busy times
+    name: "Know gym hours and when it's busy (avoid peak times?)"
     done: false
   # Weekly review
   - id: weekly-review
-    name: End of week reflection
+    name: "End of week: Sessions completed? How did first swim feel?"
     done: false

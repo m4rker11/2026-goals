@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 8: 200+ Achieved"
+---
+
 # Week 8: 200+ Achieved
 
 **Focus:** Hit the target
@@ -147,31 +152,31 @@ That's the point of building buffer.
 1. **Total minutes this week:** ___
 
 2. **Did you hit 200+?**
-   - [ ] Yes!
-   - [ ] Close (180-199)
-   - [ ] Not quite
+   - Yes!
+   - Close (180-199)
+   - Not quite
 
 3. **What's now part of your routine:**
-   - [ ] 3 gym sessions/week
-   - [ ] Bollywood
-   - [ ] Swimming
-   - [ ] PT stretches
-   - [ ] OT occasionally
+   - 3 gym sessions/week
+   - Bollywood
+   - Swimming
+   - PT stretches
+   - OT occasionally
 
 4. **What never stuck:**
-   - [ ] Lower body days
-   - [ ] PT stretches
-   - [ ] Swimming
-   - [ ] Something else: ___
+   - Lower body days
+   - PT stretches
+   - Swimming
+   - Something else: ___
 
 5. **Biggest win from these 8 weeks:**
 
 6. **What do you want to add in the next 8 weeks?**
-   - [ ] More Lower body
-   - [ ] Longer sessions (toward 60 min)
-   - [ ] More cardio/VO2 max
-   - [ ] Badminton (spring coming)
-   - [ ] Other: ___
+   - More Lower body
+   - Longer sessions (toward 60 min)
+   - More cardio/VO2 max
+   - Badminton (spring coming)
+   - Other: ___
 
 ---
 

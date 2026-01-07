@@ -56,20 +56,20 @@ A B2-level calendar shows the full picture: work blocks, gym, meals, personal ti
 ## What to Add This Week
 
 ### Must Add (Daily)
-- [ ] **Gym/workout blocks** - When are you exercising?
-- [ ] **Dinner** - Who's handling it? What time?
-- [ ] **Work start time** - When does focused work begin?
-- [ ] **Work end time** - When do you stop? (Work boundaries goal!)
+- **Gym/workout blocks** - When are you exercising?
+- **Dinner** - Who's handling it? What time?
+- **Work start time** - When does focused work begin?
+- **Work end time** - When do you stop? (Work boundaries goal!)
 
 ### Should Add (Most Days)
-- [ ] **Lunch** - Even just "12-1 Lunch"
-- [ ] **Morning routine** - Wake up to work start
-- [ ] **Wind down** - When work ends to bedtime structure
+- **Lunch** - Even just "12-1 Lunch"
+- **Morning routine** - Wake up to work start
+- **Wind down** - When work ends to bedtime structure
 
 ### Nice to Add (When Relevant)
-- [ ] **Deep work blocks** - Protected focus time
-- [ ] **Anuska time** - Intentional together time
-- [ ] **Personal errands** - Haircut, groceries, etc.
+- **Deep work blocks** - Protected focus time
+- **Anuska time** - Intentional together time
+- **Personal errands** - Haircut, groceries, etc.
 
 ---
 
@@ -91,10 +91,10 @@ A B2-level calendar shows the full picture: work blocks, gym, meals, personal ti
 
 Since "200 min zone 2 weekly" is another goal:
 
-- [ ] Decide: Which days are gym days?
-- [ ] Add recurring blocks: "Gym" at the time you'll go
-- [ ] Start with 2x this week, build to 3x
-- [ ] Include travel time if applicable
+- Decide: Which days are gym days?
+- Add recurring blocks: "Gym" at the time you'll go
+- Start with 2x this week, build to 3x
+- Include travel time if applicable
 
 Example:
 ```
@@ -108,9 +108,9 @@ Sat 10:00-11:30 AM - Gym
 ## The Food Duty System
 
 Simple approach:
-- [ ] Each evening review (Week 3), decide tomorrow's dinner
-- [ ] Add: "Dinner - [who] - [what if known]"
-- [ ] Or create a weekly pattern: "Mon/Wed/Fri = Mark, Tue/Thu = Anuska"
+- Each evening review (Week 3), decide tomorrow's dinner
+- Add: "Dinner - [who] - [what if known]"
+- Or create a weekly pattern: "Mon/Wed/Fri = Mark, Tue/Thu = Anuska"
 
 ---
 

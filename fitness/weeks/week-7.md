@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 7: Building Duration"
+---
+
 # Week 7: Building Duration
 
 **Focus:** Extend gym session length
@@ -139,13 +144,13 @@ You're close to 200. Keep the momentum.
 1. **Compliance:** Sessions completed: ___/6
 
 2. **40-min session felt:**
-   - [ ] Still had energy, could go longer
-   - [ ] Just right
-   - [ ] Dragged at the end
+   - Still had energy, could go longer
+   - Just right
+   - Dragged at the end
 
 3. **Lower body session:**
-   - [ ] Completed
-   - [ ] Skipped
+   - Completed
+   - Skipped
    - If skipped, what would you rather do instead? ___
 
 4. **Key numbers:**

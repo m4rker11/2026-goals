@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 2: Communication Protocol"
+---
+
 # Week 2: Communication Protocol
 
 **Focus:** Track B (Communication)
@@ -63,19 +68,19 @@ Which actually respects her more?
 ### Morning
 
 Before starting work:
-- [ ] Tell Anuska your start and end time for today
-- [ ] Mention any mid-day breaks planned
+- Tell Anuska your start and end time for today
+- Mention any mid-day breaks planned
 
 ### End of Day
 
 If you need more time:
-- [ ] Stop at end time
-- [ ] Go to Anuska, announce the extension
-- [ ] Give specific time and reason
-- [ ] Actually stop at the stated time
+- Stop at end time
+- Go to Anuska, announce the extension
+- Give specific time and reason
+- Actually stop at the stated time
 
 If you don't need more time:
-- [ ] Just stop. Notice how it feels.
+- Just stop. Notice how it feels.
 
 ---
 
@@ -136,10 +141,10 @@ The goal is to insert a pause. Right now you flow past end time without noticing
 3. **How did Anuska respond to the announcements?**
 
 4. **What made announcing hard?**
-   - [ ] Forgot
-   - [ ] Felt awkward
-   - [ ] Didn't want to "commit" to a time
-   - [ ] Other: _______________
+   - Forgot
+   - Felt awkward
+   - Didn't want to "commit" to a time
+   - Other: _______________
 
 5. **Did announcing make stopping easier or harder?**
 

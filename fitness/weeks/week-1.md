@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 1: Seattle Baseline"
+---
+
 # Week 1: Seattle Baseline
 
 **Focus:** Establish baseline while traveling
@@ -92,9 +97,9 @@ If you miss Mid:
 ## Equipment Needed
 
 Pack these (or find at brother's):
-- [ ] Comfortable workout clothes
-- [ ] Resistance band (optional, useful for rows)
-- [ ] Your PT stretch notes (if you have specific exercises)
+- Comfortable workout clothes
+- Resistance band (optional, useful for rows)
+- Your PT stretch notes (if you have specific exercises)
 
 ---
 
@@ -105,16 +110,16 @@ Answer before Week 2:
 1. **Compliance:** How many sessions did I complete? ___/4
 
 2. **What worked?**
-   - [ ] Morning sessions
-   - [ ] Evening sessions
-   - [ ] Combining with something else
-   - [ ] Other: _______________
+   - Morning sessions
+   - Evening sessions
+   - Combining with something else
+   - Other: _______________
 
 3. **What made it hard?**
-   - [ ] Forgot
-   - [ ] Felt weird working out at brother's
-   - [ ] No energy after travel
-   - [ ] Other: _______________
+   - Forgot
+   - Felt weird working out at brother's
+   - No energy after travel
+   - Other: _______________
 
 4. **Pushup baseline:** Max reps in set 1: ___
 

@@ -1,37 +1,34 @@
 unit: week-3
 tasks:
-  # Daily evening reviews
+  # Daily evening reviews - 5 min: check tomorrow, fill gaps, decide dinner duty
   - id: mon-evening
-    name: Monday evening review
+    name: "Mon PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
   - id: tue-evening
-    name: Tuesday evening review
+    name: "Tue PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
   - id: wed-evening
-    name: Wednesday evening review
+    name: "Wed PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
   - id: thu-evening
-    name: Thursday evening review
+    name: "Thu PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
   - id: fri-evening
-    name: Friday evening review
+    name: "Fri PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
   - id: sat-evening
-    name: Saturday evening review
+    name: "Sat PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
   - id: sun-evening
-    name: Sunday evening review
+    name: "Sun PM: Evening review + plan the week (dinner duty, gym days, key appointments)"
     done: false
-  # Stack maintenance
+  # Stack maintenance - are you still doing the Week 1 & 2 habits?
   - id: stack-morning
-    name: "Maintaining: Morning check (Week 1)"
+    name: "Still doing: Morning calendar check (Week 1 habit)"
     done: false
   - id: stack-immediate
-    name: "Maintaining: Add events immediately (Week 2)"
-    done: false
-  - id: stack-evening
-    name: "Maintaining: Evening review (Week 3)"
+    name: "Still doing: Add events immediately when scheduled (Week 2 habit)"
     done: false
   - id: weekly-review
-    name: End of week reflection
+    name: "End of week: How many evening reviews? What made it hard?"
     done: false

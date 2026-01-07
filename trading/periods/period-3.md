@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Period 3: Feb 9-22"
+---
+
 # Period 3: Feb 9-22
 
 **Trade deadline:** February 22, 2026

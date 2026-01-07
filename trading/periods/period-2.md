@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Period 2: Jan 26 - Feb 8"
+---
+
 # Period 2: Jan 26 - Feb 8
 
 **Trade deadline:** February 8, 2026

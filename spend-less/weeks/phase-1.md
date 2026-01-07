@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Phase 1: Friction Reset (Week 1-3)"
+---
+
 # Phase 1: Friction Reset (Week 1-3)
 
 **Dates:** Jan 5 - Jan 25

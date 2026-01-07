@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Phase 3: The Pause Rule (Week 7-9)"
+---
+
 # Phase 3: The Pause Rule (Week 7-9)
 
 **Dates:** Feb 16 - Mar 8

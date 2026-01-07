@@ -1,44 +1,21 @@
 unit: week-5
 tasks:
-  # Practice scenarios
+  # Practice "let me check my calendar" - build the reflex before committing
   - id: check-work
-    name: Check calendar for work meeting requests
+    name: "Said 'let me check' for a work meeting request (even if you knew you were free)"
     done: false
   - id: check-social
-    name: Check calendar for friend/social invitations
+    name: "Said 'let me check' for a friend/social invitation"
     done: false
   - id: check-anuska
-    name: Check calendar when Anuska suggests plans
+    name: "Said 'let me check' when Anuska suggested plans"
     done: false
   - id: check-doctor
-    name: Check calendar for doctor/appointments
+    name: "Said 'let me check' when scheduling doctor/appointment"
     done: false
-  # Signs it's working
-  - id: no-double-book
-    name: Zero double-bookings this week
-    done: false
-  - id: feel-control
-    name: Feeling more in control of commitments
-    done: false
-  - id: calendar-truth
-    name: Calendar feels like the truth
-    done: false
-  - id: check-reflexive
-    name: Checking calendar reflexively, not consciously
-    done: false
-  # Stack check
-  - id: stack-morning
-    name: "Maintaining: Morning check"
-    done: false
-  - id: stack-immediate
-    name: "Maintaining: Add events immediately"
-    done: false
-  - id: stack-check-before
-    name: "New: Check before committing"
-    done: false
-  - id: stack-evening
-    name: "Maintaining: Evening review"
+  - id: check-are-you-free
+    name: "Said 'let me check' for any 'are you free on X?' question"
     done: false
   - id: weekly-review
-    name: End of week reflection
+    name: "End of week: Zero double-bookings? Calendar feels like the truth?"
     done: false

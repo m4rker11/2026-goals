@@ -68,23 +68,23 @@ PREP (5 min)
 
 ### Option A: Shared Calendar
 
-- [ ] Create shared Google Calendar: "Mark + Anuska"
-- [ ] Both have edit access
-- [ ] Use for: dinner plans, social events, travel, joint commitments
-- [ ] Personal stuff stays on personal calendars
+- Create shared Google Calendar: "Mark + Anuska"
+- Both have edit access
+- Use for: dinner plans, social events, travel, joint commitments
+- Personal stuff stays on personal calendars
 
 ### Option B: Weekly Sync Conversation
 
 If shared calendar feels like too much:
-- [ ] Pick a time: Sunday evening after dinner?
-- [ ] 10 min: "What's your week look like?"
-- [ ] Identify conflicts, dinner duty, joint plans
-- [ ] Add to your calendar
+- Pick a time: Sunday evening after dinner?
+- 10 min: "What's your week look like?"
+- Identify conflicts, dinner duty, joint plans
+- Add to your calendar
 
 ### Option C: Hybrid
 
-- [ ] Shared calendar for big stuff
-- [ ] Weekly quick sync for the details
+- Shared calendar for big stuff
+- Weekly quick sync for the details
 
 **Your choice:** _________________________
 
@@ -111,10 +111,10 @@ If doing a weekly conversation with Anuska:
 ## Weekly Planning Location
 
 Where will you do the weekly review?
-- [ ] Same spot each time (ritual helps)
-- [ ] Coffee shop Sunday morning
-- [ ] Desk Monday first thing
-- [ ] Couch with laptop Sunday evening
+- Same spot each time (ritual helps)
+- Coffee shop Sunday morning
+- Desk Monday first thing
+- Couch with laptop Sunday evening
 
 **Your spot:** _________________________
 
@@ -129,12 +129,12 @@ Where will you do the weekly review?
 ## What the Weekly Review Produces
 
 After your 20-30 min review, you should have:
-- [ ] Every known appointment on calendar
-- [ ] Gym sessions scheduled
-- [ ] Dinner duty decided for the week
-- [ ] Work deadlines visible
-- [ ] Tasks assigned to days
-- [ ] A sense of what the week holds
+- Every known appointment on calendar
+- Gym sessions scheduled
+- Dinner duty decided for the week
+- Work deadlines visible
+- Tasks assigned to days
+- A sense of what the week holds
 
 ---
 
@@ -155,13 +155,13 @@ After your 20-30 min review, you should have:
    - Track D (Infrastructure): ___
 
 3. **What habits stuck?**
-   - [ ] Morning check
-   - [ ] Immediate input
-   - [ ] Evening review
-   - [ ] Daily activities on calendar
-   - [ ] Check before committing
-   - [ ] Weekly planning
-   - [ ] Partner sync
+   - Morning check
+   - Immediate input
+   - Evening review
+   - Daily activities on calendar
+   - Check before committing
+   - Weekly planning
+   - Partner sync
 
 4. **What's still shaky?**
 

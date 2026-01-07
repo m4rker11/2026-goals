@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 4: Three Gym Sessions"
+---
+
 # Week 4: Three Gym Sessions
 
 **Focus:** First week with 3 gym sessions
@@ -131,14 +136,14 @@ Instead of one "Upper" day, we split into Push and Pull:
 1. **Compliance:** Gym sessions completed: ___/3
 
 2. **Three sessions felt:**
-   - [ ] Totally manageable
-   - [ ] A stretch but doable
-   - [ ] Too much
+   - Totally manageable
+   - A stretch but doable
+   - Too much
 
 3. **30 min sessions felt:**
-   - [ ] Too short
-   - [ ] Just right
-   - [ ] Still learning to fill the time
+   - Too short
+   - Just right
+   - Still learning to fill the time
 
 4. **Key numbers:**
    - Pushups set 1: ___ (vs last week: ___)

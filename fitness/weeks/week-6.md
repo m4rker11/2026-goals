@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 6: Full Routine"
+---
+
 # Week 6: Full Routine
 
 **Focus:** Lock in the complete weekly pattern
@@ -135,15 +140,15 @@ Adjust based on when Bollywood is actually scheduled.
 1. **Compliance:** Sessions completed: ___/6
 
 2. **This felt:**
-   - [ ] Like my new normal
-   - [ ] Still figuring it out
-   - [ ] Overwhelming
+   - Like my new normal
+   - Still figuring it out
+   - Overwhelming
 
 3. **Best session this week:**
-   - [ ] Upper Push
-   - [ ] Upper Pull
-   - [ ] Cardio
-   - [ ] Bollywood
+   - Upper Push
+   - Upper Pull
+   - Cardio
+   - Bollywood
    - Why? _______________
 
 4. **Key numbers:**

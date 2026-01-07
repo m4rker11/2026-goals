@@ -60,9 +60,9 @@ Tomorrow should look "real" - if someone looked at your calendar, they'd know wh
 
 Since coordinating with Anuska is part of your goal:
 
-- [ ] Each evening, decide: Who's doing dinner tomorrow?
-- [ ] Add to calendar: "Dinner - Mark cooks" or "Dinner - Anuska handles"
-- [ ] Or just "Dinner out" / "Leftovers"
+- Each evening, decide: Who's doing dinner tomorrow?
+- Add to calendar: "Dinner - Mark cooks" or "Dinner - Anuska handles"
+- Or just "Dinner out" / "Leftovers"
 
 This reduces next-day friction and decision fatigue.
 
@@ -91,14 +91,14 @@ This reduces next-day friction and decision fatigue.
 ## What "Tomorrow Prepped" Means
 
 At minimum:
-- [ ] All known appointments are on calendar
-- [ ] Dinner is decided
-- [ ] If gym day, gym time is blocked
+- All known appointments are on calendar
+- Dinner is decided
+- If gym day, gym time is blocked
 
 Bonus:
-- [ ] Work start time is noted
-- [ ] Key tasks have time slots
-- [ ] Outfit/prep decisions made
+- Work start time is noted
+- Key tasks have time slots
+- Outfit/prep decisions made
 
 ---
 
@@ -142,9 +142,9 @@ You now have **morning check + evening review** = C5 territory.
 ## Stack Check
 
 By end of Week 3, you should be doing:
-- [ ] Morning: Look at today (Week 1)
-- [ ] Throughout: Add events immediately (Week 2)
-- [ ] Evening: Review tomorrow (Week 3)
+- Morning: Look at today (Week 1)
+- Throughout: Add events immediately (Week 2)
+- Evening: Review tomorrow (Week 3)
 
 If any of these slipped, note it and keep practicing. The stack builds.
 

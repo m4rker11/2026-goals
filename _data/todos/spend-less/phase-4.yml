@@ -9,8 +9,15 @@ tasks:
   - id: week-11-save
     name: Save $91 (Week 11)
     done: false
+  # Steam Frame Purchase Prep
+  - id: research-best-place
+    name: Research best place to buy
+    done: false
+  - id: check-deals
+    name: Check for any deals/bundles
+    done: false
   - id: buy-steam-frame
-    name: Buy Steam Frame!
+    name: Buy it guilt-free - you earned this
     done: false
   - id: retrospective
     name: Complete 11-week retrospective

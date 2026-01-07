@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 4: Stop Time + Breaks"
+---
+
 # Week 4: Stop Time + Breaks
 
 **Focus:** Track D (Stop/Breaks Execution)
@@ -104,14 +109,14 @@ Remember the evidence you gathered in Week 1. Breaks aren't a sacrifice - they'r
 
 ### Throughout Day
 
-- [ ] Take at least one mid-day break (10+ min away from desk)
+- Take at least one mid-day break (10+ min away from desk)
 
 ### End of Day
 
-- [ ] Alarm/notification at end time
-- [ ] Stop within 30 minutes
-- [ ] If need more time → use "15 more" protocol
-- [ ] Physical transition: close laptop, leave desk area
+- Alarm/notification at end time
+- Stop within 30 minutes
+- If need more time, use "15 more" protocol
+- Physical transition: close laptop, leave desk area
 
 ---
 
@@ -176,12 +181,12 @@ You're not becoming less dedicated. You're becoming more disciplined.
 3. **Times I used "15 more" protocol:** ___
 
 4. **What made stopping hard?**
-   - [ ] Deep in hyperfocus
-   - [ ] "Just one more thing"
-   - [ ] Felt guilty about unfinished work
-   - [ ] No external interrupt
-   - [ ] Ignored the alarm
-   - [ ] Other: _______________
+   - Deep in hyperfocus
+   - "Just one more thing"
+   - Felt guilty about unfinished work
+   - No external interrupt
+   - Ignored the alarm
+   - Other: _______________
 
 5. **What helped?**
 

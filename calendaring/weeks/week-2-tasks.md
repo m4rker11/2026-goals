@@ -68,17 +68,16 @@ If voice isn't working well, fix it NOW - it's worth the 5 minutes.
 ## Daily Practice
 
 ### Morning (continue from Week 1)
-- [ ] Morning calendar check (this is now automatic, right?)
+Morning calendar check (this is now automatic, right?)
 
 ### Throughout Day
 Every time something gets scheduled:
-- [ ] Add it IMMEDIATELY
-- [ ] Include: location, relevant details, who's involved
-- [ ] Set appropriate reminders if default isn't enough
+- Add it IMMEDIATELY
+- Include: location, relevant details, who's involved
+- Set appropriate reminders if default isn't enough
 
 ### Evening
-- [ ] Quick scan: Did anything get scheduled today that's NOT on calendar?
-- [ ] If yes, add it now and note why it slipped
+Quick scan: Did anything get scheduled today that's NOT on calendar? If yes, add it now and note why it slipped.
 
 ---
 
@@ -105,10 +104,10 @@ Every time something gets scheduled:
 1. **Compliance:** How many scheduled events went in immediately? ___%
 
 2. **Friction points:**
-   - [ ] Voice command unreliable
-   - [ ] Felt awkward pausing conversations
-   - [ ] Forgot in the moment
-   - [ ] Other: _______________
+   - Voice command unreliable
+   - Felt awkward pausing conversations
+   - Forgot in the moment
+   - Other: _______________
 
 3. **What worked?**
 

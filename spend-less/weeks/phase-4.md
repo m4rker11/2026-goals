@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Phase 4: Sustain + Review (Week 10-11)"
+---
+
 # Phase 4: Sustain + Review (Week 10-11)
 
 **Dates:** Mar 9 - Mar 22
@@ -64,9 +69,9 @@ The system is built. Now make it stick with a simple weekly review.
 
 When you hit $1000:
 
-- [ ] Research best place to buy
-- [ ] Check for any deals/bundles
-- [ ] Buy it guilt-free - you earned this
+- Research best place to buy
+- Check for any deals/bundles
+- Buy it guilt-free - you earned this
 
 ---
 

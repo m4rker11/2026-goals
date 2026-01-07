@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Phase 2: Know Your Triggers (Week 4-6)"
+---
+
 # Phase 2: Know Your Triggers (Week 4-6)
 
 **Dates:** Jan 26 - Feb 15

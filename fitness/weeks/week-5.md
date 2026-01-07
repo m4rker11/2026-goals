@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 5: Bollywood Begins"
+---
+
 # Week 5: Bollywood Begins
 
 **Focus:** Integrate Bollywood dance into routine
@@ -101,10 +106,10 @@ Continue the buddy routine
 
 ## Bollywood Logistics
 
-- [ ] Class booked (where? what time?)
-- [ ] Know how to get there
-- [ ] Comfortable clothes that let you move
-- [ ] Water bottle
+- Class booked (where? what time?)
+- Know how to get there
+- Comfortable clothes that let you move
+- Water bottle
 
 **First class tips:**
 - Stand in the back if you're nervous
@@ -128,16 +133,16 @@ If gym sessions slip:
 1. **Compliance:** Sessions completed: ___/5
 
 2. **Bollywood experience:**
-   - [ ] Loved it
-   - [ ] Liked it
-   - [ ] It was okay
-   - [ ] Didn't enjoy it
+   - Loved it
+   - Liked it
+   - It was okay
+   - Didn't enjoy it
    - Will you go back? ___
 
 3. **Session length (35 min Upper):**
-   - [ ] Wanted more time
-   - [ ] Just right
-   - [ ] Felt long
+   - Wanted more time
+   - Just right
+   - Felt long
 
 4. **Key numbers:**
    - Pushups set 1: ___

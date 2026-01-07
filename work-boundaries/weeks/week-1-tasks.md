@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 1: Definition + Belief"
+---
+
 # Week 1: Definition + Belief
 
 **Focus:** Track A (Definition)
@@ -100,17 +105,9 @@ The goal isn't to stop loving coding. It's to work *with* hyperfocus in a contai
 
 ---
 
-## Daily Tracking
+## Progress
 
-| Day | Said times out loud? | Times still feel right? | Evidence gathered? |
-|-----|---------------------|------------------------|-------------------|
-| Mon | [ ] | [ ] | [ ] |
-| Tue | [ ] | [ ] | [ ] |
-| Wed | [ ] | [ ] | [ ] |
-| Thu | [ ] | [ ] | [ ] |
-| Fri | [ ] | [ ] | [ ] |
-| Sat | [ ] | [ ] | [ ] |
-| Sun | [ ] | [ ] | [ ] |
+{% include todo-list.html goal="work-boundaries" unit="week-1" title="Week 1 Tasks" %}
 
 ---
 

@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 3: Start Time Execution"
+---
+
 # Week 3: Start Time Execution
 
 **Focus:** Track C (Start Execution)
@@ -52,10 +57,10 @@ Your ritual: __________
 
 ## Morning Checklist
 
-- [ ] Morning announce to Anuska (Week 2)
-- [ ] Trigger happens
-- [ ] Start ritual
-- [ ] Actually working by [target time]
+- Morning announce to Anuska (Week 2)
+- Trigger happens
+- Start ritual
+- Actually working by [target time]
 
 ---
 
@@ -126,11 +131,11 @@ What might help you? __________
 3. **My start ritual is:** __________
 
 4. **What made it hard?**
-   - [ ] Morning routine ran long
-   - [ ] Got distracted
-   - [ ] No clear trigger
-   - [ ] Didn't know what to work on
-   - [ ] Other: _______________
+   - Morning routine ran long
+   - Got distracted
+   - No clear trigger
+   - Didn't know what to work on
+   - Other: _______________
 
 5. **What worked?**
 
