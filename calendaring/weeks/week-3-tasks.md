@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 3: Evening Review"
+---
+
 # Week 3: Evening Review
 
 **Focus:** Track C (Output) + Track A (Input)

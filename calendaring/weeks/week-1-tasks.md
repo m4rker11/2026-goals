@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 1: Morning Check Habit"
+---
+
 # Week 1: Morning Check Habit
 
 **Focus:** Track C (Output)

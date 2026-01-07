@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 2: Immediate Input"
+---
+
 # Week 2: Immediate Input
 
 **Focus:** Track A (Input)

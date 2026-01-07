@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 4: Daily Activities on Calendar"
+---
+
 # Week 4: Daily Activities on Calendar
 
 **Focus:** Track A (Input) - expanding what goes on

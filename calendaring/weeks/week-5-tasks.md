@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 5: Check Before Committing"
+---
+
 # Week 5: Check Before Committing
 
 **Focus:** Track C (Output) - calendar becomes authoritative

@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Week 6: Weekly Planning + Partner Sync"
+---
+
 # Week 6: Weekly Planning + Partner Sync
 
 **Focus:** All tracks - integration and sustainability
