@@ -15,8 +15,9 @@ tasks:
     done: false
   - id: pt-stretches
     name: PT stretches (15 min)
-    done: false
+    done: true
   # Program complete
+    notes: Completed morning PT - ran 1 hour late due to oversleep
   - id: weekly-review
     name: End of week reflection
     done: false

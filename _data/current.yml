@@ -1,0 +1,46 @@
+# Manual progress tracking for sequential/parallel goals
+# Update these as you progress - they don't auto-advance with time
+#
+# Time-based goals (fitness, calendar, work-boundaries, trading, spend-less)
+# are calculated from schedule.yml - but you can track catch-up here
+
+# ============================================
+# HINDI - Parallel learning with review cycles
+# ============================================
+hindi:
+  # Primary unit to show in dashboard deep link
+  focus: 01-foundations-of-case
+
+  # Units currently being learned (new material)
+  learning:
+    - 01-foundations-of-case
+
+  # Units in review cycle (completed but reinforcing)
+  reviewing: []
+
+  # Completed units (all review cycles done)
+  # completed: []
+
+# ============================================
+# FITNESS - Can track catch-up if behind
+# ============================================
+fitness:
+  # Week to link to (usually current_week from schedule)
+  # Only set if you need to override the calculated week
+  # focus: 1
+
+  # If catching up on previous weeks while in current week
+  catching_up: []
+
+# ============================================
+# BROTHER - Sequential calls
+# ============================================
+brother:
+  current_call: 1
+  # Next scheduled: Week of Jan 26
+
+# ============================================
+# SELL - Unordered project, no "current"
+# ============================================
+sell:
+  # Track in todos/sell/prep.yml

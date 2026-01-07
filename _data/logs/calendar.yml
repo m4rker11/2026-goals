@@ -6,3 +6,6 @@
   notes: 'Completed 13/20 setup tasks: widgets, voice commands, notifications, browser
     homepage, Tasks app install, all verifications passed'
   path: week-0-setup
+- date: '2026-01-07'
+  done: true
+  notes: Checked calendar - running 1 hour late due to oversleep
