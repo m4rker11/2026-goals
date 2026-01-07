@@ -33,8 +33,10 @@ This is non-negotiable accountability."""
 Call at: (1) conversation start, (2) when 30+ min elapsed (scripts, logs, timestamps, user mentions)."""
 
     # Dynamic log description with available goals
-    log_desc = f"""Log progress on a goal. Available goals: {goals_list or 'hindi, fitness, calendar, brother, trading, sell, spend-less, work-boundaries'}.
-Use path for subgoals (e.g., 'chapter-3/vocab'). Optionally update a todo task when logging."""
+    log_desc = f"""Log progress or daily reflection. Available goals: {goals_list or 'hindi, fitness, calendar, brother, trading, sell, spend-less, work-boundaries'}.
+- With goal: logs progress (auto-syncs to daily.yml for fitness/calendar/hindi)
+- Without goal: logs mood/notes only (daily reflection)
+Use path for subgoals. Optionally update a todo task when logging."""
 
     return [
         Tool(
@@ -47,41 +49,6 @@ Use path for subgoals (e.g., 'chapter-3/vocab'). Optionally update a todo task w
             }
         ),
         Tool(
-            name="daily",
-        description="""Update today's daily tracking entry. Use this for quick daily metrics.
-Updates _data/daily.yml which feeds the Jekyll dashboard.""",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "calendar": {
-                    "type": "boolean",
-                    "description": "Did you check your calendar today?"
-                },
-                "fitness": {
-                    "type": "number",
-                    "description": "Minutes of exercise today"
-                },
-                "hindi": {
-                    "type": "number",
-                    "description": "Hindi chapters/lessons completed today"
-                },
-                "mood": {
-                    "type": "number",
-                    "description": "Energy/motivation level 1-5"
-                },
-                "notes": {
-                    "type": "string",
-                    "description": "Brief reflection on the day"
-                },
-                "date": {
-                    "type": "string",
-                    "description": "Date in YYYY-MM-DD format (defaults to today)"
-                }
-            },
-            "required": []
-        }
-    ),
-        Tool(
             name="log",
             description=log_desc,
             inputSchema={
@@ -89,7 +56,7 @@ Updates _data/daily.yml which feeds the Jekyll dashboard.""",
             "properties": {
                 "goal": {
                     "type": "string",
-                    "description": "Goal ID or alias (e.g., 'fitness', 'hindi', 'gym')"
+                    "description": "Goal ID or alias. Omit to log mood/notes only."
                 },
                 "value": {
                     "type": ["number", "boolean"],
@@ -98,6 +65,10 @@ Updates _data/daily.yml which feeds the Jekyll dashboard.""",
                 "path": {
                     "type": "string",
                     "description": "Subgoal path (e.g., 'chapter-3', 'morning-check')"
+                },
+                "mood": {
+                    "type": "number",
+                    "description": "Energy/motivation level 1-5 (for daily reflection)"
                 },
                 "notes": {
                     "type": "string",
@@ -120,7 +91,7 @@ Updates _data/daily.yml which feeds the Jekyll dashboard.""",
                     "description": "Notes to add to the todo task (learnings, context about the task)"
                 }
             },
-            "required": ["goal"]
+            "required": []
         }
     ),
     Tool(
@@ -230,22 +201,16 @@ Use when setting up tasks for a new week/chapter or resetting the list.""",
         ),
         Tool(
             name="schedule",
-            description="""Schedule a todo task for a specific time on Google Calendar.
-Creates a calendar event with [Goal] prefix. Syncs to todo.yml for visibility.""",
+            description="""Add event to Google Calendar. Use type='goal' for goal tasks (syncs to todo.yml), type='personal' for regular events.
+- type='goal': requires goal, unit, task - creates [Goal] prefixed event, syncs to todo
+- type='personal': requires title - creates regular calendar event (optionally + Google Task)""",
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "goal": {
+                    "type": {
                         "type": "string",
-                        "description": "Goal ID or alias"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "description": "Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
-                    },
-                    "task": {
-                        "type": "string",
-                        "description": "Task ID to schedule"
+                        "enum": ["goal", "personal"],
+                        "description": "goal = todo task with sync, personal = regular calendar event"
                     },
                     "time": {
                         "type": "string",
@@ -257,15 +222,43 @@ Creates a calendar event with [Goal] prefix. Syncs to todo.yml for visibility.""
                     },
                     "calendar": {
                         "type": "string",
-                        "description": "Calendar name (e.g., 'Personal', 'Work'). Defaults to primary calendar."
+                        "description": "Calendar name (e.g., 'Personal', 'Work'). Defaults to primary."
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Optional description/notes"
+                    },
+                    "goal": {
+                        "type": "string",
+                        "description": "[type=goal] Goal ID or alias"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "[type=goal] Unit identifier (e.g., 'week-1', '01-foundations-of-case')"
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "[type=goal] Task ID to schedule"
                     },
                     "invite": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "Email addresses to invite"
+                        "description": "[type=goal] Email addresses to invite"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "[type=personal] Event title"
+                    },
+                    "color": {
+                        "type": "number",
+                        "description": "[type=personal] Color ID: 9=blue(Work), 2=green(Personal), 3=purple(Social), 11=red(Health), 6=orange(Anuska)"
+                    },
+                    "create_task": {
+                        "type": "boolean",
+                        "description": "[type=personal] Also create Google Task (default: false)"
                     }
                 },
-                "required": ["goal", "unit", "task", "time"]
+                "required": ["type", "time"]
             }
         ),
         Tool(
@@ -373,48 +366,6 @@ Keep: key patterns, significant quotes, important insights. Remove: redundant en
                     }
                 },
                 "required": ["condensed_entries"]
-            }
-        ),
-        Tool(
-            name="add",
-            description="""Add an event or task to Google Calendar.
-- type="event": Calendar event only (meetings, appointments)
-- type="task": Calendar event + Google Task (action items to complete)
-Tasks appear both on calendar (time block) and in Google Tasks (checklist).""",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "Event/task title"
-                    },
-                    "time": {
-                        "type": "string",
-                        "description": "When to schedule: 'today 4pm', 'tomorrow 9am', or ISO datetime"
-                    },
-                    "type": {
-                        "type": "string",
-                        "enum": ["event", "task"],
-                        "description": "event = calendar only, task = calendar + Google Tasks"
-                    },
-                    "duration": {
-                        "type": "number",
-                        "description": "Duration in minutes (default: 30)"
-                    },
-                    "calendar": {
-                        "type": "string",
-                        "description": "Calendar name (e.g., 'Personal', 'Work'). Defaults to primary."
-                    },
-                    "color": {
-                        "type": "number",
-                        "description": "Color ID: 9=blue(Work), 2=green(Personal), 3=purple(Social), 11=red(Health), 6=orange(Anuska)"
-                    },
-                    "notes": {
-                        "type": "string",
-                        "description": "Optional description/notes"
-                    }
-                },
-                "required": ["title", "time", "type"]
             }
         ),
         Tool(
@@ -613,60 +564,55 @@ def handle_check_in() -> list[TextContent]:
     return [TextContent(type="text", text="\n".join(lines))]
 
 
-def handle_daily(arguments: dict) -> list[TextContent]:
-    """Handle daily tool - update today's daily tracking."""
-    date = arguments.get("date")
-
-    # Build fields to update (only include provided values)
-    fields = {}
-    if "calendar" in arguments:
-        fields["calendar"] = arguments["calendar"]
-    if "fitness" in arguments:
-        fields["fitness"] = arguments["fitness"]
-    if "hindi" in arguments:
-        fields["hindi"] = arguments["hindi"]
-    if "mood" in arguments:
-        fields["mood"] = arguments["mood"]
-    if "notes" in arguments:
-        fields["notes"] = arguments["notes"]
-
-    if not fields:
-        # No fields provided, just show current status
-        entry = get_daily_entry(date)
-        if entry:
-            lines = [f"📅 **Daily Entry** ({entry['date']})", ""]
-            lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
-            lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
-            lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
-            if entry.get('mood'):
-                lines.append(f"  Mood: {entry['mood']}/5")
-            if entry.get('notes'):
-                lines.append(f"  Notes: {entry['notes']}")
-            return [TextContent(type="text", text="\n".join(lines))]
-        else:
-            return [TextContent(type="text", text=f"No entry for {date or get_today()}. Provide fields to create one.")]
-
-    # Update the entry
-    entry = update_daily_entry(date, **fields)
-
-    lines = [f"✅ **Daily Updated** ({entry['date']})", ""]
-    lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
-    lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
-    lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
-    if entry.get('mood'):
-        lines.append(f"  Mood: {entry['mood']}/5")
-    if entry.get('notes'):
-        lines.append(f"  Notes: {entry['notes']}")
-
-    return [TextContent(type="text", text="\n".join(lines))]
-
-
 def handle_log(arguments: dict) -> list[TextContent]:
-    """Handle log tool."""
+    """Handle log tool - logs goal progress or daily mood/notes."""
+    goal_input = arguments.get("goal", "")
+    date = arguments.get("date", get_today())
+
+    # === NO GOAL: Daily mood/notes only ===
+    if not goal_input:
+        mood = arguments.get("mood")
+        notes = arguments.get("notes")
+
+        if mood is None and notes is None:
+            # No goal, no mood/notes - show current daily status
+            entry = get_daily_entry(date)
+            if entry:
+                lines = [f"📅 **Daily Entry** ({entry['date']})", ""]
+                lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
+                lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
+                lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
+                if entry.get('mood'):
+                    lines.append(f"  Mood: {entry['mood']}/5")
+                if entry.get('notes'):
+                    lines.append(f"  Notes: {entry['notes']}")
+                return [TextContent(type="text", text="\n".join(lines))]
+            else:
+                return [TextContent(type="text", text=f"No daily entry for {date}. Use log with goal or mood/notes.")]
+
+        # Update mood/notes in daily.yml
+        fields = {}
+        if mood is not None:
+            fields["mood"] = mood
+        if notes is not None:
+            fields["notes"] = notes
+
+        entry = update_daily_entry(date, **fields)
+
+        lines = [f"✅ **Daily Updated** ({entry['date']})", ""]
+        lines.append(f"  Calendar: {'✓' if entry.get('calendar') else '✗'}")
+        lines.append(f"  Fitness: {entry.get('fitness', 0)} min")
+        lines.append(f"  Hindi: {entry.get('hindi', 0)} chapters")
+        if entry.get('mood'):
+            lines.append(f"  Mood: {entry['mood']}/5")
+        if entry.get('notes'):
+            lines.append(f"  Notes: {entry['notes']}")
+
+        return [TextContent(type="text", text="\n".join(lines))]
+
+    # === WITH GOAL: Log progress ===
     config = get_goals_config()
     goals = config.get("goals", {})
-
-    goal_input = arguments.get("goal", "")
     goal_id = resolve_goal_id(goals, goal_input)
 
     if not goal_id:
@@ -699,10 +645,35 @@ def handle_log(arguments: dict) -> list[TextContent]:
         logs.append(entry)
         save_goal_logs(goal_id, logs)
 
+        # Auto-sync to daily.yml for fitness, calendar, hindi
+        log_date = entry.get("date", get_today())
+        daily_synced = False
+
+        if goal_id == "fitness" and "value" in entry:
+            # Add fitness minutes to daily total
+            current_daily = get_daily_entry(log_date)
+            current_fitness = current_daily.get("fitness", 0) if current_daily else 0
+            update_daily_entry(log_date, fitness=current_fitness + entry["value"])
+            daily_synced = True
+
+        elif goal_id == "calendar":
+            # Mark calendar as done for the day
+            update_daily_entry(log_date, calendar=True)
+            daily_synced = True
+
+        elif goal_id == "hindi":
+            # Increment hindi chapter count
+            current_daily = get_daily_entry(log_date)
+            current_hindi = current_daily.get("hindi", 0) if current_daily else 0
+            update_daily_entry(log_date, hindi=current_hindi + 1)
+            daily_synced = True
+
     goal_name = goals[goal_id].get("name", goal_id)
     result_lines = []
     if entry:
         result_lines.append(f"Logged to {goal_name}: {entry}")
+        if daily_synced:
+            result_lines.append("Daily tracking synced ✓")
 
     # Handle todo update if specified
     todo_unit = arguments.get("todo_unit")
@@ -966,89 +937,169 @@ def handle_write_todo(arguments: dict) -> list[TextContent]:
 
 
 def handle_schedule(arguments: dict) -> list[TextContent]:
-    """Handle schedule tool - schedules a todo task."""
-    config = get_goals_config()
-    goals = config.get("goals", {})
-
-    goal_input = arguments.get("goal", "")
-    goal_id = resolve_goal_id(goals, goal_input)
-
-    if not goal_id:
-        available = ", ".join(goals.keys())
-        return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
-
-    unit = arguments.get("unit", "")
-    task_id = arguments.get("task", "")
-
-    if not unit or not task_id:
-        return [TextContent(type="text", text="Both 'unit' and 'task' are required to schedule a task")]
-
-    # Verify task exists
-    todo = get_unit_todo(goal_id, unit)
-    task_info = None
-    for t in todo.get("tasks", []):
-        if t.get("id") == task_id:
-            task_info = t
-            break
-
-    if not task_info:
-        return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
-
-    if task_info.get("done"):
-        return [TextContent(type="text", text=f"Task '{task_id}' is already completed")]
+    """Handle schedule tool - schedules goal tasks or personal events."""
+    schedule_type = arguments.get("type", "")
+    if not schedule_type:
+        return [TextContent(type="text", text="type is required (goal or personal)")]
 
     time_str = arguments.get("time", "")
     time = calendar_service.parse_time(time_str)
     if not time:
         return [TextContent(type="text", text=f"Could not parse time: '{time_str}'. Try 'today 4pm' or 'tomorrow 9am'")]
 
-    # Check for conflicts
     duration = arguments.get("duration", 30)
+    calendar_name = arguments.get("calendar")
+    calendar_id = calendar_service.resolve_calendar(calendar_name) if calendar_name else None
+
+    # Check for conflicts
     conflicts = calendar_service.check_conflicts(time, duration)
     conflict_warning = ""
     if conflicts:
         conflict_warning = f"\n⚠️ Conflicts with: {', '.join(c['title'] + ' at ' + c['time'] for c in conflicts)}"
 
-    goal_config = goals[goal_id]
-    goal_name = goal_config.get("name", goal_id)
-    task_name = task_info.get("name", task_id)
-    color_id = goal_config.get("color")
+    # === TYPE: GOAL ===
+    if schedule_type == "goal":
+        config = get_goals_config()
+        goals = config.get("goals", {})
 
-    # Resolve calendar name to ID
-    calendar_name = arguments.get("calendar")
-    calendar_id = calendar_service.resolve_calendar(calendar_name) if calendar_name else None
+        goal_input = arguments.get("goal", "")
+        goal_id = resolve_goal_id(goals, goal_input)
 
-    result = calendar_service.schedule_goal(
-        goal_id=goal_id,
-        goal_name=goal_name,
-        time=time,
-        duration_min=duration,
-        notes=task_name,
-        invite_emails=arguments.get("invite", []),
-        color_id=color_id,
-        calendar_id=calendar_id,
-    )
+        if not goal_id:
+            available = ", ".join(goals.keys())
+            return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
 
-    if not result.get("success"):
-        return [TextContent(type="text", text=result["message"] + conflict_warning)]
+        unit = arguments.get("unit", "")
+        task_id = arguments.get("task", "")
 
-    # Sync to todo.yml
-    event_id = result.get("event_id")
-    scheduled_for = time.isoformat()
+        if not unit or not task_id:
+            return [TextContent(type="text", text="For type=goal, 'unit' and 'task' are required")]
 
-    updated = update_todo_task(
-        goal_id, unit, task_id,
-        scheduled_for=scheduled_for,
-        event_id=event_id
-    )
+        # Verify task exists
+        todo = get_unit_todo(goal_id, unit)
+        task_info = None
+        for t in todo.get("tasks", []):
+            if t.get("id") == task_id:
+                task_info = t
+                break
 
-    message = result["message"] + conflict_warning
-    if updated:
-        message += f"\nSynced to todo: {goal_id}/{unit}/{task_id}"
-    if event_id:
-        message += f"\nEvent ID: {event_id}"
+        if not task_info:
+            return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
 
-    return [TextContent(type="text", text=message)]
+        if task_info.get("done"):
+            return [TextContent(type="text", text=f"Task '{task_id}' is already completed")]
+
+        goal_config = goals[goal_id]
+        goal_name = goal_config.get("name", goal_id)
+        task_name = task_info.get("name", task_id)
+        color_id = goal_config.get("color")
+
+        result = calendar_service.schedule_goal(
+            goal_id=goal_id,
+            goal_name=goal_name,
+            time=time,
+            duration_min=duration,
+            notes=arguments.get("notes") or task_name,
+            invite_emails=arguments.get("invite", []),
+            color_id=color_id,
+            calendar_id=calendar_id,
+        )
+
+        if not result.get("success"):
+            return [TextContent(type="text", text=result["message"] + conflict_warning)]
+
+        # Sync to todo.yml
+        event_id = result.get("event_id")
+        scheduled_for = time.isoformat()
+
+        updated = update_todo_task(
+            goal_id, unit, task_id,
+            scheduled_for=scheduled_for,
+            event_id=event_id
+        )
+
+        message = result["message"] + conflict_warning
+        if updated:
+            message += f"\nSynced to todo: {goal_id}/{unit}/{task_id}"
+        if event_id:
+            message += f"\nEvent ID: {event_id}"
+
+        return [TextContent(type="text", text=message)]
+
+    # === TYPE: PERSONAL ===
+    elif schedule_type == "personal":
+        title = arguments.get("title", "")
+        if not title:
+            return [TextContent(type="text", text="For type=personal, 'title' is required")]
+
+        color_id = arguments.get("color")
+        notes = arguments.get("notes", "")
+        create_task = arguments.get("create_task", False)
+
+        # Build description
+        description = notes or ""
+
+        # If create_task, create Google Task first
+        google_task_id = None
+        if create_task:
+            task_result = tasks_service.create_task(
+                title=title,
+                due_date=time.date(),
+                notes=notes,
+            )
+            if task_result.get("success"):
+                google_task_id = task_result.get("task_id")
+                description = f"TaskID: {google_task_id}\n{notes}" if notes else f"TaskID: {google_task_id}"
+            else:
+                conflict_warning += f"\n⚠️ Google Task creation failed: {task_result.get('message')}"
+
+        # Create calendar event
+        from gcsa.google_calendar import GoogleCalendar
+        from gcsa.event import Event
+
+        if calendar_id:
+            try:
+                gc = GoogleCalendar(
+                    default_calendar=calendar_id,
+                    credentials_path=str(calendar_service.CREDENTIALS_PATH),
+                    token_path=str(calendar_service.TOKEN_PATH),
+                )
+            except Exception as e:
+                return [TextContent(type="text", text=f"Failed to access calendar: {e}")]
+        else:
+            gc = calendar_service.get_calendar()
+
+        if not gc:
+            return [TextContent(type="text", text="Not authenticated. Run: goals-mcp auth")]
+
+        end_time = time + timedelta(minutes=duration)
+
+        try:
+            event = Event(
+                summary=title,
+                start=time,
+                end=end_time,
+                description=description if description else None,
+                color_id=str(color_id) if color_id else None,
+            )
+
+            created = gc.add_event(event)
+
+            result_lines = [f"Created: {title} at {time.strftime('%I:%M%p').lower().lstrip('0')}"]
+            if create_task and google_task_id:
+                result_lines.append(f"Google Task created (ID: {google_task_id})")
+            if created.event_id:
+                result_lines.append(f"Event ID: {created.event_id}")
+            if conflict_warning:
+                result_lines.append(conflict_warning)
+
+            return [TextContent(type="text", text="\n".join(result_lines))]
+
+        except Exception as e:
+            return [TextContent(type="text", text=f"Failed to create calendar event: {e}{conflict_warning}")]
+
+    else:
+        return [TextContent(type="text", text=f"Unknown type: '{schedule_type}'. Use 'goal' or 'personal'")]
 
 
 def handle_reschedule(arguments: dict) -> list[TextContent]:
@@ -1187,98 +1238,6 @@ def handle_memory_condense(arguments: dict) -> list[TextContent]:
         type="text",
         text=f"Memory condensed: {old_count} entries → {len(condensed)} entries"
     )]
-
-
-def handle_add(arguments: dict) -> list[TextContent]:
-    """Handle add tool - creates calendar event and optionally Google Task."""
-    title = arguments.get("title", "")
-    if not title:
-        return [TextContent(type="text", text="title is required")]
-
-    time_str = arguments.get("time", "")
-    time = calendar_service.parse_time(time_str)
-    if not time:
-        return [TextContent(type="text", text=f"Could not parse time: '{time_str}'. Try 'today 4pm' or 'tomorrow 9am'")]
-
-    item_type = arguments.get("type", "event")
-    if item_type not in ("event", "task"):
-        return [TextContent(type="text", text="type must be 'event' or 'task'")]
-
-    duration = arguments.get("duration", 30)
-    calendar_name = arguments.get("calendar")
-    calendar_id = calendar_service.resolve_calendar(calendar_name) if calendar_name else None
-    color_id = arguments.get("color")
-    notes = arguments.get("notes", "")
-
-    # Check for conflicts
-    conflicts = calendar_service.check_conflicts(time, duration)
-    conflict_warning = ""
-    if conflicts:
-        conflict_warning = f"\n⚠️ Conflicts with: {', '.join(c['title'] + ' at ' + c['time'] for c in conflicts)}"
-
-    # Build description
-    description = notes or ""
-
-    # If task type, create Google Task first to get task_id
-    task_id = None
-    if item_type == "task":
-        task_result = tasks_service.create_task(
-            title=title,
-            due_date=time.date(),
-            notes=notes,
-        )
-        if task_result.get("success"):
-            task_id = task_result.get("task_id")
-            # Store task_id in calendar event description for sync
-            description = f"TaskID: {task_id}\n{notes}" if notes else f"TaskID: {task_id}"
-        else:
-            # Task creation failed but continue with calendar
-            conflict_warning += f"\n⚠️ Google Task creation failed: {task_result.get('message')}"
-
-    # Create calendar event
-    from gcsa.google_calendar import GoogleCalendar
-    from gcsa.event import Event
-
-    if calendar_id:
-        try:
-            gc = GoogleCalendar(
-                default_calendar=calendar_id,
-                credentials_path=str(calendar_service.CREDENTIALS_PATH),
-                token_path=str(calendar_service.TOKEN_PATH),
-            )
-        except Exception as e:
-            return [TextContent(type="text", text=f"Failed to access calendar: {e}")]
-    else:
-        gc = calendar_service.get_calendar()
-
-    if not gc:
-        return [TextContent(type="text", text="Not authenticated. Run: goals-mcp auth")]
-
-    end_time = time + timedelta(minutes=duration)
-
-    try:
-        event = Event(
-            summary=title,
-            start=time,
-            end=end_time,
-            description=description if description else None,
-            color_id=str(color_id) if color_id else None,
-        )
-
-        created = gc.add_event(event)
-
-        result_lines = [f"Created {item_type}: {title} at {time.strftime('%I:%M%p').lower().lstrip('0')}"]
-        if item_type == "task" and task_id:
-            result_lines.append(f"Google Task created (ID: {task_id})")
-        if created.event_id:
-            result_lines.append(f"Calendar event ID: {created.event_id}")
-        if conflict_warning:
-            result_lines.append(conflict_warning)
-
-        return [TextContent(type="text", text="\n".join(result_lines))]
-
-    except Exception as e:
-        return [TextContent(type="text", text=f"Failed to create calendar event: {e}{conflict_warning}")]
 
 
 def handle_progress(arguments: dict) -> list[TextContent]:
@@ -1570,8 +1529,6 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
         return handle_check_in()
-    elif name == "daily":
-        return handle_daily(arguments)
     elif name == "log":
         return handle_log(arguments)
     elif name == "edit":
@@ -1596,8 +1553,6 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_memory_read(arguments)
     elif name == "memory_condense":
         return handle_memory_condense(arguments)
-    elif name == "add":
-        return handle_add(arguments)
     elif name == "progress":
         return handle_progress(arguments)
 
