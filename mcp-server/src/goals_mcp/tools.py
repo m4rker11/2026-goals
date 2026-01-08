@@ -288,7 +288,7 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
         # ==================== ADD_CALENDAR_EVENT ====================
         Tool(
             name="add_calendar_event",
-            description="Add a personal event to Google Calendar. Optionally create a linked Google Task.",
+            description="Add an event to Google Calendar. Use 'goal' param to link to a goal (adds [Goal] prefix and uses goal's color).",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -306,6 +306,10 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
                         "maximum": 480,
                         "description": "Duration in minutes (default: 30, max: 8 hours)"
                     },
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal to link this event to (e.g., 'hindi', 'fitness'). Adds [Goal] prefix and uses goal's color."
+                    },
                     "calendar": {
                         "type": "string",
                         "description": "Calendar name (e.g., 'Personal', 'Work'). Defaults to primary."
@@ -318,7 +322,7 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 11,
-                        "description": "Color ID: 9=blue(Work), 2=green(Personal), 3=purple(Social), 11=red(Health), 6=orange"
+                        "description": "Color ID: 9=blue(Work), 2=green(Personal), 3=purple(Social), 11=red(Health), 6=orange. Overrides goal color if set."
                     },
                     "create_task": {
                         "type": "boolean",
@@ -368,7 +372,7 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
         # ==================== LIST_CALENDAR_EVENTS ====================
         Tool(
             name="list_calendar_events",
-            description="Show upcoming events from Google Calendar. Shows both goal events and personal events.",
+            description="Show calendar events from Google Calendar. Shows both goal events and personal events.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -377,6 +381,12 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
                         "minimum": 1,
                         "maximum": 168,
                         "description": "Hours ahead to look (default: 24, max: 1 week)"
+                    },
+                    "hours_back": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 168,
+                        "description": "Hours back to look (default: 0, use to see past events)"
                     }
                 },
                 "required": []
@@ -1192,7 +1202,7 @@ def handle_schedule_goal_task(arguments: dict) -> list[TextContent]:
 
 
 def handle_add_calendar_event(arguments: dict) -> list[TextContent]:
-    """Handle add_calendar_event tool - add a personal event to calendar."""
+    """Handle add_calendar_event tool - add an event to calendar, optionally linked to a goal."""
     title = arguments.get("title", "")
     if not title:
         return [TextContent(type="text", text="title is required")]
@@ -1216,8 +1226,30 @@ def handle_add_calendar_event(arguments: dict) -> list[TextContent]:
     notes = arguments.get("notes", "")
     create_task = arguments.get("create_task", False)
 
+    # Handle goal linking
+    goal_input = arguments.get("goal")
+    goal_id = None
+    goal_name = None
+    if goal_input:
+        config = get_goals_config()
+        goals = config.get("goals", {})
+        from .goals import resolve_goal_id
+        goal_id = resolve_goal_id(goals, goal_input)
+        if goal_id:
+            goal_config = goals[goal_id]
+            goal_name = goal_config.get("name", goal_id)
+            # Use goal's color if no explicit color provided
+            if color_id is None:
+                color_id = goal_config.get("color")
+            # Prefix title with [Goal] goal_name
+            title = f"[Goal] {goal_name} - {title}"
+
     # Build description
-    description = notes or ""
+    description = ""
+    if goal_id:
+        description = f"Goal: {goal_id}\n"
+    if notes:
+        description += notes
 
     # If create_task, create Google Task first
     google_task_id = None
@@ -1343,9 +1375,10 @@ def handle_delete_event(arguments: dict) -> list[TextContent]:
 
 
 def handle_list_calendar_events(arguments: dict) -> list[TextContent]:
-    """Handle list_calendar_events tool - show upcoming calendar events."""
+    """Handle list_calendar_events tool - show calendar events."""
     hours = arguments.get("hours", 24)
-    events = calendar_service.get_upcoming_events(hours_ahead=hours)
+    hours_back = arguments.get("hours_back", 0)
+    events = calendar_service.get_upcoming_events(hours_ahead=hours, hours_back=hours_back)
 
     if not events:
         if not calendar_service.is_authenticated():

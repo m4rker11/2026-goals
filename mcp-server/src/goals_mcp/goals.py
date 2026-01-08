@@ -2,7 +2,28 @@
 
 from datetime import datetime, timedelta
 
-from .storage import get_goal_logs, discover_content, get_today, to_date_str
+from .storage import (
+    get_goal_logs, discover_content, get_today, to_date_str,
+    get_schedule, get_current_week, get_unit_todo
+)
+
+
+def has_scheduled_tasks(goal_id: str, unit: str) -> bool:
+    """Check if a goal/unit has any scheduled tasks."""
+    todo = get_unit_todo(goal_id, unit)
+    tasks = todo.get("tasks", [])
+    return any(t.get("scheduled_for") or t.get("event_id") for t in tasks)
+
+
+def get_unscheduled_tasks(goal_id: str, unit: str) -> list[str]:
+    """Get list of task names that are not scheduled and not done."""
+    todo = get_unit_todo(goal_id, unit)
+    tasks = todo.get("tasks", [])
+    return [
+        t.get("name", t.get("id"))
+        for t in tasks
+        if not t.get("done") and not t.get("scheduled_for") and not t.get("event_id")
+    ]
 
 
 def get_completed_items(logs: list) -> set:
@@ -172,38 +193,89 @@ def compute_todos(config: dict) -> list[dict]:
             cadence = urgency.get("cadence")
 
             if cadence == "daily":
-                today_logs = [l for l in logs if to_date_str(l.get("date")) == today]
-                if not today_logs:
-                    due_by = urgency.get("due_by", "23:59")
-                    nag_from = urgency.get("nag_from", "07:00")
+                progression = goal_config.get("progression")
 
-                    # Parse times
-                    try:
-                        due_time = datetime.strptime(due_by, "%H:%M").time()
-                        nag_time = datetime.strptime(nag_from, "%H:%M").time()
-                    except ValueError:
-                        due_time = datetime.strptime("23:59", "%H:%M").time()
-                        nag_time = datetime.strptime("07:00", "%H:%M").time()
+                # For time-weekly goals, check current week's todo tasks instead of generic logs
+                if progression == "time-weekly":
+                    schedule = get_schedule()
+                    current_week = get_current_week(schedule)
+                    week_num = current_week.get("number", 1)
+                    unit = f"week-{week_num}"
 
-                    current_time = now.time()
+                    # Get today's day name (mon, tue, wed, etc.)
+                    day_names = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+                    today_day = day_names[now.weekday()]
 
-                    if current_time > due_time:
-                        # Overdue - past due_by time
-                        todos.append({
-                            "goal": goal_id,
-                            "name": name,
-                            "message": f"{name}: overdue (due by {due_by})",
-                            "priority": "overdue"
-                        })
-                    elif current_time >= nag_time:
-                        # Due - between nag_from and due_by
-                        todos.append({
-                            "goal": goal_id,
-                            "name": name,
-                            "message": f"{name}: not done today",
-                            "priority": "due"
-                        })
-                    # Before nag_from: don't show
+                    # Check todo tasks for today
+                    todo = get_unit_todo(goal_id, unit)
+                    tasks = todo.get("tasks", [])
+
+                    # Find today's task(s)
+                    today_tasks = [t for t in tasks if today_day in t.get("id", "").lower()]
+
+                    if today_tasks:
+                        done_tasks = [t for t in today_tasks if t.get("done")]
+                        pending_tasks = [t for t in today_tasks if not t.get("done")]
+
+                        if pending_tasks:
+                            task_names = ", ".join(t.get("name", t.get("id")) for t in pending_tasks[:2])
+                            todos.append({
+                                "goal": goal_id,
+                                "name": name,
+                                "message": f"{name}: {task_names}",
+                                "priority": "due"
+                            })
+                        elif done_tasks:
+                            todos.append({
+                                "goal": goal_id,
+                                "name": name,
+                                "message": f"{name}: today's tasks done ✓",
+                                "priority": "info"
+                            })
+                    else:
+                        # No day-specific tasks, show general progress
+                        pending = [t for t in tasks if not t.get("done")]
+                        if pending:
+                            todos.append({
+                                "goal": goal_id,
+                                "name": name,
+                                "message": f"{name}: week {week_num} - {len(pending)} tasks pending",
+                                "priority": "info"
+                            })
+                else:
+                    # Regular daily cadence - check logs
+                    today_logs = [l for l in logs if to_date_str(l.get("date")) == today]
+                    if not today_logs:
+                        due_by = urgency.get("due_by", "23:59")
+                        nag_from = urgency.get("nag_from", "07:00")
+
+                        # Parse times
+                        try:
+                            due_time = datetime.strptime(due_by, "%H:%M").time()
+                            nag_time = datetime.strptime(nag_from, "%H:%M").time()
+                        except ValueError:
+                            due_time = datetime.strptime("23:59", "%H:%M").time()
+                            nag_time = datetime.strptime("07:00", "%H:%M").time()
+
+                        current_time = now.time()
+
+                        if current_time > due_time:
+                            # Overdue - past due_by time
+                            todos.append({
+                                "goal": goal_id,
+                                "name": name,
+                                "message": f"{name}: overdue (due by {due_by})",
+                                "priority": "overdue"
+                            })
+                        elif current_time >= nag_time:
+                            # Due - between nag_from and due_by
+                            todos.append({
+                                "goal": goal_id,
+                                "name": name,
+                                "message": f"{name}: not done today",
+                                "priority": "due"
+                            })
+                        # Before nag_from: don't show
 
             elif cadence == "weekly":
                 week_start = now - timedelta(days=now.weekday())
@@ -294,10 +366,19 @@ def compute_todos(config: dict) -> list[dict]:
                         })
 
         elif urgency_type == "target":
-            target = urgency.get("target", 0)
+            base_target = urgency.get("target", 0)
             warn_at = urgency.get("warn_at", 0.5)
             under_is_good = urgency.get("under_is_good", False)
             period = urgency.get("period", "weekly")
+
+            # Look up week-specific target from schedule.yml if available
+            schedule = get_schedule()
+            current_week = get_current_week(schedule)
+            week_num = current_week.get("number", 1)
+
+            goal_schedule = schedule.get("goals", {}).get(goal_id, {})
+            weekly_targets = goal_schedule.get("weekly_targets", {})
+            target = weekly_targets.get(week_num, base_target)
 
             # Calculate period totals
             if period == "weekly":
@@ -307,7 +388,8 @@ def compute_todos(config: dict) -> list[dict]:
                 period_start_str = today
 
             period_logs = [l for l in logs if to_date_str(l.get("date")) >= period_start_str]
-            period_total = sum(l.get("value", 0) for l in period_logs)
+            # Handle both nested format (total field) and flat format (value field)
+            period_total = sum(l.get("total", l.get("value", 0)) for l in period_logs)
 
             day_of_week = now.weekday()  # 0=Monday, 6=Sunday
             threshold = target * warn_at
@@ -396,13 +478,64 @@ def compute_todos(config: dict) -> list[dict]:
                             "priority": "info"
                         })
             else:
-                # Never started
-                todos.append({
-                    "goal": goal_id,
-                    "name": name,
-                    "message": f"{name}: not started",
-                    "priority": "due"
-                })
+                # Never started - check weekly tasks first, then chapter scheduling
+                schedule = get_schedule()
+                current_week = get_current_week(schedule)
+                week_num = current_week.get("number", 1)
+                week_unit = f"week-{week_num}"
+
+                # Check if there are weekly tasks
+                week_todo = get_unit_todo(goal_id, week_unit)
+                week_tasks = week_todo.get("tasks", [])
+                pending_week_tasks = [t for t in week_tasks if not t.get("done")]
+
+                if pending_week_tasks:
+                    # Show pending weekly tasks
+                    unscheduled = [t for t in pending_week_tasks if not t.get("scheduled_for") and not t.get("event_id")]
+                    if unscheduled:
+                        task_names = ", ".join(t.get("name", t.get("id")) for t in unscheduled[:2])
+                        suffix = f" (+{len(unscheduled) - 2} more)" if len(unscheduled) > 2 else ""
+                        todos.append({
+                            "goal": goal_id,
+                            "name": name,
+                            "message": f"{name}: {task_names}{suffix} not scheduled",
+                            "priority": "overdue"
+                        })
+                    else:
+                        task_names = ", ".join(t.get("name", t.get("id")) for t in pending_week_tasks[:2])
+                        todos.append({
+                            "goal": goal_id,
+                            "name": name,
+                            "message": f"{name}: {task_names} scheduled",
+                            "priority": "due"
+                        })
+                else:
+                    # No weekly tasks - check chapter scheduling
+                    current_info = get_current(goal_config, logs)
+                    current = current_info.get("current")
+                    if current:
+                        is_scheduled = has_scheduled_tasks(goal_id, current)
+                        if is_scheduled:
+                            todos.append({
+                                "goal": goal_id,
+                                "name": name,
+                                "message": f"{name}: {current} scheduled but not started",
+                                "priority": "due"
+                            })
+                        else:
+                            todos.append({
+                                "goal": goal_id,
+                                "name": name,
+                                "message": f"{name}: {current} not scheduled",
+                                "priority": "overdue"
+                            })
+                    else:
+                        todos.append({
+                            "goal": goal_id,
+                            "name": name,
+                            "message": f"{name}: no content found",
+                            "priority": "info"
+                        })
 
         elif urgency_type == "none":
             # Flexible goals - just show progress

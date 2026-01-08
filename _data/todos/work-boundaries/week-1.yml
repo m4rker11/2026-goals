@@ -2,19 +2,19 @@ unit: week-1
 tasks:
   - id: define-start
     name: Define specific start time
-    done: false
+    done: true
   - id: define-end
     name: Define specific end time
-    done: false
+    done: true
   - id: mon-say-times
     name: Monday - say times out loud
     done: false
   - id: tue-say-times
     name: Tuesday - say times out loud
-    done: false
+    done: true
   - id: wed-say-times
     name: Wednesday - say times out loud
-    done: false
+    done: true
   - id: thu-say-times
     name: Thursday - say times out loud
     done: false

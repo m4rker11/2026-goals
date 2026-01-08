@@ -88,9 +88,13 @@ def resolve_calendar(name: str) -> Optional[str]:
         return None
 
 
-def get_upcoming_events(hours_ahead: int = 8) -> list[dict]:
+def get_upcoming_events(hours_ahead: int = 8, hours_back: int = 0) -> list[dict]:
     """
-    Get upcoming calendar events.
+    Get calendar events within a time window.
+
+    Args:
+        hours_ahead: Hours to look forward (default 8)
+        hours_back: Hours to look backward (default 0, set >0 to see past events)
 
     Returns list of events with: time, title, is_goal, goal_id, duration_min
     """
@@ -99,11 +103,12 @@ def get_upcoming_events(hours_ahead: int = 8) -> list[dict]:
         return []
 
     now = datetime.now()
+    start = now - timedelta(hours=hours_back) if hours_back > 0 else now
     end = now + timedelta(hours=hours_ahead)
 
     events = []
     try:
-        for event in gc.get_events(time_min=now, time_max=end, order_by='startTime', single_events=True):
+        for event in gc.get_events(time_min=start, time_max=end, order_by='startTime', single_events=True):
             is_goal = event.summary and event.summary.startswith("[Goal]")
             goal_id = None
             title = event.summary or "Untitled"
