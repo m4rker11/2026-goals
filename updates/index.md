@@ -36,10 +36,21 @@ This page is for my accountability coach to track my progress.
   {% assign total_fitness = total_fitness | plus: day.fitness %}
 {% endfor %}
 
+{% comment %} Calculate actual consecutive streak {% endcomment %}
+{% assign daily_reversed = site.data.daily | reverse %}
+{% assign streak = 0 %}
+{% for day in daily_reversed %}
+  {% if day.calendar == true %}
+    {% assign streak = streak | plus: 1 %}
+  {% else %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
 | Metric | Value |
 |--------|-------|
 | Days tracked | {{ total_days }} |
-| Calendar streak | {{ calendar_days }}/{{ total_days }} days |
+| Calendar streak | {{ streak }} days |
 | Total fitness | {{ total_fitness }} minutes |
 
 [View Full History & Charts](history)
