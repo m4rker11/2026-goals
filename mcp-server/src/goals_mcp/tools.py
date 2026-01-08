@@ -123,7 +123,7 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
         # ==================== EDIT_GOAL_LOG ====================
         Tool(
             name="edit_goal_log",
-            description="Edit or delete an existing goal log entry. Use to correct mistakes or remove erroneous entries.",
+            description="Edit or delete a specific log entry. Use index to target entries within the same day (0=first, -1=last).",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -135,6 +135,10 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
                         "type": "string",
                         "format": "date",
                         "description": "Date of entry to edit (YYYY-MM-DD)"
+                    },
+                    "index": {
+                        "type": "integer",
+                        "description": "Entry index within the day (0=first, -1=last). Defaults to 0."
                     },
                     "path": {
                         "type": "string",
@@ -223,7 +227,8 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
                                 "id": {"type": "string", "description": "Task identifier (e.g., 'vocab', 'synopsis')"},
                                 "name": {"type": "string", "description": "Human-readable task name"},
                                 "done": {"type": "boolean", "description": "Whether task is complete (default: false)"},
-                                "notes": {"type": "string", "description": "Optional notes about the task"}
+                                "notes": {"type": "string", "description": "Optional notes about the task"},
+                                "description": {"type": "string", "description": "Detailed instructions (shown in dashboard, calendar)"}
                             },
                             "required": ["id", "name"]
                         }
@@ -650,7 +655,7 @@ def handle_check_in() -> list[TextContent]:
 def handle_log_goal(arguments: dict) -> list[TextContent]:
     """Handle log_goal tool - logs progress on a specific goal."""
     goal_input = arguments.get("goal", "")
-    date = arguments.get("date", get_today())
+    log_date = arguments.get("date", get_today())
 
     if not goal_input:
         return [TextContent(type="text", text="goal is required. Use log_daily for mood/notes.")]
@@ -670,8 +675,9 @@ def handle_log_goal(arguments: dict) -> list[TextContent]:
     entry = None
     if has_log_data or not (arguments.get("todo_unit") and arguments.get("todo_task")):
         logs = get_goal_logs(goal_id)
-        entry = {"date": arguments.get("date", get_today())}
 
+        # Build the session entry
+        entry = {}
         if "path" in arguments:
             entry["path"] = arguments["path"]
 
@@ -686,7 +692,28 @@ def handle_log_goal(arguments: dict) -> list[TextContent]:
         if "notes" in arguments:
             entry["notes"] = arguments["notes"]
 
-        logs.append(entry)
+        # Find or create day entry (nested format: {date, entries[], total})
+        day_entry = None
+        for d in logs:
+            if d.get("date") == log_date:
+                day_entry = d
+                break
+
+        if not day_entry:
+            day_entry = {"date": log_date, "entries": []}
+            logs.append(day_entry)
+
+        # Ensure entries array exists (migrate old format)
+        if "entries" not in day_entry:
+            day_entry["entries"] = []
+
+        day_entry["entries"].append(entry)
+
+        # Update total for numeric values
+        if "value" in entry and isinstance(entry["value"], (int, float)):
+            total = sum(e.get("value", 0) for e in day_entry["entries"] if isinstance(e.get("value"), (int, float)))
+            day_entry["total"] = total
+
         save_goal_logs(goal_id, logs)
 
         # Auto-sync to daily.yml for fitness, calendar, hindi
@@ -797,7 +824,7 @@ def handle_log_daily(arguments: dict) -> list[TextContent]:
 
 
 def handle_edit_goal_log(arguments: dict) -> list[TextContent]:
-    """Handle edit_goal_log tool - edit or delete existing log entries."""
+    """Handle edit_goal_log tool - edit or delete existing log entries (nested format)."""
     config = get_goals_config()
     goals = config.get("goals", {})
 
@@ -809,38 +836,82 @@ def handle_edit_goal_log(arguments: dict) -> list[TextContent]:
 
     logs = get_goal_logs(goal_id)
     target_date = arguments.get("date")
+    entry_index = arguments.get("index", 0)  # Default to first entry
     target_path = arguments.get("path")
 
-    found_idx = None
-    for i, log in enumerate(logs):
-        if to_date_str(log.get("date")) == target_date:
-            if target_path:
-                if log.get("path") == target_path:
-                    found_idx = i
-                    break
-            else:
-                found_idx = i
-                break
+    # Find the day entry (nested format: {date, entries[], total})
+    day_entry = None
+    day_idx = None
+    for i, d in enumerate(logs):
+        if to_date_str(d.get("date")) == target_date:
+            day_entry = d
+            day_idx = i
+            break
 
-    if found_idx is None:
-        return [TextContent(type="text", text=f"No entry found for {target_date}" + (f" path={target_path}" if target_path else ""))]
+    if day_entry is None:
+        return [TextContent(type="text", text=f"No entries found for {target_date}")]
+
+    # Get entries array (support both old flat format and new nested format)
+    entries = day_entry.get("entries", [])
+    if not entries:
+        # Old flat format - treat the day entry itself as the single entry
+        entries = [day_entry]
+        is_flat = True
+    else:
+        is_flat = False
+
+    # Handle negative index
+    if entry_index < 0:
+        entry_index = len(entries) + entry_index
+
+    if entry_index < 0 or entry_index >= len(entries):
+        return [TextContent(type="text", text=f"Invalid index {arguments.get('index', 0)}. Day has {len(entries)} entries (use 0-{len(entries)-1})")]
+
+    # Filter by path if specified
+    if target_path:
+        matching = [(i, e) for i, e in enumerate(entries) if e.get("path") == target_path]
+        if not matching:
+            return [TextContent(type="text", text=f"No entry with path={target_path} on {target_date}")]
+        entry_index = matching[0][0]
 
     if arguments.get("delete"):
-        deleted = logs.pop(found_idx)
-        save_goal_logs(goal_id, logs)
-        return [TextContent(type="text", text=f"Deleted: {deleted}")]
+        if is_flat:
+            # Delete the entire day entry for old format
+            deleted = logs.pop(day_idx)
+            save_goal_logs(goal_id, logs)
+            return [TextContent(type="text", text=f"Deleted day entry: {deleted}")]
+        else:
+            deleted = entries.pop(entry_index)
+            # Recalculate total
+            if entries:
+                total = sum(e.get("value", 0) for e in entries if isinstance(e.get("value"), (int, float)))
+                day_entry["total"] = total
+                day_entry["entries"] = entries
+            else:
+                # No entries left, remove the day
+                logs.pop(day_idx)
+            save_goal_logs(goal_id, logs)
+            return [TextContent(type="text", text=f"Deleted entry: {deleted}")]
 
+    # Update the entry
+    entry = entries[entry_index]
     if "value" in arguments:
         if isinstance(arguments["value"], bool):
-            logs[found_idx]["done"] = arguments["value"]
+            entry["done"] = arguments["value"]
         else:
-            logs[found_idx]["value"] = arguments["value"]
+            entry["value"] = arguments["value"]
 
     if "notes" in arguments:
-        logs[found_idx]["notes"] = arguments["notes"]
+        entry["notes"] = arguments["notes"]
+
+    # For nested format, update total
+    if not is_flat:
+        total = sum(e.get("value", 0) for e in entries if isinstance(e.get("value"), (int, float)))
+        day_entry["total"] = total
+        day_entry["entries"] = entries
 
     save_goal_logs(goal_id, logs)
-    return [TextContent(type="text", text=f"Updated: {logs[found_idx]}")]
+    return [TextContent(type="text", text=f"Updated entry {entry_index}: {entry}")]
 
 
 def handle_get_goal_status(arguments: dict) -> list[TextContent]:
@@ -1018,6 +1089,8 @@ def handle_write_todo(arguments: dict) -> list[TextContent]:
         }
         if t.get("notes"):
             task["notes"] = t["notes"]
+        if t.get("description"):
+            task["description"] = t["description"]
         tasks.append(task)
 
     todo_data = {"unit": unit, "tasks": tasks}

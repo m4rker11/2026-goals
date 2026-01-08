@@ -1,31 +1,24 @@
 unit: week-1
 tasks:
-  # Sessions
   - id: upper-session
     name: Upper bodyweight session (20 min)
-    done: false
-    description: |
-      Warm-up (2 min):
-      - Arm circles, shoulder rolls
-
-      Circuit (3 rounds, 30s rest between):
-      - Push-ups: 10 reps
-      - Pike push-ups: 8 reps
-      - Diamond push-ups: 8 reps
-      - Plank shoulder taps: 20 reps
-
-      Cool-down (2 min):
-      - Chest stretch, tricep stretch
+    done: true
+    description: "Warm-up (2 min):\n- Arm circles, shoulder rolls\n\nCircuit (2 rounds,
+      60s rest between):\n- Push-ups: 8 reps (or knee push-ups)\n- Chair dips: 8 reps\n
+      - Rows: 8 reps (band or table rows)\n\nOptional (if energy):\n- Wall push-ups:
+      10 reps\n- Dead hang: 10-15 sec\n\nCool-down (2 min):\n- Chest stretch, tricep
+      stretch"
+    notes: 'Completed: 3x12 wide rows (red PT band, shoulder level), 2x10 chair dips,
+      3x20 shrugs (~4-5lb weights)'
   - id: mid-session
     name: Mid/PT focus session (15 min)
     done: false
   - id: pt-stretches-1
-    name: PT Stretches #1 (15 min)
+    name: 'PT Stretches #1 (15 min)'
     done: false
   - id: pt-stretches-2
-    name: PT Stretches #2 (15 min)
+    name: 'PT Stretches #2 (15 min)'
     done: false
-  # Equipment prep
   - id: pack-clothes
     name: Pack comfortable workout clothes
     done: true
@@ -35,7 +28,6 @@ tasks:
   - id: pack-pt-notes
     name: Pack PT stretch notes
     done: false
-  # Weekly review
   - id: weekly-review
     name: End of week reflection
     done: false
