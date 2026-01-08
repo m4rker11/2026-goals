@@ -15,6 +15,7 @@ from .storage import (
 from .goals import get_current, compute_todos, resolve_goal_id
 from . import calendar_service
 from . import tasks_service
+from . import wger_service
 
 
 def get_tool_definitions(urgent_summary: str = "", goals_list: str = "") -> list[Tool]:
@@ -523,6 +524,233 @@ Examples:
                     }
                 },
                 "required": ["goal", "action"]
+            }
+        ),
+
+        # ==================== WGER TOOLS ====================
+
+        Tool(
+            name="get_workout_context",
+            description="""Get workout planning context: recent workouts, muscle fatigue, available exercises.
+Returns RAW DATA for Claude to create intelligent workout recommendations.
+Call this when user asks "what should I do today" or wants workout advice.
+Claude should interpret this data considering user's current state (energy, time, goals).""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "equipment_set": {
+                        "type": "string",
+                        "enum": ["home", "gym", "travel"],
+                        "description": "Equipment preset (default from config)"
+                    },
+                    "equipment": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Override with specific equipment list"
+                    },
+                    "days_history": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 30,
+                        "description": "Days of history to include (default: 7)"
+                    }
+                },
+                "required": []
+            }
+        ),
+
+        Tool(
+            name="log_workout",
+            description="""Log a completed workout session to wger with exercise details.
+Auto-syncs duration to daily.yml fitness tracking.
+For quick "walked 30 min" without exercise details, use log_goal goal=fitness instead.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "exercises": {
+                        "type": "array",
+                        "description": "Array of exercises: [{name, sets, reps, weight}]",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {"type": "string", "description": "Exercise name"},
+                                "sets": {"type": "integer", "description": "Number of sets"},
+                                "reps": {"type": "integer", "description": "Reps per set"},
+                                "weight": {"type": "number", "description": "Weight in kg"}
+                            },
+                            "required": ["name"]
+                        }
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "description": "Total workout minutes"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Session notes"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "YYYY-MM-DD (default: today)"
+                    }
+                },
+                "required": ["exercises"]
+            }
+        ),
+
+        Tool(
+            name="search_exercise",
+            description="""Search wger exercise database by name, muscle, or equipment.
+Use to find exercise IDs for logging, or to explore available exercises.
+Returns exercise details including muscles worked and required equipment.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search by name (e.g., 'bench', 'squat')"
+                    },
+                    "muscle": {
+                        "type": "string",
+                        "description": "Filter by muscle: Chest, Back, Legs, Shoulders, Biceps, Triceps, Abs, Calves"
+                    },
+                    "equipment": {
+                        "type": "string",
+                        "description": "Filter by equipment: Dumbbell, Barbell, Pull-up bar, etc."
+                    },
+                    "category": {
+                        "type": "string",
+                        "description": "Filter by category: Chest, Arms, Back, Legs, Shoulders, Abs, Calves, Cardio"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Max results (default: 10)"
+                    }
+                },
+                "required": []
+            }
+        ),
+
+        Tool(
+            name="log_weight",
+            description="""Log body weight to wger. Returns current weight with trend analysis.
+Use for daily weigh-ins or periodic weight tracking.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "weight": {
+                        "type": "number",
+                        "description": "Weight value"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": ["kg", "lbs"],
+                        "description": "Unit (default: kg)"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "YYYY-MM-DD (default: today)"
+                    }
+                },
+                "required": ["weight"]
+            }
+        ),
+
+        Tool(
+            name="get_workout_history",
+            description="""Get detailed workout history with exercises, sets, weights.
+Use to review past workouts, track progress, or analyze patterns.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 90,
+                        "description": "Days to look back (default: 7)"
+                    }
+                },
+                "required": []
+            }
+        ),
+
+        Tool(
+            name="get_fitness_summary",
+            description="""Get combined fitness dashboard: weight trend, workout stats, progress.
+Use for weekly reviews or "how am I doing" questions.""",
+            inputSchema={
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        ),
+
+        Tool(
+            name="log_meal",
+            description="""Log food to wger nutrition diary. Searches ingredient database for macros.
+For manual entry without lookup, provide calories/protein/carbs/fat directly.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "description": "Food description ('chicken breast 200g')"
+                    },
+                    "calories": {
+                        "type": "integer",
+                        "description": "Override calories"
+                    },
+                    "protein": {
+                        "type": "number",
+                        "description": "Override protein (g)"
+                    },
+                    "carbs": {
+                        "type": "number",
+                        "description": "Override carbs (g)"
+                    },
+                    "fat": {
+                        "type": "number",
+                        "description": "Override fat (g)"
+                    },
+                    "meal_type": {
+                        "type": "string",
+                        "enum": ["breakfast", "lunch", "dinner", "snack"],
+                        "description": "Meal type"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "YYYY-MM-DD (default: today)"
+                    }
+                },
+                "required": ["description"]
+            }
+        ),
+
+        Tool(
+            name="get_nutrition_summary",
+            description="""Get nutrition summary: calories, macros by day or period.
+Use to review eating patterns or check daily intake.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "YYYY-MM-DD (default: today)"
+                    },
+                    "days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 30,
+                        "description": "Days for average (default: 1)"
+                    }
+                },
+                "required": []
             }
         )
     ]
@@ -1735,6 +1963,352 @@ def handle_manage_progress(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text=f"Unknown action: {action}")]
 
 
+# ==================== WGER HANDLERS ====================
+
+def handle_get_workout_context(arguments: dict) -> list[TextContent]:
+    """Handle get_workout_context tool - get data for workout planning."""
+    equipment_set = arguments.get("equipment_set")
+    equipment = arguments.get("equipment")
+    days_history = arguments.get("days_history", 7)
+
+    result = wger_service.get_workout_context(
+        equipment_set=equipment_set,
+        equipment=equipment,
+        days_history=days_history
+    )
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    import json
+    lines = ["**Workout Context**", ""]
+
+    # Recent workouts
+    workouts = result.get("recent_workouts", [])
+    if workouts:
+        lines.append("**Recent Workouts:**")
+        for w in workouts[-5:]:  # Last 5
+            exercises_str = ", ".join(w.get("exercises", [])[:3])
+            if len(w.get("exercises", [])) > 3:
+                exercises_str += f" +{len(w['exercises']) - 3} more"
+            lines.append(f"  • {w['date']} ({w['focus']}): {exercises_str}")
+        lines.append("")
+
+    # Muscle fatigue
+    fatigue = result.get("muscle_fatigue", {})
+    if fatigue:
+        lines.append("**Muscle Recovery:**")
+        sorted_fatigue = sorted(fatigue.items(), key=lambda x: x[1], reverse=True)
+        for muscle, level in sorted_fatigue:
+            if level > 0:
+                status = "🔴 fatigued" if level > 0.6 else "🟡 recovering" if level > 0.3 else "🟢 ready"
+                lines.append(f"  • {muscle}: {int(level * 100)}% {status}")
+            else:
+                lines.append(f"  • {muscle}: ✓ recovered")
+        lines.append("")
+
+    # Equipment
+    equipment_list = result.get("equipment_available", [])
+    if equipment_list:
+        lines.append(f"**Equipment:** {', '.join(equipment_list)}")
+        lines.append("")
+
+    # Available exercises summary
+    exercises = result.get("available_exercises", [])
+    if exercises:
+        # Group by category
+        by_category = {}
+        for ex in exercises:
+            cat = ex.get("category", "Other")
+            if cat not in by_category:
+                by_category[cat] = []
+            by_category[cat].append(ex["name"])
+
+        lines.append("**Available Exercises:**")
+        for cat, ex_list in sorted(by_category.items()):
+            preview = ", ".join(ex_list[:3])
+            if len(ex_list) > 3:
+                preview += f" +{len(ex_list) - 3}"
+            lines.append(f"  • {cat}: {preview}")
+        lines.append("")
+
+    # Exercise history (PRs, last weights)
+    history = result.get("exercise_history", {})
+    if history:
+        lines.append("**Recent Performance:**")
+        for name, data in list(history.items())[:5]:
+            weight = data.get("last_weight", 0)
+            reps = data.get("last_reps", 0)
+            if weight > 0:
+                lines.append(f"  • {name}: {weight}kg x {reps}")
+        lines.append("")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_log_workout(arguments: dict) -> list[TextContent]:
+    """Handle log_workout tool - log a workout session to wger."""
+    exercises = arguments.get("exercises", [])
+    duration = arguments.get("duration")
+    notes = arguments.get("notes", "")
+    date = arguments.get("date")
+
+    if not exercises:
+        return [TextContent(type="text", text="exercises array is required")]
+
+    result = wger_service.log_workout(
+        exercises=exercises,
+        duration=duration,
+        notes=notes,
+        date=date
+    )
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    lines = [f"✓ {result['message']}", ""]
+
+    for ex in result.get("exercises", []):
+        status = "✓" if ex.get("status") == "logged" else "✗"
+        if ex.get("weight"):
+            lines.append(f"  {status} {ex['name']}: {ex['sets']}x{ex['reps']} @ {ex['weight']}kg")
+        else:
+            lines.append(f"  {status} {ex['name']}: {ex.get('sets', 1)}x{ex.get('reps', 0)}")
+
+    if duration:
+        lines.append("")
+        lines.append(f"Duration: {duration} min")
+
+        # Sync to daily.yml fitness tracking
+        try:
+            current_daily = get_daily_entry(result.get("date", get_today()))
+            current_fitness = current_daily.get("fitness", 0) if current_daily else 0
+            update_daily_entry(result.get("date", get_today()), fitness=current_fitness + duration)
+            lines.append("Daily fitness synced ✓")
+        except Exception as e:
+            lines.append(f"Daily sync failed: {e}")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_search_exercise(arguments: dict) -> list[TextContent]:
+    """Handle search_exercise tool - search exercise database."""
+    query = arguments.get("query")
+    muscle = arguments.get("muscle")
+    equipment = arguments.get("equipment")
+    category = arguments.get("category")
+    limit = arguments.get("limit", 10)
+
+    result = wger_service.search_exercise(
+        query=query,
+        muscle=muscle,
+        equipment=equipment,
+        category=category,
+        limit=limit
+    )
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    exercises = result.get("exercises", [])
+    if not exercises:
+        return [TextContent(type="text", text="No exercises found matching criteria.")]
+
+    lines = [f"**Found {len(exercises)} exercises:**", ""]
+
+    for ex in exercises:
+        muscles = ", ".join(ex.get("muscles", [])[:3]) or "N/A"
+        equip = ", ".join(ex.get("equipment", [])) or "Bodyweight"
+        lines.append(f"**{ex['name']}** (ID: {ex['id']})")
+        lines.append(f"  Category: {ex.get('category', 'N/A')} | Muscles: {muscles}")
+        lines.append(f"  Equipment: {equip}")
+        lines.append("")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_log_weight(arguments: dict) -> list[TextContent]:
+    """Handle log_weight tool - log body weight."""
+    weight = arguments.get("weight")
+    unit = arguments.get("unit", "kg")
+    date = arguments.get("date")
+
+    if weight is None:
+        return [TextContent(type="text", text="weight is required")]
+
+    result = wger_service.log_weight(weight=weight, unit=unit, date=date)
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    lines = [f"✓ {result['message']}", ""]
+
+    if result.get("avg_7d"):
+        lines.append(f"  7-day avg: {result['avg_7d']} kg")
+    if result.get("avg_30d"):
+        lines.append(f"  30-day avg: {result['avg_30d']} kg")
+    if result.get("change") is not None:
+        direction = "↑" if result["change"] > 0 else "↓" if result["change"] < 0 else "→"
+        lines.append(f"  Change: {direction} {abs(result['change'])} kg from last")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_get_workout_history(arguments: dict) -> list[TextContent]:
+    """Handle get_workout_history tool - get workout history."""
+    days = arguments.get("days", 7)
+
+    result = wger_service.get_workout_history(days=days)
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    workouts = result.get("workouts", [])
+    if not workouts:
+        return [TextContent(type="text", text=f"No workouts in the last {days} days.")]
+
+    lines = [f"**Workout History ({days} days, {len(workouts)} sessions):**", ""]
+
+    for w in workouts:
+        lines.append(f"**{w['date']}** - {w['focus']}")
+        for ex in w.get("exercises", [])[:5]:
+            lines.append(f"  • {ex}")
+        if len(w.get("exercises", [])) > 5:
+            lines.append(f"  • +{len(w['exercises']) - 5} more")
+        if w.get("notes"):
+            lines.append(f"  Notes: {w['notes']}")
+        lines.append("")
+
+    # Muscle fatigue summary
+    fatigue = result.get("muscle_fatigue", {})
+    fatigued = [(m, f) for m, f in fatigue.items() if f > 0.3]
+    if fatigued:
+        lines.append("**Current Fatigue:**")
+        for muscle, level in sorted(fatigued, key=lambda x: x[1], reverse=True):
+            lines.append(f"  • {muscle}: {int(level * 100)}%")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_get_fitness_summary(arguments: dict) -> list[TextContent]:
+    """Handle get_fitness_summary tool - get fitness dashboard."""
+    result = wger_service.get_fitness_summary()
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    lines = ["**Fitness Summary**", ""]
+
+    # Weight
+    weight = result.get("weight")
+    if weight:
+        lines.append("**Weight:**")
+        if weight.get("current"):
+            lines.append(f"  Current: {weight['current']} kg")
+        if weight.get("avg_7d"):
+            lines.append(f"  7-day avg: {weight['avg_7d']} kg")
+        if weight.get("change_7d") is not None:
+            direction = "↑" if weight["change_7d"] > 0 else "↓" if weight["change_7d"] < 0 else "→"
+            lines.append(f"  7-day change: {direction} {abs(weight['change_7d'])} kg")
+        lines.append("")
+
+    # Workouts
+    workouts = result.get("workouts", {})
+    if workouts:
+        lines.append("**Activity:**")
+        lines.append(f"  This week: {workouts.get('workouts_7d', 0)} workouts")
+        lines.append(f"  This month: {workouts.get('workouts_30d', 0)} workouts")
+        lines.append("")
+
+    # Muscle balance
+    balance = result.get("muscle_balance", {})
+    if balance:
+        worked = [(m, f) for m, f in balance.items() if f > 0]
+        rested = [m for m, f in balance.items() if f == 0]
+
+        if worked:
+            lines.append("**Recently Worked:**")
+            for muscle, level in sorted(worked, key=lambda x: x[1], reverse=True)[:4]:
+                lines.append(f"  • {muscle}")
+
+        if rested:
+            lines.append("**Ready to Train:**")
+            lines.append(f"  {', '.join(rested)}")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_log_meal(arguments: dict) -> list[TextContent]:
+    """Handle log_meal tool - log food to nutrition diary."""
+    description = arguments.get("description", "")
+    if not description:
+        return [TextContent(type="text", text="description is required")]
+
+    calories = arguments.get("calories")
+    protein = arguments.get("protein")
+    carbs = arguments.get("carbs")
+    fat = arguments.get("fat")
+    meal_type = arguments.get("meal_type")
+    date = arguments.get("date")
+
+    result = wger_service.log_meal(
+        description=description,
+        calories=calories,
+        protein=protein,
+        carbs=carbs,
+        fat=fat,
+        meal_type=meal_type,
+        date=date
+    )
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    if not result.get("success"):
+        return [TextContent(type="text", text=result.get("message", "Failed to log meal"))]
+
+    lines = [f"✓ {result['message']}", ""]
+
+    if result.get("ingredient_matched"):
+        lines.append(f"Matched: {result['ingredient_matched']}")
+
+    if result.get("calories"):
+        lines.append(f"  Calories: {result['calories']}")
+    if result.get("protein"):
+        lines.append(f"  Protein: {result['protein']}g")
+    if result.get("carbs"):
+        lines.append(f"  Carbs: {result['carbs']}g")
+    if result.get("fat"):
+        lines.append(f"  Fat: {result['fat']}g")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_get_nutrition_summary(arguments: dict) -> list[TextContent]:
+    """Handle get_nutrition_summary tool - get nutrition summary."""
+    date = arguments.get("date")
+    days = arguments.get("days", 1)
+
+    result = wger_service.get_nutrition_summary(date=date, days=days)
+
+    if result.get("error"):
+        return [TextContent(type="text", text=f"Error: {result['error']}")]
+
+    lines = [f"**Nutrition Summary ({result.get('date', 'today')})**", ""]
+
+    entries = result.get("entries", 0)
+    if entries == 0:
+        lines.append("No food logged yet today.")
+    else:
+        lines.append(f"**{entries} entries:**")
+        lines.append(f"  Calories: {result.get('calories', 0)}")
+        lines.append(f"  Protein: {result.get('protein', 0)}g")
+        lines.append(f"  Carbs: {result.get('carbs', 0)}g")
+        lines.append(f"  Fat: {result.get('fat', 0)}g")
+
+    return [TextContent(type="text", text="\n".join(lines))]
+
+
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
@@ -1769,5 +2343,23 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_memory_condense(arguments)
     elif name == "manage_progress":
         return handle_manage_progress(arguments)
+
+    # Wger tools
+    elif name == "get_workout_context":
+        return handle_get_workout_context(arguments)
+    elif name == "log_workout":
+        return handle_log_workout(arguments)
+    elif name == "search_exercise":
+        return handle_search_exercise(arguments)
+    elif name == "log_weight":
+        return handle_log_weight(arguments)
+    elif name == "get_workout_history":
+        return handle_get_workout_history(arguments)
+    elif name == "get_fitness_summary":
+        return handle_get_fitness_summary(arguments)
+    elif name == "log_meal":
+        return handle_log_meal(arguments)
+    elif name == "get_nutrition_summary":
+        return handle_get_nutrition_summary(arguments)
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]

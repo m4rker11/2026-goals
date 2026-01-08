@@ -14,6 +14,7 @@ from .storage import get_goals_config, get_today
 from .goals import compute_todos
 from .tools import get_tool_definitions, handle_tool
 from .git import commit_and_push
+from . import wger_service
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -132,6 +133,22 @@ async def background_sync_task():
             logger.error(f"Background sync error: {e}")
 
 
+def check_wger_connection():
+    """Check if wger is configured and reachable on startup."""
+    if not wger_service.is_authenticated():
+        logger.info("Wger not configured (no ~/.goals-mcp/wger-config.yml)")
+        return
+
+    try:
+        client = wger_service.get_client()
+        if client:
+            # Test connection by getting token
+            client._get_token()
+            logger.info(f"Wger connected: {client.host}")
+    except Exception as e:
+        logger.warning(f"Wger connection failed: {e}")
+
+
 def create_sse_app():
     """Create SSE web application."""
     from starlette.applications import Starlette
@@ -144,6 +161,9 @@ def create_sse_app():
     @asynccontextmanager
     async def lifespan(app):
         """Start background sync task on startup."""
+        # Check wger connection on startup
+        check_wger_connection()
+
         sync_task = asyncio.create_task(background_sync_task())
         logger.info("Started hourly background sync task")
         yield
