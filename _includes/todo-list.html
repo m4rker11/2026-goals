@@ -10,6 +10,13 @@
     unit: Unit ID (week-1, phase-1, etc.)
     title: Optional title for the section (default: "Tasks")
     show_progress: Show progress bar (default: true)
+
+  Task fields:
+    id: Task identifier
+    name: Display name
+    done: Completion status
+    notes: Completion notes (shown after marking done)
+    description: Detailed instructions (toggleable via details/summary)
 {% endcomment %}
 
 {% assign todo_file = site.data.todos[include.goal][include.unit] %}
@@ -41,6 +48,12 @@
       - [x] <s>{{ task.name }}</s>{% if task.notes %} <em>({{ task.notes }})</em>{% endif %}
       {% else %}
       - [ ] {{ task.name }}{% if task.notes %} <em>({{ task.notes }})</em>{% endif %}
+      {% endif %}
+      {% if task.description %}
+      <details style="margin-left: 1.5rem; margin-top: 0.25rem;">
+        <summary style="cursor: pointer; color: #666; font-size: 0.9em;">Show details</summary>
+        <div style="margin-top: 0.5rem; padding: 0.5rem; background: #f5f5f5; border-radius: 4px; font-size: 0.9em; white-space: pre-wrap;">{{ task.description }}</div>
+      </details>
       {% endif %}
     </div>
   {% endfor %}

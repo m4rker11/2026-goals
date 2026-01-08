@@ -4,6 +4,18 @@ tasks:
   - id: upper-session
     name: Upper bodyweight session (20 min)
     done: false
+    description: |
+      Warm-up (2 min):
+      - Arm circles, shoulder rolls
+
+      Circuit (3 rounds, 30s rest between):
+      - Push-ups: 10 reps
+      - Pike push-ups: 8 reps
+      - Diamond push-ups: 8 reps
+      - Plank shoulder taps: 20 reps
+
+      Cool-down (2 min):
+      - Chest stretch, tricep stretch
   - id: mid-session
     name: Mid/PT focus session (15 min)
     done: false

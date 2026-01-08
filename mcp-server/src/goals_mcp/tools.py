@@ -972,6 +972,10 @@ def handle_read_todo(arguments: dict) -> list[TextContent]:
             if t.get("notes"):
                 line += f" ({t['notes']})"
             lines.append(line)
+            if t.get("description"):
+                # Indent description under task
+                for desc_line in t["description"].strip().split("\n"):
+                    lines.append(f"      {desc_line}")
         lines.append("")
 
     if done:
@@ -1073,14 +1077,20 @@ def handle_schedule_goal_task(arguments: dict) -> list[TextContent]:
     goal_config = goals[goal_id]
     goal_name = goal_config.get("name", goal_id)
     task_name = task_info.get("name", task_id)
+    task_description = task_info.get("description", "")
     color_id = goal_config.get("color")
+
+    # Build notes: user notes or task name, plus description if available
+    event_notes = arguments.get("notes") or task_name
+    if task_description:
+        event_notes = f"{event_notes}\n\n{task_description}"
 
     result = calendar_service.schedule_goal(
         goal_id=goal_id,
         goal_name=goal_name,
         time=time,
         duration_min=duration,
-        notes=arguments.get("notes") or task_name,
+        notes=event_notes,
         invite_emails=arguments.get("invite", []),
         color_id=color_id,
         calendar_id=calendar_id,
