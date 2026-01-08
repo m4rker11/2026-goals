@@ -1,0 +1,236 @@
+{% comment %}
+Week Card Component
+Shows current week progress for all goals or a single goal.
+
+Parameters:
+  - week: week number (1-8), required
+  - goal: "all" (default) or specific goal name like "fitness"
+  - show_tasks: false (default) or true to show task preview
+  - show_inactive: true (default) or false to hide future goals
+{% endcomment %}
+
+{% assign card_week = include.week | default: 1 %}
+{% assign card_goal = include.goal | default: "all" %}
+{% assign show_tasks = include.show_tasks | default: false %}
+{% assign show_inactive = include.show_inactive | default: true %}
+
+{% comment %} Get week dates from schedule {% endcomment %}
+{% assign week_start = nil %}
+{% assign week_end = nil %}
+{% for w in site.data.schedule.weeks %}
+  {% if w.number == card_week %}
+    {% assign week_start = w.start %}
+    {% assign week_end = w.end %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Calculate daily stats for this week {% endcomment %}
+{% assign week_calendar = 0 %}
+{% assign week_fitness = 0 %}
+{% assign week_hindi = 0 %}
+{% assign week_days = 0 %}
+{% for day in site.data.daily %}
+  {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+  {% if day_date_str >= week_start and day_date_str <= week_end %}
+    {% assign week_days = week_days | plus: 1 %}
+    {% if day.calendar == true %}
+      {% assign week_calendar = week_calendar | plus: 1 %}
+    {% endif %}
+    {% if day.fitness %}
+      {% assign week_fitness = week_fitness | plus: day.fitness %}
+    {% endif %}
+    {% if day.hindi %}
+      {% assign week_hindi = week_hindi | plus: day.hindi %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Determine current phase for spend-less {% endcomment %}
+{% assign today = site.time | date: "%Y-%m-%d" %}
+{% assign current_phase = nil %}
+{% assign current_phase_name = nil %}
+{% for phase in site.data.schedule.goals.spend-less.phases %}
+  {% if today >= phase.start and today <= phase.end %}
+    {% assign current_phase = phase.id %}
+    {% assign current_phase_name = phase.name %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Determine current period for trading {% endcomment %}
+{% assign current_period = nil %}
+{% assign current_period_name = nil %}
+{% assign trading_started = false %}
+{% if today >= site.data.schedule.goals.trading.start %}
+  {% assign trading_started = true %}
+  {% for period in site.data.schedule.goals.trading.periods %}
+    {% if today >= period.start and today <= period.end %}
+      {% assign current_period = period.id %}
+      {% assign current_period_name = period.name %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% comment %} Get Hindi learning state {% endcomment %}
+{% assign hindi_focus = site.data.current.hindi.focus | first %}
+{% assign hindi_learning_count = site.data.current.hindi.learning | size %}
+{% assign hindi_reviewing_count = site.data.current.hindi.reviewing | size %}
+
+{% comment %} Get fitness weekly target {% endcomment %}
+{% assign fitness_target = 200 %}
+{% for target in site.data.schedule.goals.fitness.weekly_targets %}
+  {% if target[0] == card_week %}
+    {% assign fitness_target = target[1] %}
+  {% endif %}
+{% endfor %}
+
+<div class="week-card{% if card_week == site.data.schedule.weeks | map: 'number' | last %} current{% endif %}" style="background: #f8f9fa; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #2196F3;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+    <strong style="font-size: 1.1rem;">Week {{ card_week }}</strong>
+    <span style="color: #666; font-size: 0.9rem;">{{ week_start }} to {{ week_end }}</span>
+  </div>
+
+{% if card_goal == "all" %}
+  <div style="width: 150%; overflow-x: auto;">
+  <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+    <colgroup>
+      <col style="width: 20%;">
+      <col style="width: 35%;">
+      <col style="width: 25%;">
+      <col style="width: 20%;">
+    </colgroup>
+    <thead>
+      <tr style="border-bottom: 1px solid #ddd;">
+        <th style="text-align: left; padding: 0.5rem 0;">Goal</th>
+        <th style="text-align: left; padding: 0.5rem 0;">Progress</th>
+        <th style="text-align: left; padding: 0.5rem 0;">Status</th>
+        <th style="text-align: right; padding: 0.5rem 0;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% comment %} Calendar row {% endcomment %}
+      {% if card_week <= site.data.schedule.goals.calendar.max_weeks %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 0.5rem 0;">Calendar</td>
+        <td style="padding: 0.5rem 0;"><progress value="{{ week_calendar }}" max="7" style="width: 80px;"></progress> {{ week_calendar }}/7</td>
+        <td style="padding: 0.5rem 0;">{% if week_calendar >= 5 %}On track{% else %}Building{% endif %}</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/calendaring/weeks/week-{{ card_week }}-tasks">Tasks →</a></td>
+      </tr>
+      {% else %}
+      <tr style="border-bottom: 1px solid #eee; color: #999;">
+        <td style="padding: 0.5rem 0;">Calendar</td>
+        <td style="padding: 0.5rem 0;" colspan="3">Complete (6 weeks)</td>
+      </tr>
+      {% endif %}
+
+      {% comment %} Fitness row {% endcomment %}
+      {% if card_week <= site.data.schedule.goals.fitness.max_weeks %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 0.5rem 0;">Fitness</td>
+        <td style="padding: 0.5rem 0;"><progress value="{{ week_fitness }}" max="{{ fitness_target }}" style="width: 80px;"></progress> {{ week_fitness }}/{{ fitness_target }}{% if fitness_target >= 200 %} <span style="color: #FFD700;">★</span>{% endif %}</td>
+        <td style="padding: 0.5rem 0;">{% if week_fitness >= fitness_target %}On target{% elsif week_fitness > 0 %}Building{% else %}Starting{% endif %}</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/fitness/weeks/week-{{ card_week }}">Plan →</a></td>
+      </tr>
+      {% else %}
+      <tr style="border-bottom: 1px solid #eee; color: #999;">
+        <td style="padding: 0.5rem 0;">Fitness</td>
+        <td style="padding: 0.5rem 0;" colspan="3">Complete (8 weeks)</td>
+      </tr>
+      {% endif %}
+
+      {% comment %} Work Boundaries row {% endcomment %}
+      {% if card_week <= site.data.schedule.goals.work-boundaries.max_weeks %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 0.5rem 0;">Work Bounds</td>
+        <td style="padding: 0.5rem 0;">Week {{ card_week }} of 4</td>
+        <td style="padding: 0.5rem 0;">Active</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/work-boundaries/weeks/week-{{ card_week }}-tasks">Tasks →</a></td>
+      </tr>
+      {% else %}
+      <tr style="border-bottom: 1px solid #eee; color: #999;">
+        <td style="padding: 0.5rem 0;">Work Bounds</td>
+        <td style="padding: 0.5rem 0;" colspan="3">Complete (4 weeks)</td>
+      </tr>
+      {% endif %}
+
+      {% comment %} Hindi row {% endcomment %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 0.5rem 0;">Hindi</td>
+        <td style="padding: 0.5rem 0;">{% if week_hindi > 0 %}{{ week_hindi }} chapters{% else %}-{% endif %}</td>
+        <td style="padding: 0.5rem 0;">{% if hindi_learning_count > 0 %}Learning{% endif %}{% if hindi_reviewing_count > 0 %}{% if hindi_learning_count > 0 %}, {% endif %}Reviewing{% endif %}{% if hindi_learning_count == 0 and hindi_reviewing_count == 0 %}Not started{% endif %}</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/Hindi/chapters/{{ hindi_focus }}/">Current →</a></td>
+      </tr>
+
+      {% comment %} Spend Less row {% endcomment %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 0.5rem 0;">Spend Less</td>
+        <td style="padding: 0.5rem 0;">{{ current_phase_name | default: "Phase 1" | split: ":" | first }}</td>
+        <td style="padding: 0.5rem 0;">$0/$1000</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/spend-less/weeks/{{ current_phase | default: 'phase-1' }}">Phase →</a></td>
+      </tr>
+
+      {% comment %} Sell row {% endcomment %}
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 0.5rem 0;">Sell</td>
+        <td style="padding: 0.5rem 0;">Prep phase</td>
+        <td style="padding: 0.5rem 0;">0/6 items</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/sell/">Prep →</a></td>
+      </tr>
+
+      {% comment %} Trading row (if started) {% endcomment %}
+      {% if show_inactive or trading_started %}
+      <tr style="border-bottom: 1px solid #eee;{% unless trading_started %} color: #999;{% endunless %}">
+        <td style="padding: 0.5rem 0;">Trading</td>
+        {% if trading_started %}
+        <td style="padding: 0.5rem 0;">{{ current_period_name | default: "Period 1" }}</td>
+        <td style="padding: 0.5rem 0;">Active</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/trading/periods/{{ current_period }}">Period →</a></td>
+        {% else %}
+        <td style="padding: 0.5rem 0;" colspan="3">Starts Jan 12</td>
+        {% endif %}
+      </tr>
+      {% endif %}
+
+      {% comment %} Brother row (if started or showing inactive) {% endcomment %}
+      {% assign brother_started = false %}
+      {% if today >= site.data.schedule.goals.brother.start %}
+        {% assign brother_started = true %}
+      {% endif %}
+      {% if show_inactive or brother_started %}
+      <tr{% unless brother_started %} style="color: #999;"{% endunless %}>
+        <td style="padding: 0.5rem 0;">Brother</td>
+        {% if brother_started %}
+        <td style="padding: 0.5rem 0;">Call {{ site.data.current.brother.current_call | default: 1 }} of 6</td>
+        <td style="padding: 0.5rem 0;">Active</td>
+        <td style="text-align: right; padding: 0.5rem 0;"><a href="{{ site.baseurl }}/brother/">Schedule →</a></td>
+        {% else %}
+        <td style="padding: 0.5rem 0;" colspan="3">Starts Jan 26</td>
+        {% endif %}
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  </div>
+
+{% else %}
+  {% comment %} Single goal view {% endcomment %}
+  {% if card_goal == "fitness" %}
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <progress value="{{ week_fitness }}" max="{{ fitness_target }}" style="flex: 1; height: 20px;"></progress>
+    <span style="font-weight: bold;">{{ week_fitness }}/{{ fitness_target }} min</span>
+    <span style="color: #666;">{% if week_fitness >= fitness_target %}On target{% elsif week_fitness > 0 %}Building{% else %}Starting{% endif %}</span>
+  </div>
+  {% elsif card_goal == "calendar" %}
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <progress value="{{ week_calendar }}" max="7" style="flex: 1; height: 20px;"></progress>
+    <span style="font-weight: bold;">{{ week_calendar }}/7 days</span>
+    <span style="color: #666;">{% if week_calendar >= 5 %}On track{% else %}Building{% endif %}</span>
+  </div>
+  {% elsif card_goal == "hindi" %}
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <span style="font-weight: bold;">{% if week_hindi > 0 %}{{ week_hindi }} chapters this week{% else %}No chapters yet{% endif %}</span>
+    <span style="color: #666;">{% if hindi_learning_count > 0 %}{{ hindi_learning_count }} learning{% endif %}{% if hindi_reviewing_count > 0 %}, {{ hindi_reviewing_count }} reviewing{% endif %}</span>
+  </div>
+  {% endif %}
+{% endif %}
+
+</div>

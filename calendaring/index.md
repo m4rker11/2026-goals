@@ -4,8 +4,18 @@ title: Calendar Mastery
 ---
 
 {% assign daily = site.data.daily %}
+{% assign schedule = site.data.schedule %}
 {% assign daily_reversed = daily | reverse %}
 {% assign total_days = daily | size %}
+
+{% comment %} Calculate current week from schedule {% endcomment %}
+{% assign today = site.time | date: "%Y-%m-%d" %}
+{% assign current_week = 1 %}
+{% for week in schedule.weeks %}
+  {% if today >= week.start and today <= week.end %}
+    {% assign current_week = week.number %}
+  {% endif %}
+{% endfor %}
 
 {% comment %} Calculate calendar stats {% endcomment %}
 {% assign calendar_days = 0 %}
@@ -25,15 +35,18 @@ title: Calendar Mastery
   {% endif %}
 {% endfor %}
 
-{% comment %} Calculate this week {% endcomment %}
+{% comment %} Calculate this week's checks using proper schedule {% endcomment %}
 {% assign week_checks = 0 %}
-{% assign week_count = 0 %}
-{% for day in daily_reversed %}
-  {% if week_count < 7 %}
-    {% if day.calendar == true %}
-      {% assign week_checks = week_checks | plus: 1 %}
-    {% endif %}
-    {% assign week_count = week_count | plus: 1 %}
+{% for week in schedule.weeks %}
+  {% if week.number == current_week %}
+    {% for day in daily %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+      {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% if day.calendar == true %}
+          {% assign week_checks = week_checks | plus: 1 %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
   {% endif %}
 {% endfor %}
 
@@ -52,45 +65,32 @@ Transform calendar from "thing I barely use" to "system that runs my day."
 
 ---
 
-## Current Progress
+## This Week
 
-<div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
-  <div class="stat-box" style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
+{% include week-card.html week=current_week goal="calendar" %}
+
+---
+
+## All-Time Stats
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
+  <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ streak }}</div>
     <div>Current Streak</div>
   </div>
-  <div class="stat-box" style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
+  <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ week_checks }}/7</div>
     <div>This Week</div>
   </div>
-  <div class="stat-box" style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
+  <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ check_pct }}%</div>
     <div>Check Rate</div>
   </div>
-  <div class="stat-box" style="background: #fce4ec; padding: 1rem; border-radius: 8px; text-align: center;">
+  <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ calendar_days }}</div>
     <div>Total Check Days</div>
   </div>
 </div>
-
-**Weekly Target:** <progress value="{{ week_checks }}" max="7" style="width: 100%;"></progress> {{ week_checks }}/7 days (Target: 5+)
-
----
-
-## Last 10 Days
-
-| Date | Checked? | Notes |
-|------|----------|-------|
-{% assign shown = 0 %}
-{% for day in daily_reversed %}
-{% if shown < 10 %}| {{ day.date }} | {% if day.calendar %}Yes{% else %}No{% endif %} | {{ day.notes | default: "-" }} |
-{% assign shown = shown | plus: 1 %}
-{% endif %}
-{% endfor %}
-
-{% if total_days == 0 %}
-| - | - | No entries yet |
-{% endif %}
 
 ---
 
@@ -110,24 +110,9 @@ Transform calendar from "thing I barely use" to "system that runs my day."
 
 ---
 
-## Weekly Check-in Stats
+## Week History
 
-| Week | Checks | Target | Status |
-|------|--------|--------|--------|
-{% assign current_week_checks = 0 %}
-{% assign day_in_week = 0 %}
-{% for day in daily %}
-{% if day.calendar %}{% assign current_week_checks = current_week_checks | plus: 1 %}{% endif %}
-{% assign day_in_week = day_in_week | plus: 1 %}
-{% if day_in_week == 7 %}
-| {{ day.date }} | {{ current_week_checks }}/7 | 5/7 | {% if current_week_checks >= 5 %}On Track{% else %}Keep Going{% endif %} |
-{% assign current_week_checks = 0 %}
-{% assign day_in_week = 0 %}
-{% endif %}
-{% endfor %}
-{% if day_in_week > 0 %}
-| Current | {{ current_week_checks }}/{{ day_in_week }} | 5/7 | In Progress |
-{% endif %}
+{% include week-history.html goal="calendar" max_weeks=8 expand_current=true %}
 
 ---
 

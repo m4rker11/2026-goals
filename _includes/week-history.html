@@ -1,0 +1,232 @@
+{% comment %}
+Week History Component
+Shows collapsible week cards with daily entries.
+
+Parameters:
+  - goal: "all" (default) or specific goal name like "fitness"
+  - max_weeks: 8 (default) - how many weeks to show
+  - expand_current: true (default) - auto-expand current week
+{% endcomment %}
+
+{% assign history_goal = include.goal | default: "all" %}
+{% assign max_weeks = include.max_weeks | default: 8 %}
+{% assign expand_current = include.expand_current | default: true %}
+
+{% comment %} Determine current week {% endcomment %}
+{% assign today = site.time | date: "%Y-%m-%d" %}
+{% assign current_week = 1 %}
+{% for week in site.data.schedule.weeks %}
+  {% if today >= week.start and today <= week.end %}
+    {% assign current_week = week.number %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Loop through weeks in reverse order (newest first) {% endcomment %}
+{% assign weeks_reversed = site.data.schedule.weeks | reverse %}
+
+{% for week in weeks_reversed %}
+  {% comment %} Only show weeks up to current week {% endcomment %}
+  {% if week.number <= current_week %}
+
+    {% comment %} Calculate stats for this week {% endcomment %}
+    {% assign wk_calendar = 0 %}
+    {% assign wk_fitness = 0 %}
+    {% assign wk_hindi = 0 %}
+    {% assign wk_entries = "" %}
+
+    {% comment %} Get fitness target for this week {% endcomment %}
+    {% assign wk_fitness_target = 200 %}
+    {% for target in site.data.schedule.goals.fitness.weekly_targets %}
+      {% if target[0] == week.number %}
+        {% assign wk_fitness_target = target[1] %}
+      {% endif %}
+    {% endfor %}
+
+    {% for day in site.data.daily %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+        {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% if day.calendar == true %}
+          {% assign wk_calendar = wk_calendar | plus: 1 %}
+        {% endif %}
+        {% if day.fitness %}
+          {% assign wk_fitness = wk_fitness | plus: day.fitness %}
+        {% endif %}
+        {% if day.hindi %}
+          {% assign wk_hindi = wk_hindi | plus: day.hindi %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+<details{% if week.number == current_week and expand_current %} open{% endif %}>
+<summary style="cursor: pointer; padding: 0.5rem; background: #f5f5f5; border-radius: 4px; margin-bottom: 0.5rem;">
+  <strong>Week {{ week.number }}</strong> ({{ week.start | slice: 5, 5 }} - {{ week.end | slice: 5, 5 }})
+  {% if history_goal == "all" %}
+  — Cal: {{ wk_calendar }}/7, Fit: {{ wk_fitness }} min, Hindi: {{ wk_hindi }}
+  {% elsif history_goal == "fitness" %}
+  — {{ wk_fitness }} min
+  {% elsif history_goal == "calendar" %}
+  — {{ wk_calendar }}/7 days
+  {% elsif history_goal == "hindi" %}
+  — {{ wk_hindi }} chapters
+  {% endif %}
+</summary>
+
+{% if history_goal == "all" %}
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid #ddd;">
+      <th style="text-align: left; padding: 0.5rem;">Date</th>
+      <th style="text-align: center; padding: 0.5rem;">Cal</th>
+      <th style="text-align: center; padding: 0.5rem;">Fit</th>
+      <th style="text-align: center; padding: 0.5rem;">Hindi</th>
+      <th style="text-align: center; padding: 0.5rem;">Mood</th>
+      <th style="text-align: left; padding: 0.5rem;">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% assign daily_reversed = site.data.daily | reverse %}
+    {% assign has_entries = false %}
+    {% for day in daily_reversed %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+        {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% assign has_entries = true %}
+    <tr style="border-bottom: 1px solid #eee;">
+      <td style="padding: 0.5rem;">{{ day.date | slice: 5, 5 }}</td>
+      <td style="text-align: center; padding: 0.5rem;">{% if day.calendar %}✓{% else %}✗{% endif %}</td>
+      <td style="text-align: center; padding: 0.5rem;">{{ day.fitness | default: 0 }}</td>
+      <td style="text-align: center; padding: 0.5rem;">{{ day.hindi | default: 0 }}</td>
+      <td style="text-align: center; padding: 0.5rem;">{% if day.mood %}{{ day.mood }}/5{% else %}-{% endif %}</td>
+      <td style="padding: 0.5rem;">{{ day.notes | default: "-" }}</td>
+    </tr>
+      {% endif %}
+    {% endfor %}
+    {% unless has_entries %}
+    <tr>
+      <td colspan="6" style="padding: 0.5rem; color: #999; text-align: center;">No entries yet</td>
+    </tr>
+    {% endunless %}
+  </tbody>
+</table>
+
+<div style="font-size: 0.9rem; color: #666; padding: 0.5rem; background: #fafafa; border-radius: 4px;">
+  <strong>Week summary:</strong>
+  Calendar {{ wk_calendar }}/7 {% if wk_calendar >= 5 %}✓{% endif %} |
+  Fitness {{ wk_fitness }}/{{ wk_fitness_target }} ({% assign pct = wk_fitness | times: 100 | divided_by: wk_fitness_target %}{{ pct }}%){% if wk_fitness_target >= 200 %} <span style="color: #FFD700;">★</span>{% endif %} |
+  Hindi {{ wk_hindi }}
+</div>
+
+{% elsif history_goal == "fitness" %}
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid #ddd;">
+      <th style="text-align: left; padding: 0.5rem;">Date</th>
+      <th style="text-align: center; padding: 0.5rem;">Minutes</th>
+      <th style="text-align: left; padding: 0.5rem;">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% assign daily_reversed = site.data.daily | reverse %}
+    {% assign has_entries = false %}
+    {% for day in daily_reversed %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+        {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% if day.fitness and day.fitness > 0 %}
+          {% assign has_entries = true %}
+    <tr style="border-bottom: 1px solid #eee;">
+      <td style="padding: 0.5rem;">{{ day.date | slice: 5, 5 }}</td>
+      <td style="text-align: center; padding: 0.5rem;">{{ day.fitness }}</td>
+      <td style="padding: 0.5rem;">{{ day.notes | default: "-" }}</td>
+    </tr>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% unless has_entries %}
+    <tr>
+      <td colspan="3" style="padding: 0.5rem; color: #999; text-align: center;">No fitness entries</td>
+    </tr>
+    {% endunless %}
+  </tbody>
+</table>
+
+<div style="font-size: 0.9rem; color: #666; padding: 0.5rem; background: #fafafa; border-radius: 4px;">
+  <strong>Week total:</strong> {{ wk_fitness }}/{{ wk_fitness_target }} min ({% assign pct = wk_fitness | times: 100 | divided_by: wk_fitness_target %}{{ pct }}%){% if wk_fitness_target >= 200 %} <span style="color: #FFD700;">★</span>{% endif %}
+</div>
+
+{% elsif history_goal == "calendar" %}
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid #ddd;">
+      <th style="text-align: left; padding: 0.5rem;">Date</th>
+      <th style="text-align: center; padding: 0.5rem;">Checked</th>
+      <th style="text-align: left; padding: 0.5rem;">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% assign daily_reversed = site.data.daily | reverse %}
+    {% assign has_entries = false %}
+    {% for day in daily_reversed %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+        {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% assign has_entries = true %}
+    <tr style="border-bottom: 1px solid #eee;">
+      <td style="padding: 0.5rem;">{{ day.date | slice: 5, 5 }}</td>
+      <td style="text-align: center; padding: 0.5rem;">{% if day.calendar %}✓{% else %}✗{% endif %}</td>
+      <td style="padding: 0.5rem;">{{ day.notes | default: "-" }}</td>
+    </tr>
+      {% endif %}
+    {% endfor %}
+    {% unless has_entries %}
+    <tr>
+      <td colspan="3" style="padding: 0.5rem; color: #999; text-align: center;">No entries</td>
+    </tr>
+    {% endunless %}
+  </tbody>
+</table>
+
+<div style="font-size: 0.9rem; color: #666; padding: 0.5rem; background: #fafafa; border-radius: 4px;">
+  <strong>Week total:</strong> {{ wk_calendar }}/7 days {% if wk_calendar >= 5 %}✓{% endif %}
+</div>
+
+{% elsif history_goal == "hindi" %}
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid #ddd;">
+      <th style="text-align: left; padding: 0.5rem;">Date</th>
+      <th style="text-align: center; padding: 0.5rem;">Chapters</th>
+      <th style="text-align: left; padding: 0.5rem;">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% assign daily_reversed = site.data.daily | reverse %}
+    {% assign has_entries = false %}
+    {% for day in daily_reversed %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+        {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% if day.hindi and day.hindi > 0 %}
+          {% assign has_entries = true %}
+    <tr style="border-bottom: 1px solid #eee;">
+      <td style="padding: 0.5rem;">{{ day.date | slice: 5, 5 }}</td>
+      <td style="text-align: center; padding: 0.5rem;">{{ day.hindi }}</td>
+      <td style="padding: 0.5rem;">{{ day.notes | default: "-" }}</td>
+    </tr>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% unless has_entries %}
+    <tr>
+      <td colspan="3" style="padding: 0.5rem; color: #999; text-align: center;">No Hindi entries</td>
+    </tr>
+    {% endunless %}
+  </tbody>
+</table>
+
+<div style="font-size: 0.9rem; color: #666; padding: 0.5rem; background: #fafafa; border-radius: 4px;">
+  <strong>Week total:</strong> {{ wk_hindi }} chapters
+</div>
+
+{% endif %}
+
+</details>
+
+  {% endif %}
+{% endfor %}

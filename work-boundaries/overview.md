@@ -1,3 +1,8 @@
+---
+layout: default
+title: Work Boundaries Overview
+---
+
 # Work Boundaries: 4-Week Program
 
 ## The Goal

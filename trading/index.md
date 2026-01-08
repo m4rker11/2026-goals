@@ -4,6 +4,22 @@ title: Options Trading
 ---
 
 {% assign logs = site.data.logs.trading %}
+{% assign schedule = site.data.schedule %}
+
+{% comment %} Calculate current period {% endcomment %}
+{% assign today = site.time | date: "%Y-%m-%d" %}
+{% assign current_period = nil %}
+{% assign current_period_name = nil %}
+{% assign trading_started = false %}
+{% if today >= schedule.goals.trading.start %}
+  {% assign trading_started = true %}
+  {% for period in schedule.goals.trading.periods %}
+    {% if today >= period.start and today <= period.end %}
+      {% assign current_period = period.id %}
+      {% assign current_period_name = period.name %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 {% comment %} Count completed trades {% endcomment %}
 {% assign trades_done = 0 %}
@@ -29,41 +45,54 @@ Trade every 2 weeks for 2 months (4 trades total).
 
 ---
 
-## Current Progress
+## Current Period
 
-<div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
-  <div class="stat-box" style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
+{% if trading_started %}
+<div style="background: #f8f9fa; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #FFC107;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <strong style="font-size: 1.1rem;">{{ current_period_name | default: "Between periods" }}</strong>
+    <span style="color: #666;">{{ trades_done }}/4 trades</span>
+  </div>
+  <div style="margin-top: 0.75rem;">
+    <progress value="{{ trades_done }}" max="4" style="width: 100%; height: 20px;"></progress>
+  </div>
+</div>
+{% else %}
+<div style="background: #f5f5f5; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #999;">
+  <strong>Starts Jan 12</strong> - Trading program hasn't begun yet.
+</div>
+{% endif %}
+
+---
+
+## All-Time Stats
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
+  <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ trades_done }}/4</div>
     <div>Trades Complete</div>
   </div>
-  <div class="stat-box" style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
+  <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ trade_pct }}%</div>
     <div>Progress</div>
   </div>
-  <div class="stat-box" style="background: {% if total_pnl >= 0 %}#e8f5e9{% else %}#ffcdd2{% endif %}; padding: 1rem; border-radius: 8px; text-align: center;">
+  <div style="background: {% if total_pnl >= 0 %}#e8f5e9{% else %}#ffcdd2{% endif %}; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">${{ total_pnl }}</div>
     <div>Total P/L</div>
   </div>
 </div>
-
-**Progress:** <progress value="{{ trades_done }}" max="4" style="width: 100%;"></progress> {{ trades_done }}/4 trades
 
 ---
 
 ## Trade Log
 
 | Period | Ticker | Direction | Entry | Exit | P/L | Status |
-|--------|--------|-----------|-------|------|-----|--------|
-{% if logs %}
-{% for trade in logs %}| {{ trade.period | default: "-" }} | {{ trade.ticker | default: "-" }} | {{ trade.direction | default: "-" }} | {{ trade.entry | default: "-" }} | {{ trade.exit | default: "-" }} | {% if trade.pnl %}${{ trade.pnl }}{% else %}-{% endif %} | {% if trade.ticker %}Done{% else %}Pending{% endif %} |
-{% endfor %}
-{% endif %}
-{% if trades_done == 0 %}
+|--------|--------|-----------|-------|------|-----|--------|{% if logs %}{% for trade in logs %}
+| {{ trade.period | default: "-" }} | {{ trade.ticker | default: "-" }} | {{ trade.direction | default: "-" }} | {{ trade.entry | default: "-" }} | {{ trade.exit | default: "-" }} | {% if trade.pnl %}${{ trade.pnl }}{% else %}-{% endif %} | {% if trade.ticker %}Done{% else %}Pending{% endif %} |{% endfor %}{% endif %}{% if trades_done == 0 %}
 | 1 | - | - | - | - | - | Pending |
 | 2 | - | - | - | - | - | Pending |
 | 3 | - | - | - | - | - | Pending |
-| 4 | - | - | - | - | - | Pending |
-{% endif %}
+| 4 | - | - | - | - | - | Pending |{% endif %}
 
 <details>
 <summary><strong>How to log trades</strong></summary>
@@ -88,19 +117,12 @@ Add entries to `_data/logs/trading.yml`:
 
 ## Biweekly Periods
 
-| Period | Dates | Deadline | Focus | Status |
-|--------|-------|----------|-------|--------|
-| 1 | Jan 12-25 | Jan 25 | Pick a Lane | {% if trades_done >= 1 %}Done{% else %}{% if trades_done == 0 %}Current{% else %}Pending{% endif %}{% endif %} |
-| 2 | Jan 26 - Feb 8 | Feb 8 | Add Routine | {% if trades_done >= 2 %}Done{% elsif trades_done == 1 %}Current{% else %}Pending{% endif %} |
-| 3 | Feb 9-22 | Feb 22 | Add Reflection | {% if trades_done >= 3 %}Done{% elsif trades_done == 2 %}Current{% else %}Pending{% endif %} |
-| 4 | Feb 23 - Mar 8 | Mar 8 | Full System | {% if trades_done >= 4 %}Done{% elsif trades_done == 3 %}Current{% else %}Pending{% endif %} |
-
-### Period Details
-
-- [Period 1: Jan 12-25](periods/period-1) - Pick a Lane
-- [Period 2: Jan 26 - Feb 8](periods/period-2) - Add Routine
-- [Period 3: Feb 9-22](periods/period-3) - Add Reflection
-- [Period 4: Feb 23 - Mar 8](periods/period-4) - Full System
+| Period | Dates | Focus | Link |
+|--------|-------|-------|------|
+| 1 | Jan 12-25 | Pick a Lane | [Period 1 →](periods/period-1) |
+| 2 | Jan 26 - Feb 8 | Add Routine | [Period 2 →](periods/period-2) |
+| 3 | Feb 9-22 | Add Reflection | [Period 3 →](periods/period-3) |
+| 4 | Feb 23 - Mar 8 | Full System | [Period 4 →](periods/period-4) |
 
 ---
 

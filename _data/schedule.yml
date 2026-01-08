@@ -37,6 +37,15 @@ goals:
     type: time-weekly
     max_weeks: 8
     unit_path: fitness/weeks/week-
+    weekly_targets:
+      1: 65
+      2: 90
+      3: 130
+      4: 165
+      5: 200
+      6: 225
+      7: 230
+      8: 255
 
   calendar:
     type: time-weekly

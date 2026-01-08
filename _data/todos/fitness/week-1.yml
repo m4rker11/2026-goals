@@ -12,7 +12,8 @@ tasks:
       3x20 shrugs (~4-5lb weights)'
   - id: mid-session
     name: Mid/PT focus session (15 min)
-    done: false
+    done: true
+    notes: Did PT and short workout
   - id: pt-stretches-1
     name: 'PT Stretches #1 (15 min)'
     done: false

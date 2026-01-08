@@ -4,7 +4,18 @@ title: Hindi to B2
 ---
 
 {% assign daily = site.data.daily %}
+{% assign schedule = site.data.schedule %}
+{% assign current = site.data.current %}
 {% assign daily_reversed = daily | reverse %}
+
+{% comment %} Calculate current week from schedule {% endcomment %}
+{% assign today = site.time | date: "%Y-%m-%d" %}
+{% assign current_week = 1 %}
+{% for week in schedule.weeks %}
+  {% if today >= week.start and today <= week.end %}
+    {% assign current_week = week.number %}
+  {% endif %}
+{% endfor %}
 
 {% comment %} Calculate Hindi stats {% endcomment %}
 {% assign total_hindi = 0 %}
@@ -16,21 +27,30 @@ title: Hindi to B2
   {% endif %}
 {% endfor %}
 
-{% comment %} Calculate this week {% endcomment %}
+{% comment %} Calculate this week's Hindi using proper schedule {% endcomment %}
 {% assign week_hindi = 0 %}
-{% assign week_count = 0 %}
-{% for day in daily_reversed %}
-  {% if week_count < 7 %}
-    {% if day.hindi %}
-      {% assign week_hindi = week_hindi | plus: day.hindi %}
-    {% endif %}
-    {% assign week_count = week_count | plus: 1 %}
+{% for week in schedule.weeks %}
+  {% if week.number == current_week %}
+    {% for day in daily %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+      {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% if day.hindi %}
+          {% assign week_hindi = week_hindi | plus: day.hindi %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
   {% endif %}
 {% endfor %}
 
 {% comment %} Calculate percentage {% endcomment %}
 {% assign hindi_pct = total_hindi | times: 100 | divided_by: 25 %}
 {% if hindi_pct > 100 %}{% assign hindi_pct = 100 %}{% endif %}
+
+{% comment %} Hindi learning state {% endcomment %}
+{% assign hindi_focus = current.hindi.focus | first %}
+{% assign hindi_learning_count = current.hindi.learning | size %}
+{% assign hindi_reviewing_count = current.hindi.reviewing | size %}
+{% assign hindi_completed_count = current.hindi.completed | size %}
 
 # Hindi to B2
 
@@ -40,45 +60,52 @@ title: Hindi to B2
 
 ---
 
-## Current Progress
+## This Week
 
-<div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
-  <div class="stat-box" style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
-    <div style="font-size: 2rem; font-weight: bold;">{{ total_hindi }}/25</div>
-    <div>Chapters Done</div>
-  </div>
-  <div class="stat-box" style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
-    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_pct }}%</div>
-    <div>Complete</div>
-  </div>
-  <div class="stat-box" style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
-    <div style="font-size: 2rem; font-weight: bold;">{{ week_hindi }}</div>
-    <div>This Week</div>
-  </div>
-  <div class="stat-box" style="background: #fce4ec; padding: 1rem; border-radius: 8px; text-align: center;">
-    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_days }}</div>
-    <div>Study Days</div>
-  </div>
-</div>
-
-**Overall Progress:** <progress value="{{ total_hindi }}" max="25" style="width: 100%;"></progress> {{ total_hindi }}/25 chapters
+{% include week-card.html week=current_week goal="hindi" %}
 
 ---
 
-## Last 10 Hindi Entries
+## All-Time Stats
 
-| Date | Chapters | Notes |
-|------|----------|-------|
-{% assign shown = 0 %}
-{% for day in daily_reversed %}
-{% if day.hindi and day.hindi > 0 and shown < 10 %}| {{ day.date }} | {{ day.hindi }} | {{ day.notes | default: "-" }} |
-{% assign shown = shown | plus: 1 %}
-{% endif %}
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
+  <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
+    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_completed_count }}/25</div>
+    <div>Chapters Done</div>
+  </div>
+  <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
+    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_pct }}%</div>
+    <div>Complete</div>
+  </div>
+  <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
+    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_learning_count }}</div>
+    <div>Learning</div>
+  </div>
+  <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; text-align: center;">
+    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_reviewing_count }}</div>
+    <div>Reviewing</div>
+  </div>
+</div>
+
+{% if hindi_learning_count > 0 %}
+**Currently Learning:**
+{% for chapter in current.hindi.learning %}
+- [{{ chapter }}](chapters/{{ chapter }}/)
 {% endfor %}
-
-{% if hindi_days == 0 %}
-| - | - | No Hindi entries yet |
 {% endif %}
+
+{% if hindi_reviewing_count > 0 %}
+**In Review:**
+{% for chapter in current.hindi.reviewing %}
+- [{{ chapter }}](chapters/{{ chapter }}/)
+{% endfor %}
+{% endif %}
+
+---
+
+## Week History
+
+{% include week-history.html goal="hindi" max_weeks=8 expand_current=true %}
 
 ---
 
@@ -101,10 +128,10 @@ title: Hindi to B2
 
 | Part | Chapters | Focus | Progress |
 |------|----------|-------|----------|
-| 1 | 1-5 | Foundations: Case, postpositions, pronouns | {% if total_hindi >= 5 %}Complete{% elsif total_hindi > 0 %}{{ total_hindi }}/5{% else %}Not Started{% endif %} |
-| 2 | 6-12 | Verbs & Tenses: Hona, present, past, future | {% if total_hindi >= 12 %}Complete{% elsif total_hindi > 5 %}{{ total_hindi | minus: 5 }}/7{% else %}Not Started{% endif %} |
-| 3 | 13-17 | Modals & Compounds: Must, can, compound verbs | {% if total_hindi >= 17 %}Complete{% elsif total_hindi > 12 %}{{ total_hindi | minus: 12 }}/5{% else %}Not Started{% endif %} |
-| 4 | 18-25 | Advanced: Subjunctive, conditionals, passive | {% if total_hindi >= 25 %}Complete{% elsif total_hindi > 17 %}{{ total_hindi | minus: 17 }}/8{% else %}Not Started{% endif %} |
+| 1 | 1-5 | Foundations: Case, postpositions, pronouns | {% if hindi_completed_count >= 5 %}Complete{% elsif hindi_completed_count > 0 %}{{ hindi_completed_count }}/5{% else %}Not Started{% endif %} |
+| 2 | 6-12 | Verbs & Tenses: Hona, present, past, future | {% if hindi_completed_count >= 12 %}Complete{% elsif hindi_completed_count > 5 %}{{ hindi_completed_count | minus: 5 }}/7{% else %}Not Started{% endif %} |
+| 3 | 13-17 | Modals & Compounds: Must, can, compound verbs | {% if hindi_completed_count >= 17 %}Complete{% elsif hindi_completed_count > 12 %}{{ hindi_completed_count | minus: 12 }}/5{% else %}Not Started{% endif %} |
+| 4 | 18-25 | Advanced: Subjunctive, conditionals, passive | {% if hindi_completed_count >= 25 %}Complete{% elsif hindi_completed_count > 17 %}{{ hindi_completed_count | minus: 17 }}/8{% else %}Not Started{% endif %} |
 
 ---
 

@@ -4,7 +4,16 @@ title: Fitness - 200 Minutes Weekly
 ---
 
 {% assign daily = site.data.daily %}
-{% assign daily_reversed = daily | reverse %}
+{% assign schedule = site.data.schedule %}
+
+{% comment %} Calculate current week from schedule {% endcomment %}
+{% assign today = site.time | date: "%Y-%m-%d" %}
+{% assign current_week = 1 %}
+{% for week in schedule.weeks %}
+  {% if today >= week.start and today <= week.end %}
+    {% assign current_week = week.number %}
+  {% endif %}
+{% endfor %}
 
 {% comment %} Calculate total fitness stats {% endcomment %}
 {% assign total_fitness = 0 %}
@@ -16,15 +25,18 @@ title: Fitness - 200 Minutes Weekly
   {% endif %}
 {% endfor %}
 
-{% comment %} Calculate this week's fitness (last 7 days) {% endcomment %}
+{% comment %} Calculate this week's fitness {% endcomment %}
 {% assign week_fitness = 0 %}
-{% assign week_count = 0 %}
-{% for day in daily_reversed %}
-  {% if week_count < 7 %}
-    {% if day.fitness %}
-      {% assign week_fitness = week_fitness | plus: day.fitness %}
-    {% endif %}
-    {% assign week_count = week_count | plus: 1 %}
+{% for week in schedule.weeks %}
+  {% if week.number == current_week %}
+    {% for day in daily %}
+      {% assign day_date_str = day.date | date: "%Y-%m-%d" %}
+      {% if day_date_str >= week.start and day_date_str <= week.end %}
+        {% if day.fitness %}
+          {% assign week_fitness = week_fitness | plus: day.fitness %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
   {% endif %}
 {% endfor %}
 
@@ -35,6 +47,14 @@ title: Fitness - 200 Minutes Weekly
   {% assign avg_session = 0 %}
 {% endif %}
 
+{% comment %} Get fitness weekly target {% endcomment %}
+{% assign fitness_target = 200 %}
+{% for target in schedule.goals.fitness.weekly_targets %}
+  {% if target[0] == current_week %}
+    {% assign fitness_target = target[1] %}
+  {% endif %}
+{% endfor %}
+
 # Fitness: 200 Minutes Weekly
 
 Building from ~50 min/week to 200 min/week over 8 weeks.
@@ -43,69 +63,38 @@ Building from ~50 min/week to 200 min/week over 8 weeks.
 
 ---
 
-## Current Progress
+## This Week
 
-<div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
-  <div class="stat-box" style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
+{% include week-card.html week=current_week goal="fitness" %}
+
+---
+
+## All-Time Stats
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
+  <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ week_fitness }}</div>
     <div>This Week (min)</div>
   </div>
-  <div class="stat-box" style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
-    <div style="font-size: 2rem; font-weight: bold;">200</div>
-    <div>Target (min)</div>
+  <div style="background: {% if fitness_target >= 200 %}#FFF8DC{% else %}#e3f2fd{% endif %}; padding: 1rem; border-radius: 8px; text-align: center;">
+    <div style="font-size: 2rem; font-weight: bold;">{{ fitness_target }}{% if fitness_target >= 200 %} <span style="color: #FFD700;">★</span>{% endif %}</div>
+    <div>Week {{ current_week }} Target</div>
   </div>
-  <div class="stat-box" style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
+  <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ total_fitness }}</div>
     <div>All Time (min)</div>
   </div>
-  <div class="stat-box" style="background: #fce4ec; padding: 1rem; border-radius: 8px; text-align: center;">
+  <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; text-align: center;">
     <div style="font-size: 2rem; font-weight: bold;">{{ fitness_days }}</div>
     <div>Workout Days</div>
   </div>
 </div>
 
-**Weekly Target:** <progress value="{{ week_fitness }}" max="200" style="width: 100%;"></progress> {{ week_fitness }}/200 min ({% assign pct = week_fitness | times: 100 | divided_by: 200 %}{{ pct }}%)
-
 ---
 
-## Last 10 Fitness Entries
+## Week History
 
-| Date | Minutes | Notes |
-|------|---------|-------|
-{% assign shown = 0 %}
-{% for day in daily_reversed %}
-{% if day.fitness and day.fitness > 0 and shown < 10 %}| {{ day.date }} | {{ day.fitness }} min | {{ day.notes | default: "-" }} |
-{% assign shown = shown | plus: 1 %}
-{% endif %}
-{% endfor %}
-
-{% if fitness_days == 0 %}
-| - | - | No fitness entries yet |
-{% endif %}
-
----
-
-## Weekly Totals
-
-{% comment %} Calculate weekly totals - this is approximate based on 7-day windows {% endcomment %}
-{% assign weeks_data = "" %}
-{% assign current_week_total = 0 %}
-{% assign day_in_week = 0 %}
-
-| Week | Minutes | Target | Status |
-|------|---------|--------|--------|
-{% for day in daily %}
-{% assign current_week_total = current_week_total | plus: day.fitness %}
-{% assign day_in_week = day_in_week | plus: 1 %}
-{% if day_in_week == 7 %}
-| {{ day.date }} | {{ current_week_total }} | 200 | {% if current_week_total >= 200 %}On Target{% elsif current_week_total >= 160 %}Close{% else %}Building{% endif %} |
-{% assign current_week_total = 0 %}
-{% assign day_in_week = 0 %}
-{% endif %}
-{% endfor %}
-{% if day_in_week > 0 %}
-| Current | {{ current_week_total }} | 200 | In Progress |
-{% endif %}
+{% include week-history.html goal="fitness" max_weeks=8 expand_current=true %}
 
 ---
 
