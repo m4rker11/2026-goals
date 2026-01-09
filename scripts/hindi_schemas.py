@@ -1,15 +1,13 @@
 """
 Pydantic schemas for Hindi textbook extraction.
 
-Designed for use with instructor (https://github.com/567-labs/instructor)
-for structured LLM extraction from textbook markdown.
+Captures full learning content:
+- Dialogues with speaker turns
+- Grammar rules and patterns
+- Exercises (comprehension, translation, writing)
+- Vocabulary tied to sections
 
 Storage: study-materials/extracted/
-  - raw/*.json        Per-unit raw extractions
-  - vocabulary.json   Global canonical vocabulary
-  - grammar.json      Global grammar concepts
-  - units/*.json      Per-unit views with references
-  - index.json        Summary stats
 """
 
 from enum import Enum
@@ -30,7 +28,8 @@ class PartOfSpeech(str, Enum):
     CONJUNCTION = "conjunction"
     PARTICLE = "particle"
     INTERJECTION = "interjection"
-    COMPOUND_VERB = "compound_verb"  # e.g., काम करना
+    COMPOUND_VERB = "compound_verb"
+    PHRASE = "phrase"
 
 
 class Gender(str, Enum):
@@ -41,15 +40,17 @@ class Gender(str, Enum):
 class SectionType(str, Enum):
     DIALOGUE = "dialogue"
     GRAMMAR = "grammar"
+    EXERCISE = "exercise"
+    VOCAB_LIST = "vocab_list"
 
 
 class ExerciseType(str, Enum):
-    TRANSLATION = "translation"
+    COMPREHENSION = "comprehension"  # Questions about dialogue
+    TRANSLATION = "translation"       # Translate sentences
     FILL_BLANK = "fill_blank"
-    MCQ = "mcq"
-    COMPREHENSION = "comprehension"
+    WRITING = "writing"              # Write dialogue/description
     MATCHING = "matching"
-    WRITING = "writing"
+    MCQ = "mcq"
 
 
 class Difficulty(int, Enum):
@@ -59,215 +60,234 @@ class Difficulty(int, Enum):
 
 
 class Priority(int, Enum):
-    CORE = 1        # Must learn
-    COMMON = 2      # Should learn
-    SUPPLEMENTARY = 3  # Nice to have
+    CORE = 1
+    COMMON = 2
+    SUPPLEMENTARY = 3
 
 
 # =============================================================================
-# COMPONENT MODELS
+# TRILINGUAL TEXT (Hindi + Transliteration + English)
+# =============================================================================
+
+class TriText(BaseModel):
+    """Text in all three forms."""
+    hindi: str
+    transliteration: str
+    english: str
+
+
+# =============================================================================
+# DIALOGUE COMPONENTS
+# =============================================================================
+
+class DialogueTurn(BaseModel):
+    """A single speaker turn in a dialogue."""
+    speaker: str                    # "Anita", "Pratap", etc.
+    hindi: str
+    transliteration: str
+    english: str
+
+
+class Dialogue(BaseModel):
+    """A complete dialogue section (e.g., 3a, 3b)."""
+    section_id: str                 # "3a", "3b"
+    title: str                      # "Pratap's mother phones from London"
+    turns: list[DialogueTurn]
+    context: str | None = None      # Setting/situation description
+
+
+# =============================================================================
+# GRAMMAR COMPONENTS
+# =============================================================================
+
+class GrammarExample(BaseModel):
+    """An example demonstrating a grammar point."""
+    hindi: str
+    transliteration: str
+    english: str
+    notes: str | None = None        # Additional explanation
+
+
+class GrammarRule(BaseModel):
+    """A specific grammar rule or pattern."""
+    rule: str                       # The rule statement
+    pattern: str | None = None      # Pattern like "X + में = in X"
+    examples: list[GrammarExample] = Field(default_factory=list)
+
+
+class GrammarTable(BaseModel):
+    """A declension/conjugation table."""
+    title: str                      # "Noun cases", "Pronoun oblique forms"
+    headers: list[str]              # Column headers
+    rows: list[dict[str, str]]      # Each row as dict
+
+
+class GrammarSection(BaseModel):
+    """A grammar explanation section (e.g., 3.1, 3.2)."""
+    section_id: str                 # "3.1", "3.2"
+    title: str                      # "Simple postpositions"
+    explanation: str                # Main explanation text
+    rules: list[GrammarRule] = Field(default_factory=list)
+    tables: list[GrammarTable] = Field(default_factory=list)
+    key_points: list[str] = Field(default_factory=list)  # Bullet points to remember
+
+
+# =============================================================================
+# EXERCISE COMPONENTS
+# =============================================================================
+
+class ExerciseItem(BaseModel):
+    """A single exercise question."""
+    number: int | str
+    prompt: TriText | str           # Question/instruction
+    answer: TriText | str | None = None
+    choices: list[str] | None = None  # For MCQ
+
+
+class Exercise(BaseModel):
+    """An exercise section."""
+    exercise_id: str                # "3a.1", "3b.2"
+    title: str | None = None
+    instruction: str                # "Translate these sentences"
+    exercise_type: ExerciseType
+    items: list[ExerciseItem] = Field(default_factory=list)
+    based_on: str | None = None     # "Dialogue 3a" if comprehension
+
+
+# =============================================================================
+# VOCABULARY
+# =============================================================================
+
+class VocabEntry(BaseModel):
+    """A vocabulary word."""
+    hindi: str                      # Canonical form
+    transliteration: str
+    meaning: str
+    part_of_speech: str
+    gender: str | None = None       # "m" or "f"
+    encountered_form: str | None = None  # If text had inflected form
+    examples: list[TriText] = Field(default_factory=list)
+
+
+# =============================================================================
+# RAW EXTRACTION (from LLM)
+# =============================================================================
+
+class RawUnitExtract(BaseModel):
+    """Complete extraction from a unit."""
+    unit_number: int
+    unit_title: str
+
+    # Content sections
+    dialogues: list[Dialogue] = Field(default_factory=list)
+    grammar_sections: list[GrammarSection] = Field(default_factory=list)
+    exercises: list[Exercise] = Field(default_factory=list)
+
+    # Vocabulary (extracted from all sections)
+    vocabulary: list[VocabEntry] = Field(default_factory=list)
+
+
+# =============================================================================
+# MERGED/CANONICAL (after cross-unit deduplication)
 # =============================================================================
 
 class Example(BaseModel):
-    """A Hindi example with translation and source tracking."""
+    """Example with source tracking."""
     hindi: str
     transliteration: str | None = None
     english: str
-    source_unit: int | None = None      # Which unit this example came from
-    source_section: str | None = None   # '3a', '3.1', etc.
+    source_unit: int | None = None
+    source_section: str | None = None
 
-
-class VerbForms(BaseModel):
-    """Verb conjugation forms for Hindi verbs."""
-    infinitive: str              # करना
-    stem: str                    # कर
-    habitual_m: str | None = None   # करता
-    habitual_f: str | None = None   # करती
-    perfective_m: str | None = None  # किया
-    perfective_f: str | None = None  # की
-
-
-class ExerciseItem(BaseModel):
-    """A single exercise question/task."""
-    prompt: str
-    answer: str | None = None
-    choices: list[str] | None = None  # For MCQ
-    hints: list[str] = Field(default_factory=list)
-
-
-# =============================================================================
-# RAW EXTRACTION MODELS (Phase 1 - per chunk/unit)
-# =============================================================================
-
-class RawVocabEntry(BaseModel):
-    """Vocabulary entry as extracted from a single chunk.
-
-    The LLM provides both canonical and encountered forms.
-    """
-    # Canonical/dictionary form (for deduplication)
-    hindi: str                           # Canonical: लड़का not लड़के
-    transliteration: str                 # Canonical: laṛkā
-    meaning: str
-    part_of_speech: str                  # Use string for flexibility in extraction
-
-    # Form as encountered in text (if different from canonical)
-    encountered_form: str | None = None  # लड़के (oblique/plural)
-    encountered_translit: str | None = None
-
-    # Noun-specific
-    gender: str | None = None            # "m" or "f"
-
-    # Context from extraction
-    examples: list[Example] = Field(default_factory=list)
-
-
-class RawGrammarPoint(BaseModel):
-    """Grammar point as extracted from a single chunk."""
-    name: str
-    explanation: str
-    examples: list[Example] = Field(default_factory=list)
-
-
-class RawChunkExtract(BaseModel):
-    """Extraction result from a single chunk of text."""
-    vocabulary: list[RawVocabEntry] = Field(default_factory=list)
-    grammar_points: list[RawGrammarPoint] = Field(default_factory=list)
-
-
-class RawUnitExtract(BaseModel):
-    """Raw extraction for a complete unit (merged chunks, before global dedup)."""
-    unit_number: int
-    title: str | None = None
-    vocabulary: list[RawVocabEntry] = Field(default_factory=list)
-    grammar_points: list[RawGrammarPoint] = Field(default_factory=list)
-    extraction_stats: dict = Field(default_factory=dict)  # chunks, time, etc.
-
-
-# =============================================================================
-# MERGED/CANONICAL MODELS (Phase 2 - global)
-# =============================================================================
 
 class VocabularyEntry(BaseModel):
-    """A canonical vocabulary entry - maps to one Anki card.
-
-    Deduplication key: (hindi, part_of_speech)
-    Lives in earliest unit where first encountered.
-    Examples aggregated from all units.
-    """
-    id: str                              # UUID for stability
-
-    # Canonical/dictionary form
-    hindi: str                           # लड़का (singular direct)
-    transliteration: str                 # laṛkā
+    """Canonical vocabulary entry for Anki."""
+    id: str
+    hindi: str
+    transliteration: str
     meaning: str
     part_of_speech: PartOfSpeech
-
-    # Noun-specific
     gender: Gender | None = None
-    inflections: dict[str, str] | None = None  # {"obl_sg": "लड़के", "obl_pl": "लड़कों", ...}
+    inflections: dict[str, str] | None = None
 
-    # Verb-specific
-    verb_forms: VerbForms | None = None
-
-    # Provenance tracking
-    first_seen_unit: int                 # Unit where first introduced
+    # Provenance
+    first_seen_unit: int
     first_seen_section: str | None = None
-    units_encountered: list[int] = Field(default_factory=list)  # All units [3, 5, 7]
+    units_encountered: list[int] = Field(default_factory=list)
 
-    # Aggregated examples from ALL encounters (with source tracking)
+    # Aggregated examples
     examples: list[Example] = Field(default_factory=list)
 
     # Metadata
     priority: Priority = Priority.COMMON
     tags: list[str] = Field(default_factory=list)
-    anki_note_id: int | None = None      # Anki's note ID once synced
+    anki_note_id: int | None = None
 
 
 class GrammarConcept(BaseModel):
-    """A grammar rule or construction."""
-    id: str                              # UUID
-    slug: str                            # 'oblique-case'
-    name: str                            # 'The Oblique Case'
-    explanation: str                     # 2-3 sentence summary
+    """Canonical grammar concept."""
+    id: str
+    slug: str
+    name: str
+    explanation: str
+    rules: list[GrammarRule] = Field(default_factory=list)
     examples: list[Example] = Field(default_factory=list)
-    prerequisites: list[str] = Field(default_factory=list)  # Concept slugs
+    prerequisites: list[str] = Field(default_factory=list)
     difficulty: Difficulty = Difficulty.BEGINNER
     first_seen_unit: int
     first_seen_section: str | None = None
     units_encountered: list[int] = Field(default_factory=list)
 
 
-class Exercise(BaseModel):
-    """A practice exercise from the textbook."""
-    id: str                              # UUID
-    slug: str                            # 'ex-3a1'
-    instruction: str                     # 'Translate these sentences'
-    exercise_type: ExerciseType
-    items: list[ExerciseItem]
-    concepts_practiced: list[str] = Field(default_factory=list)  # Concept slugs
-    source_unit: int
-    source_section: str
-
-
-class Section(BaseModel):
-    """A section within a unit (dialogue or grammar)."""
-    id: str                              # UUID
-    slug: str                            # '3a' or '3.1'
-    label: str                           # 'Pratap's mother phones from London'
-    section_type: SectionType
-    order: int                           # For sorting within unit
-
-
 # =============================================================================
-# UNIT AND INDEX MODELS
+# UNIT VIEW (per-unit with references)
 # =============================================================================
 
 class UnitView(BaseModel):
-    """Per-unit view with references to canonical vocabulary."""
+    """Complete unit with all content."""
     unit_number: int
     title: str
-    sections: list[Section] = Field(default_factory=list)
 
-    # IDs of vocab/concepts first introduced in this unit
-    new_vocabulary_ids: list[str] = Field(default_factory=list)
-    new_concept_ids: list[str] = Field(default_factory=list)
-
-    # IDs of vocab/concepts reviewed (appeared before)
-    review_vocabulary_ids: list[str] = Field(default_factory=list)
-    review_concept_ids: list[str] = Field(default_factory=list)
-
-    # Exercises for this unit
+    # Full content preserved
+    dialogues: list[Dialogue] = Field(default_factory=list)
+    grammar_sections: list[GrammarSection] = Field(default_factory=list)
     exercises: list[Exercise] = Field(default_factory=list)
 
+    # References to canonical vocab (for dedup tracking)
+    new_vocabulary_ids: list[str] = Field(default_factory=list)
+    review_vocabulary_ids: list[str] = Field(default_factory=list)
+
+
+# =============================================================================
+# INDEX
+# =============================================================================
 
 class UnitSummary(BaseModel):
-    """Summary info for index.json."""
+    """Summary for index."""
     unit_number: int
     title: str
+    dialogue_count: int
+    grammar_section_count: int
+    exercise_count: int
     new_vocab_count: int
     review_vocab_count: int
-    new_concept_count: int
-    review_concept_count: int
-    exercise_count: int
-
-
-class MergedCorpus(BaseModel):
-    """The complete merged extraction result."""
-    vocabulary: list[VocabularyEntry] = Field(default_factory=list)
-    concepts: list[GrammarConcept] = Field(default_factory=list)
-    units: list[UnitView] = Field(default_factory=list)
-
-    # Stats
-    total_vocab: int = 0
-    total_concepts: int = 0
-    total_examples: int = 0
 
 
 class ExtractedIndex(BaseModel):
-    """Index of all extracted units."""
+    """Master index."""
     units: list[UnitSummary]
     total_vocab: int
-    total_concepts: int
-    total_examples: int
+    total_grammar_concepts: int
+    total_exercises: int
     extraction_model: str | None = None
     extraction_date: str | None = None
+
+
+class MergedCorpus(BaseModel):
+    """Complete extracted corpus."""
+    vocabulary: list[VocabularyEntry] = Field(default_factory=list)
+    grammar_concepts: list[GrammarConcept] = Field(default_factory=list)
+    units: list[UnitView] = Field(default_factory=list)
+    total_vocab: int = 0
+    total_concepts: int = 0
+    total_examples: int = 0
