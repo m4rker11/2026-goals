@@ -51,3 +51,6 @@ mcp-server/.venv/
 credentials.json
 *.pickle
 google-token.*
+
+# Study materials (PDFs, copyrighted content)
+study-materials/
