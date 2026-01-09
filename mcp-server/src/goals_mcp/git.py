@@ -61,7 +61,14 @@ def commit_and_push() -> dict:
         today = get_today_str()
         daily_message = f"status updates-{today}"
 
-        # Git add
+        # Unstage everything first (in case user has other files staged)
+        subprocess.run(
+            ["git", "reset", "HEAD"],
+            cwd=REPO_PATH,
+            capture_output=True
+        )
+
+        # Git add only _data/
         subprocess.run(
             ["git", "add", "_data/"],
             cwd=REPO_PATH,

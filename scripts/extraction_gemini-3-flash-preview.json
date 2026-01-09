@@ -1,0 +1,540 @@
+{
+  "model": "gemini-3-flash-preview",
+  "elapsed_seconds": 74.43946099281311,
+  "stats": {
+    "vocab_count": 57,
+    "grammar_count": 7,
+    "vocab_with_transliteration": 57,
+    "vocab_with_gender": 29,
+    "grammar_with_examples": 7,
+    "total_examples": 16,
+    "transliteration_rate": 1.0
+  },
+  "result": {
+    "vocabulary": [
+      {
+        "hindi": "तुम्हारा",
+        "transliteration": "tumhārā",
+        "meaning": "your, yours",
+        "gender": null,
+        "part_of_speech": "pronoun"
+      },
+      {
+        "hindi": "तबीयत",
+        "transliteration": "tabiyat",
+        "meaning": "health",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "घर",
+        "transliteration": "ghar",
+        "meaning": "house, home",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "परिवार",
+        "transliteration": "parivār",
+        "meaning": "family",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "पति",
+        "transliteration": "pati",
+        "meaning": "husband",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "पत्नी",
+        "transliteration": "patnī",
+        "meaning": "wife",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "कई",
+        "transliteration": "kaī",
+        "meaning": "several",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "छह",
+        "transliteration": "chah",
+        "meaning": "six",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "सारा",
+        "transliteration": "sārā",
+        "meaning": "all, whole",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "सामान",
+        "transliteration": "sāmān",
+        "meaning": "furniture, things",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "वग़ैरह",
+        "transliteration": "vagairah",
+        "meaning": "and so on, etc.",
+        "gender": null,
+        "part_of_speech": "adv"
+      },
+      {
+        "hindi": "अब",
+        "transliteration": "ab",
+        "meaning": "now",
+        "gender": null,
+        "part_of_speech": "adv"
+      },
+      {
+        "hindi": "फ़र्श",
+        "transliteration": "farś",
+        "meaning": "floor",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "दरी",
+        "transliteration": "darī",
+        "meaning": "floor rug, mat",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "कमरा",
+        "transliteration": "kamrā",
+        "meaning": "room",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "मकान",
+        "transliteration": "makān",
+        "meaning": "house, building",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "में",
+        "transliteration": "mẽ",
+        "meaning": "in",
+        "gender": null,
+        "part_of_speech": "postposition"
+      },
+      {
+        "hindi": "पर",
+        "transliteration": "par",
+        "meaning": "on",
+        "gender": null,
+        "part_of_speech": "postposition"
+      },
+      {
+        "hindi": "पंखा",
+        "transliteration": "pankhā",
+        "meaning": "fan",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "मेज़",
+        "transliteration": "mez",
+        "meaning": "table",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "नया",
+        "transliteration": "nayā",
+        "meaning": "new",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "ख़ाली",
+        "transliteration": "khālī",
+        "meaning": "empty, vacant",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "दीवार",
+        "transliteration": "dīvār",
+        "meaning": "wall",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "तस्वीर",
+        "transliteration": "tasvīr",
+        "meaning": "picture, photo",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "फ़र्श",
+        "transliteration": "farś",
+        "meaning": "floor",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "अलमारी",
+        "transliteration": "almārī",
+        "meaning": "cupboard, wardrobe",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "क्या",
+        "transliteration": "kyā",
+        "meaning": "what",
+        "gender": null,
+        "part_of_speech": "pronoun"
+      },
+      {
+        "hindi": "क़लम",
+        "transliteration": "qalam",
+        "meaning": "pen",
+        "gender": "m/f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "कहाँ",
+        "transliteration": "kahā̃",
+        "meaning": "where",
+        "gender": null,
+        "part_of_speech": "adv"
+      },
+      {
+        "hindi": "ओ",
+        "transliteration": "o",
+        "meaning": "oh!",
+        "gender": null,
+        "part_of_speech": "interjection"
+      },
+      {
+        "hindi": "बाथरूम",
+        "transliteration": "bāthrūm",
+        "meaning": "bathroom",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "सुबह",
+        "transliteration": "subah",
+        "meaning": "morning",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "से",
+        "transliteration": "se",
+        "meaning": "since, from",
+        "gender": null,
+        "part_of_speech": "postposition"
+      },
+      {
+        "hindi": "वहाँ",
+        "transliteration": "vahā̃",
+        "meaning": "there",
+        "gender": null,
+        "part_of_speech": "adverb"
+      },
+      {
+        "hindi": "ख़ैर",
+        "transliteration": "khair",
+        "meaning": "well, anyway",
+        "gender": null,
+        "part_of_speech": "adverb"
+      },
+      {
+        "hindi": "मेरा",
+        "transliteration": "merā",
+        "meaning": "my, mine",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "आपका",
+        "transliteration": "āpkā",
+        "meaning": "your, yours",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "चश्मा",
+        "transliteration": "caśmā",
+        "meaning": "glasses",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "रे",
+        "transliteration": "re",
+        "meaning": "eh, hey",
+        "gender": null,
+        "part_of_speech": "particle"
+      },
+      {
+        "hindi": "उस",
+        "transliteration": "us",
+        "meaning": "that",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "शायद",
+        "transliteration": "śāyad",
+        "meaning": "perhaps",
+        "gender": null,
+        "part_of_speech": "adverb"
+      },
+      {
+        "hindi": "दराज़",
+        "transliteration": "darāz",
+        "meaning": "drawer",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "बहुत-सारा",
+        "transliteration": "bahut-sārā",
+        "meaning": "lots of",
+        "gender": null,
+        "part_of_speech": "adj"
+      },
+      {
+        "hindi": "चीज़",
+        "transliteration": "cīz",
+        "meaning": "thing",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "आराम",
+        "transliteration": "ārām",
+        "meaning": "rest, comfort",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "आराम से",
+        "transliteration": "ārām se",
+        "meaning": "comfortably, easily",
+        "gender": null,
+        "part_of_speech": "adverb"
+      },
+      {
+        "hindi": "इस",
+        "transliteration": "is",
+        "meaning": "this (oblique form of yah)",
+        "gender": null,
+        "part_of_speech": "pronoun"
+      },
+      {
+        "hindi": "इन",
+        "transliteration": "in",
+        "meaning": "these (oblique form of ye)",
+        "gender": null,
+        "part_of_speech": "pronoun"
+      },
+      {
+        "hindi": "उन",
+        "transliteration": "un",
+        "meaning": "those (oblique form of ve)",
+        "gender": null,
+        "part_of_speech": "pronoun"
+      },
+      {
+        "hindi": "भाई",
+        "transliteration": "bhāī",
+        "meaning": "brother",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "बहिन",
+        "transliteration": "bahin",
+        "meaning": "sister",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "दरवाज़ा",
+        "transliteration": "darvāze",
+        "meaning": "door",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "कुर्सी",
+        "transliteration": "kursī",
+        "meaning": "chair",
+        "gender": "f",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "कपड़ा",
+        "transliteration": "kapṛā",
+        "meaning": "cloth, clothes",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "फर्श",
+        "transliteration": "farsh",
+        "meaning": "floor",
+        "gender": "m",
+        "part_of_speech": "noun"
+      },
+      {
+        "hindi": "बड़ा",
+        "transliteration": "baṛā",
+        "meaning": "big",
+        "gender": null,
+        "part_of_speech": "adjective"
+      },
+      {
+        "hindi": "पुराना",
+        "transliteration": "purānā",
+        "meaning": "old",
+        "gender": null,
+        "part_of_speech": "adjective"
+      }
+    ],
+    "grammar_points": [
+      {
+        "name": "Simple Postpositions",
+        "explanation": "In Hindi, words corresponding to English prepositions (like 'in' or 'from') follow the noun or pronoun they refer to. These are called postpositions because of their position after the word.",
+        "examples": [
+          {
+            "hindi": "मकान में",
+            "transliteration": "makān mẽ",
+            "english": "in the house"
+          },
+          {
+            "hindi": "मेज़ पर",
+            "transliteration": "mez par",
+            "english": "on the table"
+          }
+        ]
+      },
+      {
+        "name": "The Oblique Case",
+        "explanation": "When a noun is followed by a postposition, it must change from the direct case to the oblique case. Masculine nouns ending in -ā change to -e, while all plural nouns take the ending -õ.",
+        "examples": [
+          {
+            "hindi": "कमरे में सामान है",
+            "transliteration": "kamre mẽ sāmān hai",
+            "english": "There is furniture in the room."
+          },
+          {
+            "hindi": "घरों में सामान है",
+            "transliteration": "gharõ mẽ sāmān hai",
+            "english": "There is furniture in the houses."
+          }
+        ]
+      },
+      {
+        "name": "Word Order for 'There is...'",
+        "explanation": "To convey the sense of 'There is [something] [somewhere]', Hindi uses a specific word order where the location comes first. Reversing this order changes the focus from what is there to where a specific object is located.",
+        "examples": [
+          {
+            "hindi": "मेज़ पर क़लम है",
+            "transliteration": "mez par qalam hai",
+            "english": "There is a pen on the table."
+          },
+          {
+            "hindi": "क़लम मेज़ पर है",
+            "transliteration": "qalam mez par hai",
+            "english": "The pen is on the table."
+          }
+        ]
+      },
+      {
+        "name": "Adjectives in the Oblique Case",
+        "explanation": "When a noun is followed by a postposition, it moves into the oblique case, and any qualifying adjectives must also change to match. Masculine adjectives ending in -ā change to -e in both singular and plural oblique forms, while feminine adjectives ending in -ī remain unchanged.",
+        "examples": [
+          {
+            "hindi": "बड़े कमरे में",
+            "transliteration": "baṛe kamre mẽ",
+            "english": "in the big room"
+          },
+          {
+            "hindi": "बड़े कमरों में",
+            "transliteration": "baṛe kamrõ mẽ",
+            "english": "in the big rooms"
+          }
+        ]
+      },
+      {
+        "name": "Possessive Pronouns as Adjectives",
+        "explanation": "Possessive pronouns like 'merā' (my), 'tumhārā' (your), and 'āpkā' (your) function exactly like adjectives. They must agree in gender, number, and case with the noun they possess, changing to the -e ending in the masculine oblique case.",
+        "examples": [
+          {
+            "hindi": "मेरे मकान में",
+            "transliteration": "mere makān mẽ",
+            "english": "in my house"
+          },
+          {
+            "hindi": "मेरी बिहन",
+            "transliteration": "merī bahin",
+            "english": "my sister"
+          }
+        ]
+      },
+      {
+        "name": "Adjective and Possessive Agreement in the Oblique Case",
+        "explanation": "Adjectives and possessives ending in -ā (like 'baṛā' or 'merā') change their ending to -e when they modify a noun in the oblique case (i.e., when followed by a postposition). Feminine forms ending in -ī remain unchanged regardless of the case.",
+        "examples": [
+          {
+            "hindi": "बड़े कमरे में",
+            "transliteration": "baṛe kamre mẽ",
+            "english": "in the big room"
+          },
+          {
+            "hindi": "मेरे मकान में",
+            "transliteration": "mere makān mẽ",
+            "english": "in my house"
+          },
+          {
+            "hindi": "आपकी मेज़ पर",
+            "transliteration": "āpkī mez par",
+            "english": "on your table"
+          }
+        ]
+      },
+      {
+        "name": "Pronouns in the Oblique Case",
+        "explanation": "When a pronoun is followed by a postposition, it must take its oblique form. Common oblique forms include 'mujh' for 'mãī', 'is' for 'yah', and 'us' for 'vah'.",
+        "examples": [
+          {
+            "hindi": "मुझ से",
+            "transliteration": "mujh se",
+            "english": "from me"
+          },
+          {
+            "hindi": "इस कमरे में",
+            "transliteration": "is kamre mẽ",
+            "english": "in this room"
+          },
+          {
+            "hindi": "उन मेज़ों पर",
+            "transliteration": "un mezõ par",
+            "english": "on those tables"
+          }
+        ]
+      }
+    ]
+  }
+}

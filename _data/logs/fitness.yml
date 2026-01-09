@@ -4,16 +4,20 @@
 
 - date: '2026-01-06'
   entries:
-    - done: true
-      notes: Packed workout clothes and resistance band
+  - done: true
+    notes: Packed workout clothes and resistance band
   total: 0
-
 - date: '2026-01-07'
   entries:
-    - value: 20
-      notes: Morning PT stretches
-    - value: 15
-      notes: Upper body session (simplified from original plan) - 3x12 wide rows (red
-        band), 2x10 chair dips, 3x20 shrugs (~5lb). Started 5:40pm instead of planned
-        4pm.
+  - notes: Morning PT stretches
+    value: 20
+  - notes: Upper body session (simplified from original plan) - 3x12 wide rows (red
+      band), 2x10 chair dips, 3x20 shrugs (~5lb). Started 5:40pm instead of planned
+      4pm.
+    value: 15
   total: 35
+- date: '2026-01-08'
+  entries:
+  - notes: Short evening walk only - no PT due to groggy day from oversleeping
+    value: 15
+  total: 15

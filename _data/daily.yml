@@ -23,4 +23,13 @@
   date: '2026-01-07'
   fitness: 35
   hindi: 0
-  notes: "Overslept 1hr but still did morning PT. Procrastinated workout (planned 4pm, started 5:40pm) but pushed through despite dreading home workout. Dashboard redesign shipped."
+  notes: Overslept 1hr but still did morning PT. Procrastinated workout (planned 4pm,
+    started 5:40pm) but pushed through despite dreading home workout. Dashboard redesign
+    shipped.
+- calendar: false
+  date: '2026-01-08'
+  fitness: 15
+  hindi: 1
+  mood: 2
+  notes: Overslept - woke at 9 instead of 7. Groggy whole day. No PT. Short evening
+    walk, planning another. Good Hindi class with prep beforehand.
