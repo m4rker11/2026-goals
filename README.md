@@ -12,7 +12,7 @@ A personal goal tracking system built as a Jekyll static site with Claude Code i
 
 | Goal | Difficulty | Timeline |
 |------|------------|----------|
-| Hindi to B2 | Hard | 25 chapters |
+| Hindi to B2 | Hard | 18 chapters |
 | Calendar Mastery | Hard | 6 weeks |
 | 200 min Zone 2 Weekly | Hard | 8 weeks |
 | Spend Less ($1000) | Medium | 11 weeks |
@@ -60,7 +60,7 @@ All weeks run Monday-Sunday, starting **January 5, 2026**.
 │
 ├── Hindi/
 │   ├── overview.md          # Learning system + tutors
-│   ├── chapters/            # 25 grammar chapter synopses
+│   ├── chapters/            # 18 grammar chapter synopses
 │   └── weeks/               # Weekly tutor tasks
 │
 ├── spend-less/

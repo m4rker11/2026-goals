@@ -43,7 +43,7 @@ title: Hindi to B2
 {% endfor %}
 
 {% comment %} Calculate percentage {% endcomment %}
-{% assign hindi_pct = total_hindi | times: 100 | divided_by: 25 %}
+{% assign hindi_pct = total_hindi | times: 100 | divided_by: 18 %}
 {% if hindi_pct > 100 %}{% assign hindi_pct = 100 %}{% endif %}
 
 {% comment %} Hindi learning state {% endcomment %}
@@ -54,7 +54,7 @@ title: Hindi to B2
 
 # Hindi to B2
 
-25 chapters covering the journey from beginner to B2 level.
+18 chapters covering the journey from beginner to B2 level.
 
 [View Full Overview](overview)
 
@@ -70,7 +70,7 @@ title: Hindi to B2
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1rem 0;">
   <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
-    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_completed_count }}/25</div>
+    <div style="font-size: 2rem; font-weight: bold;">{{ hindi_completed_count }}/18</div>
     <div>Chapters Done</div>
   </div>
   <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; text-align: center;">
@@ -131,7 +131,7 @@ title: Hindi to B2
 | 1 | 1-5 | Foundations: Case, postpositions, pronouns | {% if hindi_completed_count >= 5 %}Complete{% elsif hindi_completed_count > 0 %}{{ hindi_completed_count }}/5{% else %}Not Started{% endif %} |
 | 2 | 6-12 | Verbs & Tenses: Hona, present, past, future | {% if hindi_completed_count >= 12 %}Complete{% elsif hindi_completed_count > 5 %}{{ hindi_completed_count | minus: 5 }}/7{% else %}Not Started{% endif %} |
 | 3 | 13-17 | Modals & Compounds: Must, can, compound verbs | {% if hindi_completed_count >= 17 %}Complete{% elsif hindi_completed_count > 12 %}{{ hindi_completed_count | minus: 12 }}/5{% else %}Not Started{% endif %} |
-| 4 | 18-25 | Advanced: Subjunctive, conditionals, passive | {% if hindi_completed_count >= 25 %}Complete{% elsif hindi_completed_count > 17 %}{{ hindi_completed_count | minus: 17 }}/8{% else %}Not Started{% endif %} |
+| 4 | 18 | Advanced: Subjunctive, conditionals, passive | {% if hindi_completed_count >= 18 %}Complete{% elsif hindi_completed_count > 17 %}{{ hindi_completed_count | minus: 17 }}/1{% else %}Not Started{% endif %} |
 
 ---
 

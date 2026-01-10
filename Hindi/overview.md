@@ -9,7 +9,7 @@ title: Hindi Overview
 
 | Current | Target | Method |
 |---------|--------|--------|
-| Beginner | B2 | 25 chapters + 2 tutors |
+| Beginner | B2 | 18 chapters + 2 tutors |
 
 ---
 
@@ -41,14 +41,14 @@ title: Hindi Overview
 
 ---
 
-## 25 Chapters (Grammar Reference)
+## 18 Chapters (Grammar Reference)
 
 | Part | Chapters | Focus |
 |------|----------|-------|
 | 1 | 1-5 | Foundations: Case, postpositions, pronouns |
 | 2 | 6-12 | Verbs & Tenses: Hona, present, past, future |
 | 3 | 13-17 | Modals & Compounds: Must, can, compound verbs |
-| 4 | 18-25 | Advanced: Subjunctive, conditionals, passive |
+| 4 | 18 | Advanced: Subjunctive, conditionals, passive |
 
 [View All Chapters](chapters/)
 
@@ -87,7 +87,7 @@ Every week, mandatory:
 
 | Resource | Notes |
 |----------|-------|
-| [Chapters](chapters/) | 25 grammar synopses |
+| [Chapters](chapters/) | 18 grammar synopses |
 | Anki | Practice sentence cards |
 
 ---

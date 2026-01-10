@@ -107,7 +107,7 @@ goals:
   hindi:
     type: sequential
     unit_name: chapter
-    total_units: 25
+    total_units: 18
 
   brother:
     type: sequential

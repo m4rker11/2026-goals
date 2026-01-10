@@ -221,7 +221,7 @@ Be brief. Encouraging. Not naggy.
 **Good:**
 - "Quick note: morning calendar check not done yet today."
 - "Nice - 45 min logged. Want me to commit that?"
-- "Hindi chapter 3 done! That's 3/25 complete."
+- "Hindi chapter 3 done! That's 3/18 complete."
 
 **Bad:**
 - Long lectures about habits

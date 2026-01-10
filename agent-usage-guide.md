@@ -107,7 +107,7 @@ git add . && git commit -m "status-update:2026-01-06 - great workout day"
 |------|--------|--------|
 | Calendar Mastery | Daily check | 7/7 days per week |
 | Fitness | Weekly minutes | 200 min/week |
-| Hindi | Chapters | 25 total |
+| Hindi | Chapters | 18 total |
 | Work Boundaries | - | Planning phase |
 | Spend Less | - | Planning phase |
 
@@ -137,7 +137,7 @@ Count consecutive true values for calendar field from most recent
 **Check if on track:**
 - Calendar: 5+ days/week = on track
 - Fitness: Compare weekly sum to target for current week (see fitness/overview.md)
-- Hindi: total chapters / 25 = progress %
+- Hindi: total chapters / 18 = progress %
 
 ---
 
