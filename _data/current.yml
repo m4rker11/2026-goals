@@ -10,11 +10,9 @@
 hindi:
   # Primary chapters to show in dashboard (can be multiple)
   focus:
-    - 01-foundations-of-case
-
-  # Chapters currently being learned (new material)
+    - 01-greetings-and-introductions
   learning:
-    - 01-foundations-of-case
+    - 01-greetings-and-introductions
 
   # Chapters in review cycle (reinforcing learned material)
   # Format: chapter-id or {id: chapter-id, cycle: N, max_cycles: M}

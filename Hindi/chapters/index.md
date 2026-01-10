@@ -1,47 +1,24 @@
----
-layout: default
-title: Hindi Chapters
----
+# Hindi Chapters
 
-# Hindi Chapter Synopses
+18 units based on textbook extraction.
 
-## Part 1: Foundations (Chapters 1-5)
+## Units
 
-1. [Foundations of Case](01-foundations-of-case/synopsis)
-2. [Compound Postpositions](02-compound-postpositions/synopsis)
-3. [Pronouns, Reflexives, Honorifics & Dative Experiencer](03-pronouns-reflexives-honorifics/synopsis)
-4. [Adjectives, Comparisons, Sa Particle](04-adjectives-comparisons-sa-particle/synopsis)
-5. [Particle Ecosystem](05-particle-ecosystem/synopsis)
-
-## Part 2: Verbs & Tenses (Chapters 6-12)
-
-6. [Hona Spectrum](06-hona-spectrum/synopsis)
-7. [Present Tense](07-present-tense/synopsis)
-8. [Interrogative, Plurality, Reduplication](08-interrogative-plurality-reduplication/synopsis)
-9. [Past Tense](09-past-tense/synopsis)
-10. [Future Tense](10-future-tense/synopsis)
-11. [Ne Construction](11-ne-construction/synopsis)
-12. [Perfect Tenses](12-perfect-tenses/synopsis)
-
-## Part 3: Modals & Compounds (Chapters 13-17)
-
-13. [Compulsion Matrix](13-compulsion-matrix/synopsis)
-14. [Compound Verbs: Benefaction](14-compound-verbs-benefaction/synopsis)
-15. [Compound Verbs: Transition](15-compound-verbs-transition/synopsis)
-16. [Modals: Capability](16-modals-capability/synopsis)
-17. [Modals: Start/Stop](17-modals-start-stop/synopsis)
-
-## Part 4: Advanced Grammar (Chapters 18-25)
-
-18. [Commands, Requests & Subjunctive](18-subjunctive-mood/synopsis)
-19. [Indirect Speech](19-indirect-speech/synopsis)
-20. [Conditionals](20-conditionals/synopsis)
-21. [Advanced Conjunctions](21-advanced-conjunctions/synopsis)
-22. [Participles](22-participles/synopsis)
-23. [Relative-Correlative Clauses](23-relative-correlative-clauses/synopsis)
-24. [Causatives and Agency](24-causatives-and-agency/synopsis)
-25. [Passive Voice and Incapability](25-passive-voice-and-incapability/synopsis)
-
----
-
-[Back to Hindi Overview]({{ site.baseurl }}/Hindi/) | [Back to Dashboard]({{ site.baseurl }}/)
+1. [Greetings and Introductions](01-greetings-and-introductions/synopsis.md) - Personal pronouns, verb "to be", questions
+2. [Questions and Descriptions](02-questions-and-descriptions/synopsis.md) - Interrogative words, adjective agreement
+3. [Postpositions Basics](03-postpositions-basics/synopsis.md) - Simple postpositions, nouns with postpositions
+4. [Past Tense Was/Were](04-past-tense-was-were/synopsis.md) - Past tense of "to be", to (so/as for)
+5. [Commands and Infinitives](05-commands-and-infinitives/synopsis.md) - Infinitive verb, commands and requests
+6. [Present Tense Imperfective](06-present-tense-imperfective/synopsis.md) - Imperfective present, extended uses
+7. [Past Imperfective](07-past-imperfective/synopsis.md) - Past imperfective, koi and kuch
+8. [Continuous Tenses and Having](08-continuous-tenses-having/synopsis.md) - Continuous tenses, expressions for "to have"
+9. [Future Tense](09-future-tense/synopsis.md) - Future tense formation, auxiliary usage
+10. [Subjunctive Mood](10-subjunctive-mood/synopsis.md) - Subjunctive, auxiliary subjunctive
+11. [Transitivity and Perfective](11-transitivity-perfective/synopsis.md) - Transitivity, perfective tenses
+12. [Participle and Time Expressions](12-participle-time-expressions/synopsis.md) - jakar "having gone", telling time
+13. [Relative Clauses and Should](13-relative-clauses-should/synopsis.md) - jab...tab clauses, infinitive + chahiye
+14. [Passive Voice](14-passive-voice/synopsis.md) - Passive voice, agents, special uses
+15. [Habitual Aspect](15-habitual-aspect/synopsis.md) - Habitual with karna, se revisited
+16. [Conjunct Verbs](16-conjunct-verbs/synopsis.md) - Conjunct verbs with karna/hona
+17. [Conditionals](17-conditionals/synopsis.md) - Conditional sentences, halanki
+18. [Participles Review](18-participles-review/synopsis.md) - Participles, state and adverbial usage
