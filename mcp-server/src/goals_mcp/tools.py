@@ -527,6 +527,41 @@ Examples:
             }
         ),
 
+        # ==================== HINDI PRACTICE ====================
+
+        Tool(
+            name="push_hindi_practice",
+            description="""Generate a Hindi practice prompt and push to phone via Pushover.
+Uses Anki mastery data to weight vocabulary selection:
+- 10% new words (introduce)
+- 40% learning (active drilling)
+- 35% young (reinforcement)
+- 15% mature (keep fresh)
+Includes dialogue context for voice practice with Gemini Live.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "unit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 18,
+                        "description": "Unit to focus on (default: current from progress tracking)"
+                    },
+                    "word_count": {
+                        "type": "integer",
+                        "minimum": 5,
+                        "maximum": 50,
+                        "description": "Number of vocab words to include (default: 20)"
+                    },
+                    "include_dialogue": {
+                        "type": "boolean",
+                        "description": "Include dialogue context for conversation practice (default: true)"
+                    }
+                },
+                "required": []
+            }
+        ),
+
         # ==================== WGER TOOLS ====================
 
         Tool(
@@ -1963,6 +1998,307 @@ def handle_manage_progress(arguments: dict) -> list[TextContent]:
     return [TextContent(type="text", text=f"Unknown action: {action}")]
 
 
+# ==================== HINDI PRACTICE HANDLERS ====================
+
+def handle_push_hindi_practice(arguments: dict) -> list[TextContent]:
+    """Handle push_hindi_practice tool - generate comprehensive practice prompt."""
+    from . import anki
+    from . import pushover
+    from . import gist
+    import json
+    import re
+    from pathlib import Path
+
+    unit = arguments.get("unit")
+    word_count = arguments.get("word_count", 100)  # Default to 100 words
+    include_dialogue = arguments.get("include_dialogue", True)
+
+    # Get current unit from progress if not specified
+    if unit is None:
+        current = get_current_progress()
+        hindi_progress = current.get("hindi", {})
+        focus = hindi_progress.get("focus", [])
+        learning = hindi_progress.get("learning", [])
+
+        for chapter_list in [focus, learning]:
+            for chapter in chapter_list:
+                match = re.search(r'(\d+)', chapter)
+                if match:
+                    unit = int(match.group(1))
+                    break
+            if unit:
+                break
+
+        if not unit:
+            unit = 1
+
+    # Load Anki mastery cache
+    cache = anki.get_mastery_cache()
+    if not cache:
+        try:
+            cache = anki._load_mastery_sync()
+            anki._mastery_cache = cache
+            anki._cache_loaded = True
+        except Exception:
+            cache = {}
+
+    # Get vocab with tier-based selection (scales if not enough in one tier)
+    vocab_items = anki.get_vocab_for_practice(current_unit=unit, count=word_count)
+
+    # Load unit data for grammar and dialogues
+    extracted_dir = Path(__file__).parent.parent.parent.parent.parent / "study-materials" / "extracted" / "raw"
+    json_path = extracted_dir / f"{unit:02d}.json"
+
+    unit_data = None
+    if json_path.exists():
+        with open(json_path) as f:
+            unit_data = json.load(f)
+
+    # ==================== BUILD COMPREHENSIVE PROMPT ====================
+
+    # Get unit title
+    unit_title = unit_data.get("unit_title", f"Unit {unit}") if unit_data else f"Unit {unit}"
+
+    # Get grammar section titles for context
+    grammar_topics = []
+    if unit_data and unit_data.get("grammar_sections"):
+        grammar_topics = [gs.get("title", "") for gs in unit_data["grammar_sections"][:3]]
+
+    prompt_parts = []
+
+    # 1. CONVERSATION FRAMEWORK - optimized for A2 learner based on real feedback
+    prompt_parts.append(f"""# Hindi Conversation Practice
+
+You are Arjun (male) or Priya (female), a Hindi conversation partner.
+
+## CRITICAL RULES - READ CAREFULLY
+
+### Speed & Pacing
+- **Speak at 70% of natural speed** - the learner needs time to process
+- Pause briefly between sentences
+- When learner seems confused, slow down even more
+
+### Response Length
+- **Maximum 2 Hindi sentences per response** (occasionally 3 if simple)
+- Always end with ONE simple question
+- Less is more - keep it digestible
+
+### Language Balance
+- **Explanations: 80% English, 20% Hindi examples**
+- **Conversation: 70% Hindi, 30% English support**
+- When learner asks "X ko Hindi mein kya kehte hain?" - answer in English first, then Hindi
+
+### Corrections (IMPORTANT)
+- Give corrections IN ENGLISH, then show the Hindi
+- Example: "Good try! 'Movie' is feminine in Hindi, so use 'meri' not 'mera'. Say: Meri favourite movie..."
+- DON'T correct in pure Hindi - learner can't process corrections at speed
+- When asked to break down a sentence, go WORD BY WORD in English
+
+---
+
+## Current Session
+
+**Unit {unit}: {unit_title}**
+
+**Grammar Focus:**
+{chr(10).join('- ' + t for t in grammar_topics) if grammar_topics else '- Basic conversation'}
+
+## Learner's Current Level (A2 - Early Intermediate)
+
+**KNOWS:**
+- Present tense (simple: hai/hain/ho/hoon)
+- Basic postpositions (mein, pe, ko, se, ke liye)
+- Basic pronouns (main, tum, aap, yeh, voh)
+- Question words (kya, kaun, kahan, kyun, kaise)
+- Common adjectives (accha, bura, bada, chhota)
+
+**DOES NOT KNOW YET (avoid these):**
+- Past tense (except basic tha/thi/the)
+- Future tense
+- Subjunctive
+- Causatives
+- Ne-construction
+- Complex compound verbs
+""")
+
+    # 2. VOCABULARY SECTION (100 words with tiers)
+    prompt_parts.append("\n---\n\n# VOCABULARY TO PRACTICE\n")
+    prompt_parts.append("*Work these words into the conversation naturally. Don't drill - use them in context.*\n")
+
+    if vocab_items:
+        # Group by tier for clarity
+        by_tier = {"new": [], "learning": [], "young": [], "mature": []}
+        for v in vocab_items:
+            tier_name = v.tier.value if v.tier else "new"
+            by_tier[tier_name].append(v)
+
+        for tier_name, tier_label in [("new", "Priority: New Words (introduce these)"), ("learning", "Reinforce: Learning"), ("young", "Practice: Getting Stronger"), ("mature", "Review: Known Words")]:
+            if by_tier[tier_name]:
+                prompt_parts.append(f"\n## {tier_label} ({len(by_tier[tier_name])})")
+                for v in by_tier[tier_name]:
+                    prompt_parts.append(f"- {v.transliteration} = {v.meaning}")
+    else:
+        prompt_parts.append("\n(No Anki vocab loaded)")
+
+    # 3. GRAMMAR RULES FROM UNIT
+    if unit_data and unit_data.get("grammar_sections"):
+        prompt_parts.append("\n---\n\n# GRAMMAR FROM THIS UNIT\n")
+        prompt_parts.append("*Use these patterns in conversation. When learner struggles, explain in English.*\n")
+        for gs in unit_data["grammar_sections"][:3]:
+            prompt_parts.append(f"\n## {gs.get('title', 'Grammar')}")
+            if gs.get("key_points"):
+                for kp in gs["key_points"][:3]:
+                    prompt_parts.append(f"- {kp}")
+            if gs.get("rules"):
+                for rule in gs["rules"][:2]:
+                    prompt_parts.append(f"\n**Pattern:** {rule.get('rule', '')}")
+                    if rule.get("examples"):
+                        ex = rule["examples"][0]
+                        prompt_parts.append(f"  → {ex.get('transliteration', '')} = \"{ex.get('english', '')}\"")
+
+    # 4. DIALOGUE EXAMPLES
+    if unit_data and unit_data.get("dialogues") and include_dialogue:
+        prompt_parts.append("\n---\n\n# EXAMPLE DIALOGUES FROM UNIT\n")
+        prompt_parts.append("*These show the target patterns. Use similar structures.*\n")
+        for dlg in unit_data["dialogues"][:1]:  # Just first dialogue
+            prompt_parts.append(f"\n**{dlg.get('title', 'Dialogue')}**")
+            if dlg.get("context"):
+                prompt_parts.append(f"*{dlg['context']}*\n")
+            for turn in dlg.get("turns", [])[:4]:  # First 4 turns only
+                prompt_parts.append(f"**{turn.get('speaker', '?')}:** {turn.get('transliteration', '')}")
+                prompt_parts.append(f"  → {turn.get('english', '')}")
+
+    # 5. CONVERSATION TOPICS - make it interesting!
+    prompt_parts.append("""
+---
+
+# CONVERSATION TOPICS
+
+*Pick topics that spark real discussion. Use the vocab naturally. Jump between topics to keep it fresh.*
+
+## Daily Life & Experiences
+- "Aaj tumne kya kiya?" (What did you do today?)
+- Morning routines, sleep habits, favorite foods
+- Weekend plans, lazy days vs busy days
+- Recent experiences - good or bad
+
+## Opinions & Preferences (great for practice!)
+- Movies, TV shows, music - "Tumhe kaunsi movie pasand hai?"
+- Food debates - spicy vs sweet, home cooking vs restaurants
+- Unpopular opinions - "Sab log chai pasand karte hain, lekin tum?"
+- "Agar ek superpower ho, toh kaunsi?" (If you had one superpower?)
+
+## Hypotheticals & Fun Questions
+- "Agar tum kahi bhi ja sakte ho, kahan jaoge?" (If you could go anywhere?)
+- Desert island questions - one book, one food, one person
+- "Tumhari dream job kya hai?"
+- Time travel - past or future? Why?
+
+## Science & Curiosity (simple concepts, interesting discussion)
+- Space - "Kya tumhe lagta hai aliens hain?"
+- Animals - favorite animals, pets, wildlife
+- Technology - phones, AI, social media
+- Weather - seasons, favorite weather, climate
+
+## Travel & Places
+- "Tumne kahan kahan travel kiya hai?"
+- Dream destinations - mountains vs beaches
+- Home city vs other places
+- Food from different places
+
+## People & Relationships
+- Family, friends, roommates
+- Funny stories about people you know
+- "Tumhara best friend kaisa hai?"
+- Celebrities, role models
+
+## Hobbies & Interests
+- Sports - playing vs watching
+- Gaming, reading, music, art
+- Learning new things - "Kya seekhna chahte ho?"
+- Collections, weird hobbies
+
+## Random Fun
+- "Tumhari sabse embarrassing story kya hai?"
+- Childhood memories
+- Fears and phobias
+- "Kya tum believe karte ho ghosts mein?"
+- Conspiracy theories (saazish!)
+
+---
+
+# HOW TO KEEP IT FLOWING
+
+**Conversation Techniques:**
+- React with emotion: "Sach mein?!", "Kya baat hai!", "Pagal hai kya!"
+- Use fillers naturally: "Arey", "Yaar", "Accha", "Hmm"
+- Share your own (made up) opinions to model sentences
+- Disagree sometimes to create discussion: "Main agree nahi karta..."
+- Ask follow-ups: "Kyun?", "Aur phir?", "Kaisa laga?"
+
+**If conversation stalls:**
+- Switch topics: "Accha, ek aur baat..."
+- Ask a random question: "Ek random sawaal - tumhari favorite color kya hai?"
+- Relate to something they said earlier
+
+---
+
+# HOW TO HANDLE COMMON SITUATIONS
+
+**When learner asks "How do I say X?"**
+→ Answer in English first: "You can say [transliteration]"
+→ Then: "Repeat after me: [word by word]"
+
+**When learner makes a grammar mistake:**
+→ "Good! Small fix: [English explanation]. Try: [correct Hindi]"
+
+**When learner says "I don't understand":**
+→ Switch to English, explain simply, then try again with simpler Hindi
+
+**When learner asks to break down a sentence:**
+→ Go word by word: "'Mujhe' means 'to me'. 'Pasand' means 'liking'. 'Hai' means 'is'."
+
+---
+
+# START THE CONVERSATION
+
+Begin with a simple greeting (2 sentences max):
+- "Namaste! Main [Arjun/Priya] hoon. Tum kaise ho?"
+
+Then ask ONE simple question about their day or pick a random topic.
+
+**Remember: 70% speed, 2 sentences max, English corrections!**
+""")
+
+    full_prompt = "\n".join(prompt_parts)
+
+    # ==================== CREATE GIST AND PUSH ====================
+
+    gist_result = gist.create_gist(
+        content=full_prompt,
+        description=f"Hindi Practice - Unit {unit}",
+    )
+
+    if not gist_result.success:
+        return [TextContent(type="text", text=f"Failed to create gist: {gist_result.message}")]
+
+    # Push URL to phone
+    push_result = pushover.push_notification(
+        title=f"Hindi Practice - Unit {unit}",
+        message=f"{len(vocab_items)} words ready!\nTap to open prompt.",
+        url=gist_result.url,
+        url_title="Open Practice Prompt",
+    )
+
+    if push_result.success:
+        return [TextContent(
+            type="text",
+            text=f"Practice prompt created and pushed!\n\nUnit: {unit}\nWords: {len(vocab_items)}\nGist: {gist_result.url}\n\nPreview:\n{full_prompt[:800]}..."
+        )]
+    else:
+        return [TextContent(type="text", text=f"Gist created but push failed: {push_result.message}\n\nGist URL: {gist_result.url}")]
+
+
 # ==================== WGER HANDLERS ====================
 
 def handle_get_workout_context(arguments: dict) -> list[TextContent]:
@@ -2343,6 +2679,10 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_memory_condense(arguments)
     elif name == "manage_progress":
         return handle_manage_progress(arguments)
+
+    # Hindi practice
+    elif name == "push_hindi_practice":
+        return handle_push_hindi_practice(arguments)
 
     # Wger tools
     elif name == "get_workout_context":

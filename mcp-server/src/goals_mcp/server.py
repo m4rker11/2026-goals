@@ -149,6 +149,21 @@ def check_wger_connection():
         logger.warning(f"Wger connection failed: {e}")
 
 
+async def load_anki_mastery():
+    """Load Anki mastery data in background on startup."""
+    from . import anki
+
+    try:
+        success = await anki.load_mastery_async()
+        if success:
+            cache = anki.get_mastery_cache()
+            logger.info(f"Anki mastery loaded: {len(cache)} vocab items")
+        else:
+            logger.info("Anki not available, practice prompts will use raw vocab")
+    except Exception as e:
+        logger.warning(f"Anki mastery load failed: {e}")
+
+
 def create_sse_app():
     """Create SSE web application."""
     from starlette.applications import Starlette
@@ -160,13 +175,17 @@ def create_sse_app():
 
     @asynccontextmanager
     async def lifespan(app):
-        """Start background sync task on startup."""
+        """Start background tasks on startup."""
         # Check wger connection on startup
         check_wger_connection()
+
+        # Load Anki mastery in background (non-blocking)
+        anki_task = asyncio.create_task(load_anki_mastery())
 
         sync_task = asyncio.create_task(background_sync_task())
         logger.info("Started hourly background sync task")
         yield
+        anki_task.cancel()
         sync_task.cancel()
         try:
             await sync_task
