@@ -19,6 +19,8 @@
 | Lower | Legs | Squats, lunges, RDLs, calves |
 | Cardio | Heart + Lungs | Zone 2, HIIT, swimming, jogging, OT |
 
+**Does NOT count:** Walking (casual or brisk) - not intense enough for Zone 2
+
 ---
 
 ## Resources

@@ -130,6 +130,8 @@ def get_upcoming_events(hours_ahead: int = 8, hours_back: int = 0) -> list[dict]
 
             events.append({
                 "time": event.start.strftime("%I:%M%p").lower().lstrip("0") if hasattr(event.start, 'strftime') else str(event.start),
+                "date": event.start.strftime("%Y-%m-%d") if hasattr(event.start, 'strftime') else None,
+                "weekday": event.start.strftime("%A") if hasattr(event.start, 'strftime') else None,
                 "title": title,
                 "is_goal": is_goal,
                 "goal_id": goal_id,

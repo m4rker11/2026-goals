@@ -3,29 +3,29 @@ tasks:
   # Setup tasks
   - id: widget-home
     name: Calendar widget is on home screen
-    done: false
+    done: true
   - id: phone-calendar
     name: Opening phone = seeing calendar
-    done: false
+    done: true
   # Daily tracking
   - id: mon-check
     name: Monday morning check
-    done: false
+    done: true
   - id: tue-check
     name: Tuesday morning check
-    done: false
+    done: true
   - id: wed-check
     name: Wednesday morning check
-    done: false
+    done: true
   - id: thu-check
     name: Thursday morning check
-    done: false
+    done: true
   - id: fri-check
     name: Friday morning check
-    done: false
+    done: true
   - id: sat-check
     name: Saturday morning check
-    done: false
+    done: true
   - id: sun-check
     name: Sunday morning check
     done: false
@@ -33,3 +33,4 @@ tasks:
   - id: weekly-review
     name: End of week reflection
     done: false
+    notes: Calendar done exceptionally well this week

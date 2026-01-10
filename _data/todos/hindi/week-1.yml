@@ -5,7 +5,8 @@ tasks:
     done: false
   - id: nahid-prep
     name: "Nahid: Send chapter/topic to practice"
-    done: false
+    done: true
+    notes: Good session with prep beforehand (Jan 8)
   - id: anki-1
     name: "Anki review session 1"
     done: false
@@ -15,3 +16,7 @@ tasks:
   - id: anki-3
     name: "Anki review session 3"
     done: false
+  - id: session-jan9
+    name: "Hindi session (Jan 9)"
+    done: true
+    notes: ~30 min session
