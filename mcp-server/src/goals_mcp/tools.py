@@ -117,6 +117,151 @@ Shows:
             }
         ),
 
+        # ==================== REMEMBER ====================
+        Tool(
+            name="remember",
+            description="""Save an observation or insight to memory for future reference.
+
+Use for:
+- Behavioral patterns ("Skipped fitness 3rd day - said 'too tired' but watched TV")
+- User quotes/commitments ("Quote: 'I'll definitely finish tomorrow'")
+- What works/doesn't ("Completed fitness despite resistance - felt great after")
+""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The observation, quote, or insight to remember"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date (defaults to today)"
+                    }
+                },
+                "required": ["text"]
+            }
+        ),
+
+        # ==================== PLAN ====================
+        Tool(
+            name="plan",
+            description="""Add a new task to a goal's todo list.
+
+Adds a single task to the specified goal/unit. Unit defaults to current week.
+""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID (fitness, calendar, hindi, etc.)"
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Task ID (e.g., 'yoga-session', 'extra-run')"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable task name"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "Unit (week-2, chapter-3). Defaults to current week."
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Detailed instructions (shown in dashboard)"
+                    }
+                },
+                "required": ["goal", "task", "name"]
+            }
+        ),
+
+        # ==================== SCHEDULE ====================
+        Tool(
+            name="schedule",
+            description="""Add calendar event - personal or goal-linked.
+
+Default is personal (no tracking). Add 'goal' param to track.
+Add 'task' param to link to specific todo task.
+""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Event title"
+                    },
+                    "time": {
+                        "type": "string",
+                        "description": "When: 'today 4pm', 'tomorrow 9am', or ISO datetime"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "description": "Duration in minutes (default: 30)"
+                    },
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal to link (adds [Goal] prefix, uses goal color)"
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Task ID to link (syncs to todo.yml)"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Event description"
+                    }
+                },
+                "required": ["title", "time"]
+            }
+        ),
+
+        # ==================== EDIT ====================
+        Tool(
+            name="edit",
+            description="""Modify an existing goal task.
+
+Use to update task properties, add notes, or delete tasks.
+""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID"
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Task ID to edit"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "Unit (defaults to current week)"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "New task name"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "New notes"
+                    },
+                    "done": {
+                        "type": "boolean",
+                        "description": "Override done status"
+                    },
+                    "delete": {
+                        "type": "boolean",
+                        "description": "Delete the task"
+                    }
+                },
+                "required": ["goal", "task"]
+            }
+        ),
+
         # ==================== LOG_GOAL ====================
         Tool(
             name="log_goal",
@@ -1316,6 +1461,226 @@ def handle_status(arguments: dict) -> list[TextContent]:
         lines.append("")
 
     return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_remember(arguments: dict) -> list[TextContent]:
+    """Handle remember tool - save observation/insight to memory."""
+    text = arguments.get("text", "")
+    date = arguments.get("date", get_today())
+
+    if not text:
+        return [TextContent(type="text", text="text is required")]
+
+    add_memory_entry(text, date)
+    return [TextContent(type="text", text=f"Remembered: {text[:50]}{'...' if len(text) > 50 else ''}")]
+
+
+def handle_plan(arguments: dict) -> list[TextContent]:
+    """Handle plan tool - add a single task to a goal's todo list."""
+    goal_input = arguments.get("goal", "")
+    task_id = arguments.get("task", "")
+    name = arguments.get("name", "")
+    unit = arguments.get("unit")
+    description = arguments.get("description")
+
+    if not goal_input or not task_id or not name:
+        return [TextContent(type="text", text="goal, task, and name are required")]
+
+    # Resolve goal
+    config = get_goals_config()
+    goals = config.get("goals", {})
+    goal_id = resolve_goal_id(goals, goal_input)
+
+    if not goal_id:
+        available = ", ".join(goals.keys())
+        return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
+
+    # Default to current week if no unit specified
+    if not unit:
+        schedule = get_schedule()
+        week_info = get_current_week(schedule)
+        week_num = week_info.get("number", 1) if week_info else 1
+        unit = f"week-{week_num}"
+
+    # Load existing todo or create new
+    todo = get_unit_todo(goal_id, unit)
+    tasks = todo.get("tasks", [])
+
+    # Check if task already exists
+    for t in tasks:
+        if t.get("id") == task_id:
+            return [TextContent(type="text", text=f"Task '{task_id}' already exists in {goal_id}/{unit}")]
+
+    # Add new task
+    new_task = {"id": task_id, "name": name, "done": False}
+    if description:
+        new_task["description"] = description
+
+    tasks.append(new_task)
+    todo["tasks"] = tasks
+    save_unit_todo(goal_id, unit, todo)
+
+    return [TextContent(type="text", text=f"Added task '{task_id}' to {goal_id}/{unit}")]
+
+
+def handle_schedule(arguments: dict) -> list[TextContent]:
+    """Handle schedule tool - add calendar event (personal or goal-linked)."""
+    title = arguments.get("title", "")
+    time_str = arguments.get("time", "")
+
+    if not title or not time_str:
+        return [TextContent(type="text", text="title and time are required")]
+
+    # Parse time
+    time = calendar_service.parse_time(time_str)
+    if not time:
+        return [TextContent(type="text", text=f"Could not parse time: '{time_str}'. Try 'today 4pm' or 'tomorrow 9am'")]
+
+    duration = arguments.get("duration", 30)
+    goal_input = arguments.get("goal")
+    task_id = arguments.get("task")
+    notes = arguments.get("notes", "")
+
+    # Check for conflicts
+    conflicts = calendar_service.check_conflicts(time, duration)
+    conflict_warning = ""
+    if conflicts:
+        conflict_warning = f"\nConflicts with: {', '.join(c['title'] for c in conflicts)}"
+
+    # Handle goal linking
+    goal_id = None
+    color_id = None
+
+    if goal_input:
+        config = get_goals_config()
+        goals = config.get("goals", {})
+        goal_id = resolve_goal_id(goals, goal_input)
+        if goal_id:
+            goal_config = goals[goal_id]
+            goal_name = goal_config.get("name", goal_id)
+            color_id = goal_config.get("color")
+            # Prefix title with [Goal]
+            title = f"[Goal] {goal_name} - {title}"
+
+    # Create calendar event using gcsa
+    from gcsa.event import Event
+
+    gc = calendar_service.get_calendar()
+    if not gc:
+        return [TextContent(type="text", text="Calendar not authenticated. Run calendar auth first.")]
+
+    end_time = time + timedelta(minutes=duration)
+    event = Event(
+        title,
+        start=time,
+        end=end_time,
+        description=notes if notes else None,
+        color_id=str(color_id) if color_id else None,
+    )
+
+    try:
+        created = gc.add_event(event)
+        event_id = created.event_id
+    except Exception as e:
+        return [TextContent(type="text", text=f"Failed to create event: {e}")]
+
+    time_formatted = time.strftime("%I:%M%p").lower().lstrip("0")
+    date_formatted = time.strftime("%a %b %-d")
+    result_lines = [f"Scheduled '{title}' for {date_formatted} at {time_formatted}"]
+
+    # If task specified, link to todo
+    if goal_id and task_id:
+        schedule = get_schedule()
+        week_info = get_current_week(schedule)
+        week_num = week_info.get("number", 1) if week_info else 1
+        unit = f"week-{week_num}"
+
+        updated = update_todo_task(
+            goal_id, unit, task_id,
+            scheduled_for=time.isoformat(),
+            event_id=event_id
+        )
+        if updated:
+            result_lines.append(f"Linked to {goal_id}/{unit}/{task_id}")
+        else:
+            result_lines.append(f"Warning: Task '{task_id}' not found in {goal_id}/{unit}")
+
+    if conflict_warning:
+        result_lines.append(conflict_warning)
+
+    return [TextContent(type="text", text="\n".join(result_lines))]
+
+
+def handle_edit(arguments: dict) -> list[TextContent]:
+    """Handle edit tool - modify an existing goal task."""
+    goal_input = arguments.get("goal", "")
+    task_id = arguments.get("task", "")
+
+    if not goal_input or not task_id:
+        return [TextContent(type="text", text="goal and task are required")]
+
+    # Resolve goal
+    config = get_goals_config()
+    goals = config.get("goals", {})
+    goal_id = resolve_goal_id(goals, goal_input)
+
+    if not goal_id:
+        available = ", ".join(goals.keys())
+        return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
+
+    # Get unit (default to current week)
+    unit = arguments.get("unit")
+    if not unit:
+        schedule = get_schedule()
+        week_info = get_current_week(schedule)
+        week_num = week_info.get("number", 1) if week_info else 1
+        unit = f"week-{week_num}"
+
+    # Handle delete
+    if arguments.get("delete"):
+        todo = get_unit_todo(goal_id, unit)
+        tasks = todo.get("tasks", [])
+        original_len = len(tasks)
+        tasks = [t for t in tasks if t.get("id") != task_id]
+
+        if len(tasks) == original_len:
+            return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
+
+        todo["tasks"] = tasks
+        save_unit_todo(goal_id, unit, todo)
+        return [TextContent(type="text", text=f"Deleted task '{task_id}' from {goal_id}/{unit}")]
+
+    # Handle updates
+    updates = {}
+    if "name" in arguments:
+        updates["name"] = arguments["name"]
+    if "notes" in arguments:
+        updates["notes"] = arguments["notes"]
+    if "done" in arguments:
+        updates["done"] = arguments["done"]
+
+    if not updates:
+        return [TextContent(type="text", text="No updates specified. Provide name, notes, done, or delete.")]
+
+    # Apply updates
+    todo = get_unit_todo(goal_id, unit)
+    tasks = todo.get("tasks", [])
+    found = False
+
+    for t in tasks:
+        if t.get("id") == task_id:
+            t.update(updates)
+            found = True
+            break
+
+    if not found:
+        return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
+
+    todo["tasks"] = tasks
+    save_unit_todo(goal_id, unit, todo)
+
+    updates_str = ", ".join(f"{k}={v}" for k, v in updates.items())
+    return [TextContent(type="text", text=f"Updated {task_id}: {updates_str}")]
 
 
 def handle_log_goal(arguments: dict) -> list[TextContent]:
@@ -3128,6 +3493,14 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_done(arguments)
     elif name == "status":
         return handle_status(arguments)
+    elif name == "remember":
+        return handle_remember(arguments)
+    elif name == "plan":
+        return handle_plan(arguments)
+    elif name == "schedule":
+        return handle_schedule(arguments)
+    elif name == "edit":
+        return handle_edit(arguments)
     elif name == "log_goal":
         return handle_log_goal(arguments)
     elif name == "log_daily":

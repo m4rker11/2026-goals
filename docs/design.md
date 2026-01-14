@@ -306,7 +306,9 @@ plan(
 
 ### 5. `schedule` - Add Calendar Event
 
-**Purpose:** Create calendar event, optionally linked to a goal task.
+**Purpose:** Create calendar event for personal life OR goal tracking.
+
+**Design principle:** Default is personal (no tracking). Goal tracking is opt-in.
 
 #### Parameters
 
@@ -315,15 +317,38 @@ plan(
 | title | string | Yes | Event title |
 | time | string | Yes | When: "today 4pm", "tomorrow 9am", ISO datetime |
 | duration | int | No | Minutes, default 30 |
-| goal | string | No | Link to goal (adds [Goal] prefix) |
+| goal | string | No | Link to goal (adds [Goal] prefix, uses goal color) |
 | task | string | No | Task ID to link (updates todo with event_id) |
 | notes | string | No | Event description |
+
+#### Behavior by Parameters
+
+| Parameters | Behavior |
+|------------|----------|
+| title + time only | Personal event, no tracking |
+| + goal | Tracked event, [Goal] prefix, goal color |
+| + goal + task | Links to specific todo, syncs scheduling info |
+
+#### Examples
+
+```python
+# Personal event - no tracking, just calendar
+schedule(title="Dinner with friends", time="tomorrow 7pm")
+schedule(title="Dentist appointment", time="next monday 2pm", duration=60)
+
+# Goal-linked event - tracked, appears in status
+schedule(title="Hindi practice", time="today 4pm", goal="hindi")
+
+# Linked to specific todo task - full sync
+schedule(title="Run", time="tomorrow 9am", goal="fitness", task="run-session")
+# → Updates fitness/week-2.yml with event_id and scheduled_for
+```
 
 ---
 
 ### 6. `edit` - Modify Existing Task
 
-**Purpose:** Update task properties (rare operation).
+**Purpose:** Update task properties (rare operation, goal tasks only).
 
 #### Parameters
 
@@ -331,7 +356,7 @@ plan(
 |-----------|------|----------|-------------|
 | goal | string | Yes | Goal ID |
 | unit | string | No | Unit, defaults to current week |
-| task_id | string | Yes | Task to edit |
+| task | string | Yes | Task ID to edit |
 | name | string | No | New name |
 | notes | string | No | New notes |
 | done | bool | No | Override done status |
