@@ -49,6 +49,45 @@ Auto-syncs to daily.yml for fitness/calendar/hindi. Use path for subgoals. Optio
             }
         ),
 
+        # ==================== DONE ====================
+        Tool(
+            name="done",
+            description="""Mark a goal task as done with automatic cascading updates.
+
+Automatically:
+- Marks the todo task done in current week
+- Logs duration (if provided) to goal logs
+- Updates daily.yml (calendar=true, fitness+=minutes, hindi+=1)
+""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Goal ID: fitness, calendar, work-boundaries, hindi, etc."
+                    },
+                    "task": {
+                        "type": "string",
+                        "description": "Exact task ID from todo list (e.g., 'tue-morning', 'run-session')"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "description": "Duration in minutes - logs to goal and syncs to daily.yml for fitness"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "ISO date, defaults to today"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Additional context"
+                    }
+                },
+                "required": ["goal"]
+            }
+        ),
+
         # ==================== LOG_GOAL ====================
         Tool(
             name="log_goal",
@@ -965,6 +1004,130 @@ def handle_check_in() -> list[TextContent]:
                 lines.append(f"  (+{len(tasks) - 3} more)")
 
     return [TextContent(type="text", text="\n".join(lines))]
+
+
+def handle_done(arguments: dict) -> list[TextContent]:
+    """
+    Handle done tool - unified completion action with cascading updates.
+
+    Behavior:
+    1. If task provided: mark it done in current week's todos
+    2. If duration provided: log to goal logs
+    3. Sync to daily.yml based on goal type
+    """
+    goal_input = arguments.get("goal", "")
+    task_id = arguments.get("task")
+    duration = arguments.get("duration")
+    date = arguments.get("date", get_today())
+    notes = arguments.get("notes")
+
+    if not goal_input:
+        return [TextContent(type="text", text="goal is required")]
+
+    # Resolve goal ID
+    config = get_goals_config()
+    goals = config.get("goals", {})
+    goal_id = resolve_goal_id(goals, goal_input)
+
+    if not goal_id:
+        available = ", ".join(goals.keys())
+        return [TextContent(type="text", text=f"Unknown goal: '{goal_input}'. Available: {available}")]
+
+    # Get current week for this date
+    schedule = get_schedule()
+    week_info = get_current_week(schedule)
+    week_num = week_info.get("number", 1)
+
+    # Check if the date falls in a different week
+    for week in schedule.get("weeks", []):
+        if week["start"] <= date <= week["end"]:
+            week_num = week["number"]
+            break
+
+    unit = f"week-{week_num}"
+
+    result_lines = []
+    daily_updated = {}
+
+    # Mark task done if provided
+    if task_id:
+        updated = update_todo_task(
+            goal_id, unit, task_id,
+            done=True, notes=notes, clear_schedule=True
+        )
+
+        if updated:
+            result_lines.append(f"Marked {task_id} done in {unit}")
+            if notes:
+                result_lines.append(f"Notes: {notes}")
+
+            # If task had a calendar event, mark it complete
+            cleared_event_id = updated.get("_cleared_event_id")
+            if cleared_event_id:
+                cal_result = calendar_service.mark_goal_complete(cleared_event_id)
+                if cal_result.get("success"):
+                    result_lines.append("Calendar event marked complete")
+        else:
+            return [TextContent(type="text", text=f"Task '{task_id}' not found in {goal_id}/{unit}")]
+
+    # Log duration if provided
+    if duration:
+        logs = get_goal_logs(goal_id)
+
+        # Find or create day entry
+        day_entry = None
+        for d in logs:
+            if d.get("date") == date:
+                day_entry = d
+                break
+
+        if not day_entry:
+            day_entry = {"date": date, "entries": []}
+            logs.append(day_entry)
+
+        if "entries" not in day_entry:
+            day_entry["entries"] = []
+
+        entry = {"value": duration}
+        if notes:
+            entry["notes"] = notes
+
+        day_entry["entries"].append(entry)
+
+        # Update total
+        total = sum(e.get("value", 0) for e in day_entry["entries"] if isinstance(e.get("value"), (int, float)))
+        day_entry["total"] = total
+
+        save_goal_logs(goal_id, logs)
+        result_lines.append(f"Logged {duration} min to {goal_id}")
+
+    # Sync to daily.yml based on goal type
+    if goal_id == "fitness" and duration:
+        current_daily = get_daily_entry(date)
+        current_fitness = current_daily.get("fitness", 0) if current_daily else 0
+        new_fitness = current_fitness + duration
+        update_daily_entry(date, fitness=new_fitness)
+        daily_updated["fitness"] = new_fitness
+
+    elif goal_id == "calendar":
+        update_daily_entry(date, calendar=True)
+        daily_updated["calendar"] = True
+
+    elif goal_id == "hindi":
+        current_daily = get_daily_entry(date)
+        current_hindi = current_daily.get("hindi", 0) if current_daily else 0
+        new_hindi = current_hindi + 1
+        update_daily_entry(date, hindi=new_hindi)
+        daily_updated["hindi"] = new_hindi
+
+    if daily_updated:
+        updates_str = ", ".join(f"{k}={v}" for k, v in daily_updated.items())
+        result_lines.append(f"Daily updated: {updates_str}")
+
+    if not result_lines:
+        return [TextContent(type="text", text="No action taken. Provide task and/or duration.")]
+
+    return [TextContent(type="text", text="\n".join(result_lines))]
 
 
 def handle_log_goal(arguments: dict) -> list[TextContent]:
@@ -2773,6 +2936,8 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Route tool calls to handlers."""
     if name == "check_in":
         return handle_check_in()
+    elif name == "done":
+        return handle_done(arguments)
     elif name == "log_goal":
         return handle_log_goal(arguments)
     elif name == "log_daily":
