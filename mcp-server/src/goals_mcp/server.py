@@ -99,10 +99,7 @@ async def get_prompt(name: str, arguments: dict | None = None) -> list[PromptMes
 async def list_tools() -> list[Tool]:
     """List available tools with dynamic descriptions."""
     summary = get_urgent_summary()
-    config = get_goals_config()
-    goals = config.get("goals", {})
-    goals_list = ", ".join(goals.keys())
-    return get_tool_definitions(summary, goals_list)
+    return get_tool_definitions(summary)
 
 
 @app.call_tool()
