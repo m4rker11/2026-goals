@@ -43,3 +43,17 @@
   fitness: 0
   hindi: 0
   notes: Calendar done exceptionally well this week - morning checks every day.
+- calendar: false
+  date: '2026-01-11'
+  fitness: 35
+  hindi: 0
+  notes: Screenless Sunday went well. Got a workout in.
+- calendar: true
+  date: '2026-01-12'
+  fitness: 0
+  hindi: 0
+  notes: Work announced and stopped on time.
+- calendar: true
+  date: '2026-01-13'
+  fitness: 0
+  hindi: 0

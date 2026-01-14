@@ -3,16 +3,16 @@ tasks:
   # Daily tasks - Morning check (what's today look like?) + Immediate input (add events the moment they're scheduled)
   - id: mon-morning
     name: "Mon AM: Check calendar first thing - what's on today?"
-    done: false
+    done: true
   - id: mon-immediate
     name: "Mon: Every event added immediately when scheduled (don't wait)"
-    done: false
+    done: true
   - id: tue-morning
     name: "Tue AM: Check calendar first thing - what's on today?"
-    done: false
+    done: true
   - id: tue-immediate
     name: "Tue: Every event added immediately when scheduled (don't wait)"
-    done: false
+    done: true
   - id: wed-morning
     name: "Wed AM: Check calendar first thing - what's on today?"
     done: false
@@ -37,12 +37,7 @@ tasks:
   - id: sat-immediate
     name: "Sat: Every event added immediately when scheduled (don't wait)"
     done: false
-  - id: sun-morning
-    name: "Sun AM: Check calendar first thing - what's on today?"
-    done: false
-  - id: sun-immediate
-    name: "Sun: Every event added immediately when scheduled (don't wait)"
-    done: false
+  # No Sunday tasks - Screenless Sunday
   - id: weekly-review
     name: "End of week: What % of events went in immediately? What caused friction?"
     done: false

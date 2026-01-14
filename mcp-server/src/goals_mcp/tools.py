@@ -809,6 +809,28 @@ def handle_check_in() -> list[TextContent]:
 
     lines = [f"Goals Check-in ({get_today()}, {time_str})", ""]
 
+    # Show current week for time-based goals
+    schedule = get_schedule()
+    current_week_info = get_current_week(schedule)
+    if current_week_info:
+        week_num = current_week_info.get("number", "?")
+        week_start = current_week_info.get("start", "")
+        week_end = current_week_info.get("end", "")
+        if week_start and week_end:
+            # Format as "Jan 6-12" style
+            from datetime import datetime as dt
+            try:
+                start_dt = dt.strptime(week_start, "%Y-%m-%d")
+                end_dt = dt.strptime(week_end, "%Y-%m-%d")
+                start_str = start_dt.strftime("%b %-d")
+                end_str = end_dt.strftime("%-d")
+                lines.append(f"**Week {week_num}** ({start_str}-{end_str})")
+            except:
+                lines.append(f"**Week {week_num}**")
+        else:
+            lines.append(f"**Week {week_num}**")
+        lines.append("")
+
     # Show recent memory first (for context)
     if recent_memory:
         lines.append("**Recent memory:**")
@@ -904,11 +926,31 @@ def handle_check_in() -> list[TextContent]:
         lines.append("")
 
     # Add pending tasks from todos
-    if pending_tasks:
+    # Filter to only show current week (or earlier) for time-weekly goals
+    current_week_num = current_week_info.get("number") if current_week_info else None
+    time_weekly_goals = {"fitness", "calendar", "work-boundaries"}
+
+    def is_current_or_past_week(goal_id: str, unit: str) -> bool:
+        """Check if task is from current week or earlier."""
+        if goal_id not in time_weekly_goals:
+            return True  # Non-weekly goals show all
+        if not unit.startswith("week-"):
+            return True
+        if current_week_num is None:
+            return True
+        try:
+            task_week = int(unit.split("-")[1])
+            return task_week <= current_week_num
+        except (ValueError, IndexError):
+            return True
+
+    filtered_tasks = [pt for pt in pending_tasks if is_current_or_past_week(pt["goal_id"], pt["unit"])]
+
+    if filtered_tasks:
         lines.append("**Pending tasks:**")
         # Group by goal
         by_goal = {}
-        for pt in pending_tasks:
+        for pt in filtered_tasks:
             gid = pt["goal_id"]
             if gid not in by_goal:
                 by_goal[gid] = []
@@ -1305,6 +1347,20 @@ def handle_read_todo(arguments: dict) -> list[TextContent]:
 
     goal_name = goals[goal_id].get("name", goal_id)
     lines = [f"📝 **{goal_name}** - {unit}", ""]
+
+    # Check if this is a week-based unit and show current week context
+    if unit.startswith("week-"):
+        schedule = get_schedule()
+        current_week_info = get_current_week(schedule)
+        if current_week_info:
+            current_week = current_week_info.get("number")
+            try:
+                requested_week = int(unit.split("-")[1])
+                if requested_week != current_week:
+                    lines.insert(1, f"⚠️ Note: Current week is {current_week}, showing {unit}")
+                    lines.insert(2, "")
+            except (ValueError, IndexError):
+                pass
 
     pending = [t for t in tasks if not t.get("done", False)]
     done = [t for t in tasks if t.get("done", False)]

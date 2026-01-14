@@ -23,13 +23,13 @@ tasks:
     done: false
   - id: evidence-1
     name: Gather evidence 1 (rest helps work)
-    done: false
+    done: true
+    notes: "Stopped work knowing I'd do better tomorrow - and did"
   - id: evidence-2
     name: Gather evidence 2 (rest helps work)
-    done: false
-  - id: evidence-3
-    name: Gather evidence 3 (rest helps work)
-    done: false
+    done: true
+    notes: "Stopped yesterday knowing I'd finish better today"
   - id: weekly-reflection
     name: "Reflection: record times, summarize evidence, note patterns"
-    done: false
+    done: true
+    notes: "Missed Mon/Thu/Fri verbal commit. Evidence gathered informally - stopping on time led to better next-day work at least twice."

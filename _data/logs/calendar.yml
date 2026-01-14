@@ -18,3 +18,13 @@
 - date: '2026-01-10'
   done: true
   notes: Morning check completed - exceptional week for calendar habit
+- date: '2026-01-12'
+  entries:
+  - done: true
+    notes: Viewed calendar on time
+    path: morning-check
+- date: '2026-01-13'
+  entries:
+  - done: true
+    notes: Viewed calendar on time
+    path: morning-check

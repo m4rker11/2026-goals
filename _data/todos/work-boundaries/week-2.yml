@@ -2,10 +2,10 @@ unit: week-2
 tasks:
   - id: mon-announce
     name: Monday - morning announce to Anuska
-    done: false
+    done: true
   - id: tue-announce
     name: Tuesday - morning announce to Anuska
-    done: false
+    done: true
   - id: wed-announce
     name: Wednesday - morning announce to Anuska
     done: false

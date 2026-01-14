@@ -4,3 +4,19 @@
 - date: '2026-01-06'
   done: true
   notes: Started and ended at defined time. Bad on breaks.
+- date: '2026-01-12'
+  entries:
+  - done: true
+    notes: Announced to Anuska on time
+    path: announced
+  - done: true
+    notes: Stopped on time
+    path: stopped
+- date: '2026-01-13'
+  entries:
+  - done: true
+    notes: Announced to Anuska on time
+    path: announced
+  - done: true
+    notes: Stopped on time
+    path: stopped

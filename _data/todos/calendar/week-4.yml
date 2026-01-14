@@ -52,12 +52,7 @@ tasks:
   - id: sat-dinner
     name: "Sat: Dinner on calendar (who's cooking? what time?)"
     done: false
-  - id: sun-gym
-    name: "Sun: Gym block on calendar (or 'rest day' noted)"
-    done: false
-  - id: sun-dinner
-    name: "Sun: Dinner on calendar (who's cooking? what time?)"
-    done: false
+  # No Sunday tasks - Screenless Sunday
   - id: weekly-review
     name: "End of week: How many days had all 3 (gym/dinner/work-end) on calendar?"
     done: false

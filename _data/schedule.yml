@@ -85,24 +85,24 @@ goals:
 
   trading:
     type: period
-    start: "2026-01-12"
+    start: "2026-01-19"
     periods:
       - id: period-1
         name: "Period 1"
-        start: "2026-01-12"
-        end: "2026-01-25"
+        start: "2026-01-19"
+        end: "2026-02-01"
       - id: period-2
         name: "Period 2"
-        start: "2026-01-26"
-        end: "2026-02-08"
+        start: "2026-02-02"
+        end: "2026-02-15"
       - id: period-3
         name: "Period 3"
-        start: "2026-02-09"
-        end: "2026-02-22"
+        start: "2026-02-16"
+        end: "2026-03-01"
       - id: period-4
         name: "Period 4"
-        start: "2026-02-23"
-        end: "2026-03-08"
+        start: "2026-03-02"
+        end: "2026-03-15"
 
   hindi:
     type: sequential

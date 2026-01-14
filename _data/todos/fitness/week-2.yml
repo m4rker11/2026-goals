@@ -1,22 +1,13 @@
 unit: week-2
 tasks:
-  # Sessions
-  - id: upper-session
-    name: Upper bodyweight session (25 min)
+  - id: run-session
+    name: Run session (30 min)
     done: false
-  - id: lower-session
-    name: Lower bodyweight session (20 min)
+    notes: "Scheduled Wed Jan 14 9am"
+  - id: gym-session
+    name: Gym + PT session (60 min)
     done: false
-  - id: cardio-session
-    name: Cardio - jog or walk (20 min)
-    done: false
-  - id: pt-stretches-1
-    name: PT Stretches #1 (15 min)
-    done: false
-  - id: pt-stretches-2
-    name: PT Stretches #2 (15 min)
-    done: false
-  # Weekly review
+    notes: "Scheduled Thu Jan 16 10am - Planet Fitness day pass"
   - id: weekly-review
     name: End of week reflection
     done: false

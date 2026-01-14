@@ -14,21 +14,13 @@ tasks:
     name: Mid/PT focus session (15 min)
     done: true
     notes: Did PT and short workout
-  - id: pt-stretches-1
-    name: 'PT Stretches #1 (15 min)'
-    done: false
-  - id: pt-stretches-2
-    name: 'PT Stretches #2 (15 min)'
-    done: false
   - id: pack-clothes
     name: Pack comfortable workout clothes
     done: true
   - id: pack-band
     name: Pack resistance band (optional)
     done: true
-  - id: pack-pt-notes
-    name: Pack PT stretch notes
-    done: false
   - id: weekly-review
     name: End of week reflection
-    done: false
+    done: true
+    notes: "Hit 70 min (35 Wed + 35 Sun) vs 65 target. Procrastinated but delivered. Screenless Sunday perfect for workouts w/ ADHD meds. PT stretches skipped - lack of equipment at brother's + low motivation. Environment issue: less structure at brother's → high dopamine defaults (YouTube, reels) → worse sleep/diet."
