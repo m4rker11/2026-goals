@@ -122,32 +122,26 @@ _data/
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | goal | string | Yes | Goal ID: fitness, calendar, work-boundaries, hindi, etc. |
-| what | string | No | Task hint and/or duration: "morning", "35 min run", "run-session" |
+| task | string | No | Exact task ID from todo list (e.g., 'tue-morning', 'run-session') |
+| duration | integer | No | Duration in minutes - logs to goal and syncs to daily.yml for fitness |
 | date | string | No | ISO date, defaults to today |
 | notes | string | No | Additional context |
 
 #### Behavior Flow
 
 ```
-done(goal, what, date, notes)
-    │
-    ├─► Parse 'what' for duration and task hint
+done(goal, task?, duration?, date?, notes?)
     │
     ├─► Determine current week from date
     │
-    ├─► Search todos/{goal}/week-{N}.yml for matching task
-    │   │
-    │   ├─► Day-prefix match: date=Tuesday → tue-*
-    │   ├─► ID/name match: "run" → run-session
-    │   └─► Substring match: "morning" → tue-morning
+    ├─► If task provided:
+    │   └─► Mark todo done in todos/{goal}/week-{N}.yml
+    │       └─► Clear any calendar event scheduling
     │
-    ├─► If match found:
-    │   └─► Mark todo done, add notes
-    │
-    ├─► If duration present:
+    ├─► If duration provided:
     │   └─► Create log entry in logs/{goal}.yml
     │
-    ├─► Sync to daily.yml:
+    ├─► Sync to daily.yml based on goal type:
     │   ├─► calendar: set true
     │   ├─► fitness: add minutes
     │   └─► hindi: increment chapters
@@ -155,110 +149,67 @@ done(goal, what, date, notes)
     └─► Return detailed response
 ```
 
-#### Parsing Spec
+#### Expected Workflow
 
-**Duration Extraction:**
+The AI is expected to check status/read_todo first to get exact task IDs:
+
 ```
-Patterns (case-insensitive):
-  - Integer: 35 → 35 minutes
-  - With unit: 35m, 35 min, 35 mins, 35 minutes → 35 minutes
-  - Hours: 0.5h, 0.5hr, 0.5 hour, 1h, 1.5 hours → convert to minutes
-  - Standalone number at start: "35 min run" → duration=35, hint="run"
+1. check_in or read_todo → see exact task IDs
+2. done(goal="calendar", task="tue-morning") → exact match
 ```
 
-**Task Hint Extraction:**
-```
-After removing duration, remaining text becomes hint.
-  - "35 min run" → hint="run"
-  - "morning" → hint="morning"
-  - "tue-morning" → hint="tue-morning", day_hint="tue"
-```
+#### Error Handling
 
-**Day Hint Sources:**
-```
-1. Explicit in 'what': "tue-morning" → day_hint="tue"
-2. Derived from date: 2026-01-14 → day_hint="tue"
-```
-
-#### Matching Priority
-
-Given `what="morning"`, `date=2026-01-14` (Tuesday):
-
-1. **Exact ID match:** task.id == "morning"
-2. **Exact name match:** task.name == "morning"
-3. **Day-prefix + hint:** task.id == "tue-morning" (date is Tuesday + hint contains "morning")
-4. **Substring on ID:** "morning" in task.id
-5. **Substring on name:** "morning" in task.name.lower()
-
-#### Conflict Resolution
-
-| Conflict | Resolution |
-|----------|------------|
-| what="tue-morning" but date=Wednesday | Prefer date, warn in response |
-| Multiple matches | Return ambiguous with top 3 candidates |
-| Task already done | Allow, append notes, warn in response |
+| Case | Response |
+|------|----------|
+| Task ID not found | Error: "Task 'X' not found in goal/unit" |
+| No task or duration | Error: "No action taken. Provide task and/or duration." |
+| Goal not found | Error: "Unknown goal. Available: ..." |
 | No match but has duration | Log ad-hoc entry, warn "No matching todo" |
 
 #### Response Format
 
-**Success:**
-```yaml
-status: ok
-matched:
-  goal: calendar
-  unit: week-2
-  task_id: tue-morning
-  task_name: "Tue AM: Check calendar first thing"
-daily_updated:
-  calendar: true
-message: "Marked tue-morning done. Daily updated."
+**Task marked done:**
+```
+Marked tue-morning done in week-2
+Daily updated: calendar=True
 ```
 
-**Partial (no todo match):**
-```yaml
-status: partial
-logged:
-  goal: fitness
-  value: 20
-  notes: "evening walk"
-daily_updated:
-  fitness: 55  # cumulative
-message: "Logged 20 min. No matching todo found. Daily: 55 min total."
+**Duration logged (ad-hoc, no task):**
+```
+Logged 20 min to fitness
+Daily updated: fitness=55
 ```
 
-**Ambiguous:**
-```yaml
-status: ambiguous
-candidates:
-  - id: run-session
-    name: "Run session (30 min)"
-  - id: gym-session
-    name: "Gym + PT session (60 min)"
-message: "Multiple matches for 'session'. Specify: run-session or gym-session"
+**Task + duration:**
+```
+Marked run-session done in week-2
+Logged 35 min to fitness
+Daily updated: fitness=35
 ```
 
 #### Examples
 
 ```python
 # Morning calendar check on Tuesday
-done(goal="calendar", what="morning")
-# → Matches tue-morning, marks done, sets daily.calendar=true
+done(goal="calendar", task="tue-morning")
+# → Marks tue-morning done, sets daily.calendar=true
 
-# 35 minute run
-done(goal="fitness", what="35 min run")
-# → Matches run-session, marks done, logs 35 min, updates daily.fitness
+# 35 minute run with specific task
+done(goal="fitness", task="run-session", duration=35)
+# → Marks run-session done, logs 35 min, updates daily.fitness
 
-# Ad-hoc walk (no todo)
-done(goal="fitness", what="20 min walk")
-# → No match, logs 20 min, updates daily.fitness, warns "No matching todo"
+# Ad-hoc walk (no todo task)
+done(goal="fitness", duration=20, notes="evening walk")
+# → Logs 20 min, updates daily.fitness
 
 # Work boundaries announce
-done(goal="work-boundaries", what="announce", date="2026-01-14")
-# → Matches tue-announce, marks done
+done(goal="work-boundaries", task="tue-announce")
+# → Marks tue-announce done
 
 # Hindi session with notes
-done(goal="hindi", what="anki", notes="Unit 3 vocab")
-# → Matches anki-* task, marks done, increments daily.hindi
+done(goal="hindi", task="anki-1", notes="Unit 3 vocab")
+# → Marks anki-1 done, increments daily.hindi
 ```
 
 ---

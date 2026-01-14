@@ -88,6 +88,35 @@ Automatically:
             }
         ),
 
+        # ==================== STATUS ====================
+        Tool(
+            name="status",
+            description="""Get current status for goals - unified view of progress and pending tasks.
+
+Shows:
+- Today's progress (calendar, fitness, hindi)
+- Pending tasks for today (with exact task IDs for use with done tool)
+- Upcoming calendar events
+- Overdue tasks
+- Recent memory entries
+""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "description": "Filter to specific goal (optional, shows all if omitted)"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date to show status for (defaults to today)"
+                    }
+                },
+                "required": []
+            }
+        ),
+
         # ==================== LOG_GOAL ====================
         Tool(
             name="log_goal",
@@ -1128,6 +1157,165 @@ def handle_done(arguments: dict) -> list[TextContent]:
         return [TextContent(type="text", text="No action taken. Provide task and/or duration.")]
 
     return [TextContent(type="text", text="\n".join(result_lines))]
+
+
+def handle_status(arguments: dict) -> list[TextContent]:
+    """
+    Handle status tool - unified view of goal progress and pending tasks.
+
+    Shows exact task IDs so the AI can use done(goal, task=...) directly.
+    """
+    goal_filter = arguments.get("goal")
+    date = arguments.get("date", get_today())
+
+    config = get_goals_config()
+    goals = config.get("goals", {})
+
+    # Resolve goal filter if provided
+    if goal_filter:
+        goal_filter = resolve_goal_id(goals, goal_filter)
+        if not goal_filter:
+            available = ", ".join(goals.keys())
+            return [TextContent(type="text", text=f"Unknown goal. Available: {available}")]
+
+    # Get current time and day info
+    now = datetime.now()
+    time_str = now.strftime("%I:%M%p").lower().lstrip("0")
+
+    # Get day abbreviation for filtering today's tasks
+    from datetime import datetime as dt
+    date_obj = dt.strptime(date, "%Y-%m-%d")
+    days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+    day_abbrev = days[date_obj.weekday()]
+
+    # Get current week
+    schedule = get_schedule()
+    week_info = get_current_week(schedule)
+    week_num = week_info.get("number", 1) if week_info else 1
+
+    # Check if date falls in a different week
+    for week in schedule.get("weeks", []):
+        if week["start"] <= date <= week["end"]:
+            week_num = week["number"]
+            break
+
+    lines = [f"Status ({date}, {time_str})", ""]
+
+    # Week info
+    if week_info:
+        week_start = week_info.get("start", "")
+        week_end = week_info.get("end", "")
+        if week_start and week_end:
+            try:
+                start_dt = dt.strptime(week_start, "%Y-%m-%d")
+                end_dt = dt.strptime(week_end, "%Y-%m-%d")
+                lines.append(f"**Week {week_num}** ({start_dt.strftime('%b %-d')}-{end_dt.strftime('%-d')})")
+            except:
+                lines.append(f"**Week {week_num}**")
+        lines.append("")
+
+    # Today's progress from daily.yml
+    daily_entry = get_daily_entry(date)
+    if daily_entry:
+        lines.append("**Today's Progress:**")
+        lines.append(f"  Calendar: {'✓' if daily_entry.get('calendar') else '✗'}")
+        lines.append(f"  Fitness: {daily_entry.get('fitness', 0)} min")
+        lines.append(f"  Hindi: {daily_entry.get('hindi', 0)} sessions")
+        lines.append("")
+
+    # Get all pending tasks
+    pending_tasks = get_all_pending_tasks()
+
+    # Filter by goal if specified
+    if goal_filter:
+        pending_tasks = [pt for pt in pending_tasks if pt["goal_id"] == goal_filter]
+
+    # Filter to current week or earlier for time-weekly goals
+    time_weekly_goals = {"fitness", "calendar", "work-boundaries"}
+
+    def is_current_or_past_week(goal_id: str, task_unit: str) -> bool:
+        if goal_id not in time_weekly_goals:
+            return True
+        if not task_unit.startswith("week-"):
+            return True
+        try:
+            task_week = int(task_unit.split("-")[1])
+            return task_week <= week_num
+        except (ValueError, IndexError):
+            return True
+
+    pending_tasks = [pt for pt in pending_tasks if is_current_or_past_week(pt["goal_id"], pt["unit"])]
+
+    # Separate today's tasks (day-prefixed) from others
+    today_tasks = []
+    other_tasks = []
+
+    for pt in pending_tasks:
+        task = pt["task"]
+        task_id = task.get("id", "")
+        if task_id.startswith(f"{day_abbrev}-"):
+            today_tasks.append(pt)
+        else:
+            other_tasks.append(pt)
+
+    # Show today's tasks with exact IDs
+    if today_tasks:
+        lines.append(f"**Pending Today ({day_abbrev.capitalize()}):**")
+        for pt in today_tasks:
+            task = pt["task"]
+            task_id = task.get("id", "")
+            task_name = task.get("name", task_id)
+            lines.append(f"  - {pt['goal_id']}: `{task_id}` - {task_name}")
+        lines.append("")
+
+    # Show other pending tasks (grouped by goal)
+    if other_tasks and not goal_filter:
+        lines.append("**Other Pending:**")
+        by_goal = {}
+        for pt in other_tasks:
+            gid = pt["goal_id"]
+            if gid not in by_goal:
+                by_goal[gid] = []
+            by_goal[gid].append(pt)
+
+        for gid, tasks in by_goal.items():
+            shown = tasks[:3]
+            for pt in shown:
+                task = pt["task"]
+                task_id = task.get("id", "")
+                lines.append(f"  - {gid}: `{task_id}`")
+            if len(tasks) > 3:
+                lines.append(f"    (+{len(tasks) - 3} more)")
+        lines.append("")
+    elif other_tasks and goal_filter:
+        lines.append(f"**Pending ({goal_filter}):**")
+        for pt in other_tasks[:10]:
+            task = pt["task"]
+            task_id = task.get("id", "")
+            task_name = task.get("name", task_id)
+            lines.append(f"  - `{task_id}`: {task_name}")
+        if len(other_tasks) > 10:
+            lines.append(f"  (+{len(other_tasks) - 10} more)")
+        lines.append("")
+
+    # Upcoming calendar events
+    upcoming_events = calendar_service.get_upcoming_events(hours_ahead=4)
+    if upcoming_events:
+        lines.append("**Coming Up:**")
+        for e in upcoming_events:
+            prefix = "[Goal] " if e["is_goal"] else ""
+            lines.append(f"  - {e['time']}: {prefix}{e['title']}")
+        lines.append("")
+
+    # Recent memory
+    recent_memory = get_recent_memory(limit=3)
+    if recent_memory:
+        lines.append("**Recent Memory:**")
+        for entry in recent_memory:
+            lines.append(f"  - [{entry.get('date', '?')}] {entry.get('text', '')[:60]}...")
+        lines.append("")
+
+    return [TextContent(type="text", text="\n".join(lines))]
 
 
 def handle_log_goal(arguments: dict) -> list[TextContent]:
@@ -2938,6 +3126,8 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
         return handle_check_in()
     elif name == "done":
         return handle_done(arguments)
+    elif name == "status":
+        return handle_status(arguments)
     elif name == "log_goal":
         return handle_log_goal(arguments)
     elif name == "log_daily":
