@@ -25,3 +25,8 @@
   entries:
   - done: true
     notes: 5k run in 35 min slower than before but awesome for the first run in months
+- date: '2026-01-15'
+  entries:
+  - notes: 30 min run
+    value: 30
+  total: 30

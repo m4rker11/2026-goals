@@ -57,3 +57,7 @@
   date: '2026-01-13'
   fitness: 0
   hindi: 0
+- calendar: false
+  date: '2026-01-15'
+  fitness: 30
+  hindi: 0

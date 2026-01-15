@@ -2,8 +2,8 @@ unit: week-2
 tasks:
   - id: run-session
     name: Run session (30 min)
-    done: false
-    notes: "Scheduled Wed Jan 14 9am"
+    done: true
+    notes: "30 min run"
   - id: gym-session
     name: Gym + PT session (60 min)
     done: false
