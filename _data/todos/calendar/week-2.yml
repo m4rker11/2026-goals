@@ -27,7 +27,8 @@ tasks:
     done: false
   - id: fri-morning
     name: "Fri AM: Check calendar first thing - what's on today?"
-    done: false
+    done: true
+    notes: Morning calendar check done
   - id: fri-immediate
     name: "Fri: Every event added immediately when scheduled (don't wait)"
     done: false

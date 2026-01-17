@@ -30,3 +30,8 @@
   - notes: 30 min run
     value: 30
   total: 30
+- date: '2026-01-16'
+  entries:
+  - notes: 60 min workout
+    value: 60
+  total: 60
