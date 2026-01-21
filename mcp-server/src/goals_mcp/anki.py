@@ -130,9 +130,9 @@ def _load_mastery_sync() -> dict[str, VocabMastery]:
 
         mastery[vocab_id] = VocabMastery(
             vocab_id=vocab_id,
-            transliteration=fields.get("transliteration", {}).get("value", ""),
-            meaning=fields.get("meaning", {}).get("value", ""),
-            unit=unit,
+            transliteration=vocab_id,  # vocab_id field has the Hindi transliteration
+            meaning=fields.get("transliteration", {}).get("value", ""),  # transliteration field has English
+            unit=0,  # ignore units
             tier=_interval_to_tier(min_interval),
             interval_days=min_interval,
         )
@@ -199,6 +199,118 @@ def get_vocab_by_tier(tier: MasteryTier, unit: int | None = None) -> list[VocabM
             if unit is None or vocab.unit <= unit:
                 result.append(vocab)
     return result
+
+
+def export_vocab_to_csv(output_path: str | None = None) -> tuple[str, int]:
+    """
+    Export all vocabulary to CSV (deduplicated, transliteration only).
+
+    Args:
+        output_path: Path to save CSV. If None, uses default location.
+
+    Returns:
+        Tuple of (path, count) where path is the CSV file path and count is number of words.
+    """
+    global _mastery_cache, _cache_loaded
+    import csv
+    from pathlib import Path
+
+    # Ensure cache is loaded
+    if not _mastery_cache:
+        try:
+            _mastery_cache = _load_mastery_sync()
+            _cache_loaded = True
+        except Exception as e:
+            raise ConnectionError(f"Cannot load Anki data: {e}")
+
+    if output_path is None:
+        output_path = str(Path(__file__).parent.parent.parent.parent.parent / "anki_vocab_export.csv")
+
+    # Deduplicate by transliteration (in case same word appears multiple times)
+    seen = set()
+    unique_vocab = []
+    for vocab in _mastery_cache.values():
+        key = vocab.transliteration.lower().strip()
+        if key and key not in seen:
+            seen.add(key)
+            unique_vocab.append(vocab)
+
+    # Sort by unit, then by transliteration
+    unique_vocab.sort(key=lambda v: (v.unit, v.transliteration.lower()))
+
+    # Write CSV
+    with open(output_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['transliteration', 'meaning', 'unit', 'tier', 'interval_days', 'keep'])
+        for vocab in unique_vocab:
+            writer.writerow([
+                vocab.transliteration,
+                vocab.meaning,
+                vocab.unit,
+                vocab.tier.value,
+                vocab.interval_days,
+                'yes'  # Default to keep, user will mark 'no' for ones to delete
+            ])
+
+    return output_path, len(unique_vocab)
+
+
+def add_vocab_to_anki(
+    transliteration: str,
+    meaning: str,
+    unit: int = 0,
+    example: str | None = None,
+) -> dict:
+    """
+    Add a new vocabulary word to Anki.
+
+    Args:
+        transliteration: Word in transliteration (romanized)
+        meaning: English meaning
+        unit: Unit number (0 for custom/lesson vocab)
+        example: Optional example sentence
+
+    Returns:
+        Dict with success status and note_id or error message.
+    """
+    try:
+        # Create note
+        note = {
+            "deckName": "Hindi Vocab",  # Deck name
+            "modelName": NOTE_TYPE,
+            "fields": {
+                "vocab_id": f"custom_{transliteration.lower().replace(' ', '_')}",
+                "transliteration": transliteration,
+                "meaning": meaning,
+                "unit": str(unit),
+            },
+            "options": {
+                "allowDuplicate": False,
+            },
+            "tags": ["custom", "lesson-vocab"],
+        }
+
+        if example:
+            note["fields"]["example"] = example
+
+        note_id = _anki_request("addNote", note=note)
+
+        # Update cache
+        global _mastery_cache
+        vocab_id = note["fields"]["vocab_id"]
+        _mastery_cache[vocab_id] = VocabMastery(
+            vocab_id=vocab_id,
+            transliteration=transliteration,
+            meaning=meaning,
+            unit=unit,
+            tier=MasteryTier.NEW,
+            interval_days=0,
+        )
+
+        return {"success": True, "note_id": note_id, "vocab_id": vocab_id}
+
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 
 
 def get_vocab_for_practice(

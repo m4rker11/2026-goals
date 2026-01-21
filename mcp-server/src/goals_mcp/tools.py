@@ -409,21 +409,66 @@ Examples:
 
         Tool(
             name="push_hindi_practice",
-            description="""Generate a Hindi practice prompt and push to phone via Pushover.
-Uses Anki mastery data to weight vocabulary selection:
-- 10% new words (introduce)
-- 40% learning (active drilling)
+            description="""Generate a Hindi practice prompt and push to phone via Pushover for use with Gemini Live voice practice.
+
+## How It Works
+
+This tool creates a comprehensive conversation prompt that gets uploaded to a GitHub Gist, then sends a push notification to your phone with the link. You open the link, copy the prompt into Gemini Live, and practice speaking Hindi.
+
+## The Topic Parameter (IMPORTANT)
+
+The 'topic' parameter is the key to making this useful. When provided, it completely customizes the practice session:
+
+**Without topic:** Falls back to textbook unit content (grammar sections, dialogues from the extracted JSON files). This is generic and may not match what you're actually learning with Mohit/Nahid.
+
+**With topic:** The prompt is built around YOUR specified topic. The conversation framework, suggested questions, and practice scenarios all center on this topic. The Anki vocab still gets included, but the AI is instructed to weave words into YOUR topic naturally.
+
+## Topic Examples
+
+Good topics are specific and actionable:
+- "restaurant ordering - asking for menu, ordering food, saying something is too spicy, asking for the bill"
+- "giving directions - left, right, straight, near, far, landmarks"
+- "talking about daily routine - wake up, eat breakfast, go to work, come home"
+- "shopping at a market - prices, bargaining, quantities, colors, sizes"
+- "describing people - tall, short, hair color, age, personality"
+- "past tense practice - what I did yesterday, weekend activities"
+
+Bad topics are too vague:
+- "conversation" (too broad)
+- "grammar" (not specific enough)
+- "vocabulary" (that's what Anki is for)
+
+## Vocabulary Selection
+
+Vocab comes from Anki, weighted by mastery tier:
+- 10% new words (introduce these)
+- 40% learning (actively drilling)
 - 35% young (reinforcement)
 - 15% mature (keep fresh)
-Includes dialogue context for voice practice with Gemini Live.""",
+
+The prompt instructs the AI to weave these words into conversation naturally, not drill them.
+
+## Usage Pattern
+
+After a lesson with Mohit or Nahid:
+1. Note what topics/grammar you covered
+2. Call this tool with that topic
+3. Practice with Gemini Live to reinforce
+
+Example: After Nahid teaches restaurant vocabulary:
+push_hindi_practice(topic="restaurant scenarios - ordering food, asking waiter questions, paying the bill, saying food is too spicy or not spicy enough")""",
             inputSchema={
                 "type": "object",
                 "properties": {
+                    "topic": {
+                        "type": "string",
+                        "description": "Custom topic to practice. Include specific scenarios and vocabulary areas. This drives the entire conversation - be detailed!"
+                    },
                     "unit": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 18,
-                        "description": "Unit to focus on (default: current from progress tracking)"
+                        "description": "Unit for vocab selection (default: current from progress tracking). Vocab from this and prior units is included."
                     },
                     "word_count": {
                         "type": "integer",
@@ -433,10 +478,42 @@ Includes dialogue context for voice practice with Gemini Live.""",
                     },
                     "include_dialogue": {
                         "type": "boolean",
-                        "description": "Include dialogue context for conversation practice (default: true)"
+                        "description": "Include example dialogues from textbook (default: true, but ignored if topic is custom)"
                     }
                 },
                 "required": []
+            }
+        ),
+
+        Tool(
+            name="add_vocab",
+            description="""Add a new vocabulary word to Anki Hindi Vocab deck.
+
+Use this after lessons with Mohit/Nahid to add words you actually learned and want to practice.
+Words are tagged with 'custom' and 'lesson-vocab' for easy filtering.
+
+The word gets added as a new card and immediately appears in the mastery cache as 'new' tier.""",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "transliteration": {
+                        "type": "string",
+                        "description": "Word in romanized Hindi (e.g., 'namaste', 'kaise ho')"
+                    },
+                    "meaning": {
+                        "type": "string",
+                        "description": "English meaning"
+                    },
+                    "unit": {
+                        "type": "integer",
+                        "description": "Unit number (use 0 for custom/lesson vocab, default: 0)"
+                    },
+                    "example": {
+                        "type": "string",
+                        "description": "Optional example sentence in transliteration"
+                    }
+                },
+                "required": ["transliteration", "meaning"]
             }
         ),
 
@@ -1770,6 +1847,7 @@ def handle_push_hindi_practice(arguments: dict) -> list[TextContent]:
     from pathlib import Path
 
     unit = arguments.get("unit")
+    topic = arguments.get("topic")  # Custom grammar topic to inject
     word_count = arguments.get("word_count", 100)  # Default to 100 words
     include_dialogue = arguments.get("include_dialogue", True)
 
@@ -1846,7 +1924,12 @@ You are Arjun (male) or Priya (female), a Hindi conversation partner.
 
 ### Correct Mistakes IMMEDIATELY
 - **If you hear a mistake, correct it RIGHT THEN** - don't wait
-- Short correction: "Small fix: X should be Y"
+- Use this flow (English only for explanation):
+  1. Explain what was wrong: "Small fix: you said X but it should be Y because [reason]"
+  2. Show wrong: "You said: [wrong sentence]"
+  3. Show correct: "Say: [correct sentence in Hindi]"
+  4. Wait for them to repeat it correctly
+  5. Only then continue in Hindi
 - Don't let mistakes pass uncorrected - that's your job
 
 ### No Excessive Validation
@@ -1944,8 +2027,12 @@ You are Arjun (male) or Priya (female), a Hindi conversation partner.
     else:
         prompt_parts.append("\n(No Anki vocab loaded)")
 
-    # 3. GRAMMAR RULES FROM UNIT
-    if unit_data and unit_data.get("grammar_sections"):
+    # 3. GRAMMAR RULES - custom topic or from unit
+    if topic:
+        # Custom topic passed - use it instead of unit grammar
+        prompt_parts.append("\n---\n\n# TODAY'S GRAMMAR FOCUS\n")
+        prompt_parts.append(topic)
+    elif unit_data and unit_data.get("grammar_sections"):
         prompt_parts.append("\n---\n\n# GRAMMAR FROM THIS UNIT\n")
         prompt_parts.append("*Use these patterns in conversation. When learner struggles, explain in English.*\n")
         for gs in unit_data["grammar_sections"][:3]:
