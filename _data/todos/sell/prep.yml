@@ -1,22 +1,25 @@
 unit: prep
 tasks:
-  - id: mini-pc
-    name: Prep Mini PC (collect, clean, test, photo, price)
-    done: false
-  - id: anuska-pc
-    name: Prep Anuska's PC (collect, clean, test, photo, price)
-    done: false
   - id: roombas
-    name: Prep Roombas (collect, clean, test, photo, price)
-    done: false
+    name: Listed Roombas on FB Marketplace
+    done: true
   - id: uconsole
-    name: Prep uConsole (collect, clean, test, photo, price)
+    name: Prep uConsole (RPi 400 done, uConsole still needs prep)
     done: false
-  - id: old-tv
-    name: Prep Old TV (collect, clean, test, photo, price)
+  - id: anuska-pc-disassemble
+    name: Disassemble Anuska's PC into parts
+    done: false
+  - id: anuska-pc-psu
+    name: List PSU on eBay
+    done: false
+  - id: anuska-pc-case
+    name: List case on FB Marketplace
+    done: false
+  - id: anuska-pc-mobo
+    name: List motherboard on eBay
     done: false
   - id: old-dryer
-    name: Prep Old Dryer (collect, fix, clean, photo, price)
+    name: Open dryer, diagnose if fixable, then prep/list
     done: false
   - id: shipping-supplies
     name: Get shipping supplies (boxes, bubble wrap)

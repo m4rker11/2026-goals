@@ -10,25 +10,37 @@ tasks:
   - id: wed-evening
     name: "Wed PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
+    scheduled_for: '2026-01-21T18:00:00'
+    event_id: s0lj7hcturmdketcqeddka0ioo
   - id: thu-evening
     name: "Thu PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
+    scheduled_for: '2026-01-22T18:00:00'
+    event_id: sd8f20r762qc3p2lfug8k9d4ng
   - id: fri-evening
     name: "Fri PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
+    scheduled_for: '2026-01-23T18:00:00'
+    event_id: lqrdlmknp2jg811v59386992qg
   - id: sat-evening
     name: "Sat PM: Evening review (tomorrow's appointments, dinner duty, gym blocked?)"
     done: false
+    scheduled_for: '2026-01-24T18:00:00'
+    event_id: r4barba1q25dfr1uot85jguprk
   - id: sun-evening
     name: "Sun PM: Evening review + plan the week (dinner duty, gym days, key appointments)"
     done: false
   # Stack maintenance - are you still doing the Week 1 & 2 habits?
+    scheduled_for: '2026-01-25T18:00:00'
+    event_id: 2ssuelo1k4kj85c3sb9jjbf7n0
   - id: stack-morning
     name: "Still doing: Morning calendar check (Week 1 habit)"
     done: false
   - id: stack-immediate
     name: "Still doing: Add events immediately when scheduled (Week 2 habit)"
-    done: false
+    done: true
+    notes: Been consistently adding events immediately, including planning 2 remaining
+      workouts
   - id: weekly-review
     name: "End of week: How many evening reviews? What made it hard?"
     done: false

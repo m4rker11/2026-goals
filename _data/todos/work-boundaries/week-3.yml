@@ -30,3 +30,8 @@ tasks:
   - id: weekly-review
     name: Week 3 reflection
     done: false
+  - id: test-silent-alarm
+    name: Test phone vibrate alarm (7am) - did it wake you without waking Anuska?
+    done: false
+    description: 'Set phone to vibrate only, under pillow. Backup: smartwatch at 7:10am.
+      Report tomorrow if it worked.'
