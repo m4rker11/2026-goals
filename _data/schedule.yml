@@ -40,12 +40,12 @@ goals:
     weekly_targets:
       1: 65
       2: 90
-      3: 130
-      4: 165
-      5: 200
-      6: 225
-      7: 230
-      8: 255
+      3: 130  # Routine building
+      4: 130  # Routine building
+      5: 130  # Routine building
+      6: 130  # Routine building
+      7: 165  # Resume ramp
+      8: 200  # Target
 
   calendar:
     type: time-weekly

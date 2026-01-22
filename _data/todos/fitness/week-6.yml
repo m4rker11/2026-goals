@@ -1,17 +1,14 @@
 unit: week-6
 tasks:
-  # Sessions
+  # Sessions - Target: 130 min (routine building)
   - id: swim-session
-    name: Swim session (50 min)
+    name: Swim session (45 min)
     done: false
   - id: upper-gym
-    name: Upper gym session (45 min)
+    name: Upper gym session (40 min)
     done: false
   - id: lower-gym
-    name: Lower gym session (40 min)
-    done: false
-  - id: bollywood
-    name: Bollywood dance class (60 min)
+    name: Lower gym session (30 min)
     done: false
   - id: pt-stretches
     name: PT stretches (15 min)

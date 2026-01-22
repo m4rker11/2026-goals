@@ -1,6 +1,6 @@
 unit: week-5
 tasks:
-  # Sessions - Target: 200 min (Bollywood starts!)
+  # Sessions - Target: 130 min (routine building)
   - id: swim-session
     name: "Swim session at YMCA (45 min) - zone 2 cardio"
     done: false
