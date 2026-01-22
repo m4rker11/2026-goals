@@ -1,13 +1,13 @@
 ---
 layout: default
-title: "Week 5: Bollywood Begins"
+title: "Week 5: Routine Building"
 ---
 
-# Week 5: Bollywood Begins
+# Week 5: Routine Building
 
-**Focus:** Integrate Bollywood dance into routine
-**One behavior:** 2 gym sessions + Bollywood + PT
-**Success metric:** 155+ minutes total
+**Focus:** Maintain consistent 130 min/week habit
+**One behavior:** Complete sessions consistently
+**Success metric:** 130 minutes total
 
 ---
 

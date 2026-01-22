@@ -52,12 +52,14 @@ Right now the calendar is used more than before but it's still sporadic. What I 
 
 200 min of activity is a little over 3 hours — definitely doable.
 
+**Modified ramp (Jan 2026):** Plateau at 130 min/week for weeks 3-6 to establish routine before ramping to 200 min.
+
 **Personal narrative to overcome:** "I don't know what to do in the gym for a long time" — but I've been consistently proving this wrong. Anuska's gym is small and I've been learning and adding things with nearly every visit.
 
 **The Plan:**
 1. Start with lower goals, very granular
-2. First goal: go workout for an hour and **don't come back home until 1 hour elapsed**
-3. Build up to 3 gym visits over time
+2. Build to 130 min/week and hold there for 4 weeks
+3. Resume ramp to 200 min in weeks 7-8
 4. Plan sessions with Harshita ahead of time
 
 ---

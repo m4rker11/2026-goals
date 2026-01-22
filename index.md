@@ -172,7 +172,7 @@ title: Home
 |------|----------|--------|
 | [Hindi to B2](Hindi/) | <progress value="{{ hindi_completed_count }}" max="18" style="width: 100px;"></progress> {{ hindi_completed_count }}/18 | {% if hindi_learning_count > 0 %}Learning{% endif %}{% if hindi_reviewing_count > 0 %}{% if hindi_learning_count > 0 %}, {% endif %}Reviewing{% endif %}{% if hindi_learning_count == 0 and hindi_reviewing_count == 0 %}Not started{% endif %} |
 | [Calendar Mastery](calendaring/) | <progress value="{{ current_week }}" max="6" style="width: 100px;"></progress> Week {{ current_week }}/6 | {{ streak }}-day streak |
-| [200 min Zone 2](fitness/) | <progress value="{{ week_fitness_total }}" max="{{ fitness_weekly_target }}" style="width: 100px;"></progress> {{ week_fitness_total }}/{{ fitness_weekly_target }} min{% if fitness_weekly_target >= 200 %} <span style="color: #FFD700;">★</span>{% endif %} | Week {{ current_week }} of 8 |
+| [200 min Zone 2](fitness/) | <progress value="{{ week_fitness_total }}" max="{{ fitness_weekly_target }}" style="width: 100px;"></progress> {{ week_fitness_total }}/{{ fitness_weekly_target }} min{% if fitness_weekly_target >= 200 %} <span style="color: #FFD700;">★</span>{% endif %} | Week {{ current_week }} of 11 |
 | [Work Boundaries](work-boundaries/) | <progress value="{{ current_week }}" max="4" style="width: 100px;"></progress> Week {{ current_week }}/4 | {% if current_week <= 4 %}Week {{ current_week }} of 4{% else %}Complete{% endif %} |
 | [Spend Less](spend-less/) | <progress value="0" max="1000" style="width: 100px;"></progress> $0/$1000 | {{ current_phase_name | split: ":" | first }} |
 | [Sell Things](sell/) | <progress value="0" max="6" style="width: 100px;"></progress> 0/6 | Prep phase |

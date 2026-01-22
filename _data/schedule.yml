@@ -30,12 +30,21 @@ weeks:
   - number: 8
     start: "2026-02-23"
     end: "2026-03-01"
+  - number: 9
+    start: "2026-03-02"
+    end: "2026-03-08"
+  - number: 10
+    start: "2026-03-09"
+    end: "2026-03-15"
+  - number: 11
+    start: "2026-03-16"
+    end: "2026-03-22"
 
 # Goal-specific unit mappings
 goals:
   fitness:
     type: time-weekly
-    max_weeks: 8
+    max_weeks: 11
     unit_path: fitness/weeks/week-
     weekly_targets:
       1: 65
@@ -45,7 +54,10 @@ goals:
       5: 130  # Routine building
       6: 130  # Routine building
       7: 165  # Resume ramp
-      8: 200  # Target
+      8: 200  # Sustaining
+      9: 200  # Sustaining
+      10: 200  # Sustaining
+      11: 200  # Sustaining
 
   calendar:
     type: time-weekly

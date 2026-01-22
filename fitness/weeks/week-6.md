@@ -1,13 +1,13 @@
 ---
 layout: default
-title: "Week 6: Full Routine"
+title: "Week 6: Routine Building"
 ---
 
-# Week 6: Full Routine
+# Week 6: Routine Building
 
-**Focus:** Lock in the complete weekly pattern
-**One behavior:** 3 gym + Bollywood + PT
-**Success metric:** 180+ minutes total
+**Focus:** Complete 4 weeks at 130 min - routine established
+**One behavior:** Complete sessions consistently
+**Success metric:** 130 minutes total
 
 ---
 

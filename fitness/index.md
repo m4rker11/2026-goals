@@ -94,7 +94,7 @@ Building from ~50 min/week to 200 min/week over 8 weeks.
 
 ## Week History
 
-{% include week-history.html goal="fitness" max_weeks=8 expand_current=true %}
+{% include week-history.html goal="fitness" max_weeks=11 expand_current=true %}
 
 ---
 
@@ -103,11 +103,14 @@ Building from ~50 min/week to 200 min/week over 8 weeks.
 - [Week 1: Seattle Baseline (65 min)](weeks/week-1)
 - [Week 2: Seattle Movement (90 min)](weeks/week-2)
 - [Week 3: Return + Swim (130 min)](weeks/week-3)
-- [Week 4: Three Sessions (165 min)](weeks/week-4)
-- [Week 5: Bollywood Begins (200 min)](weeks/week-5)
-- [Week 6: Full Routine (225 min)](weeks/week-6)
-- [Week 7: Building Duration (230 min)](weeks/week-7)
-- [Week 8: 200+ Target (255 min)](weeks/week-8)
+- [Week 4: Routine Building (130 min)](weeks/week-4)
+- [Week 5: Routine Building (130 min)](weeks/week-5)
+- [Week 6: Routine Building (130 min)](weeks/week-6)
+- [Week 7: Resume Ramp (165 min)](weeks/week-7)
+- [Week 8: First 200 (200 min)](weeks/week-8)
+- [Week 9: Sustaining (200 min)](weeks/week-9)
+- [Week 10: Sustaining (200 min)](weeks/week-10)
+- [Week 11: Sustained (200 min)](weeks/week-11)
 
 ---
 

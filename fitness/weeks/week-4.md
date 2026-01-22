@@ -1,13 +1,13 @@
 ---
 layout: default
-title: "Week 4: Three Gym Sessions"
+title: "Week 4: Routine Building"
 ---
 
-# Week 4: Three Gym Sessions
+# Week 4: Routine Building
 
-**Focus:** First week with 3 gym sessions
-**One behavior:** Complete 3 distinct gym days
-**Success metric:** 145+ minutes total
+**Focus:** Establish consistent 130 min/week habit
+**One behavior:** Complete sessions consistently
+**Success metric:** 130 minutes total
 
 ---
 
