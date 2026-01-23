@@ -28,6 +28,10 @@ goals:
       type: target
       target: 200
       warn_at: 0.5
+    gate:
+      advance: {consecutive_weeks: 3, threshold: 0.8}
+      advance_fast: {consecutive_weeks: 2, threshold: 1.0}
+      regress: {consecutive_weeks: 2, threshold_below: 0.5}
 
   calendar:
     name: Calendar Mastery
@@ -40,6 +44,8 @@ goals:
     urgency:
       due_by: "09:00"
       nag_from: "07:00"
+    gate:
+      advance: {days_per_week: 5, consecutive_weeks: 2}
 
   brother:
     name: Call Brother
@@ -93,3 +99,5 @@ goals:
     progression: time-weekly
     start: 2026-01-05
     color: 9  # Blue
+    gate:
+      advance: {days_per_week: 5, consecutive_weeks: 2}

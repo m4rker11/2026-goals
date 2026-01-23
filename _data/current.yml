@@ -25,9 +25,11 @@ hindi:
 # FITNESS - Week adjustments for life events
 # ============================================
 fitness:
+  # Current proven level (advances when consistency gate met)
+  level: 1
   # Offset in weeks (positive = behind schedule, negative = ahead)
   # If injured and need 2 weeks off: offset_weeks: 2
-  # This shifts "current week" calculation
+  # This shifts "current week" calculation (ignored when gate is active)
   offset_weeks: 0
 
   # Pause until date (alternative to offset)
@@ -43,18 +45,23 @@ fitness:
 # CALENDAR - Week adjustments
 # ============================================
 calendar:
+  level: 1
   offset_weeks: 0
 
 # ============================================
 # WORK-BOUNDARIES - Week adjustments
 # ============================================
 work-boundaries:
+  level: 1
   offset_weeks: 0
 
 # ============================================
 # SPEND-LESS - Phase adjustments
 # ============================================
 spend-less:
+  # Milestone: 0=notifications enabled, 1=3 Sunday reviews, 2=3 weeks under cap, 3=done
+  milestone: 0
+
   # Override current phase (ignores date calculation)
   # override_phase: phase-2
 
@@ -65,12 +72,14 @@ spend-less:
 # TRADING - Period adjustments
 # ============================================
 trading:
+  last_execution:
   offset_periods: 0
 
 # ============================================
 # BROTHER - Call tracking
 # ============================================
 brother:
+  last_execution:
   current_call: 1
   # completed_calls: [1, 2]
 
